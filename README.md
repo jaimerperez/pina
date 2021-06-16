@@ -1,0 +1,40 @@
+# API ENDPOINTS:
+**Auth:**
+* /api/auth/login  ✅ Devuelve un token para autentificarse **POST: email,password**
+* /api/auth/remember_password  ✅ Envia un correo a un usuario con un token para recuperar su contraseña **POST: token,password**
+* /api/auth/change_password  ✅ Cambia la contraseña de un usuario confirmado por token **POST: token,password**
+
+**Users:**
+
+| Ruta | Tipo | Parametros | Descripción | Estado |  Info |
+|-|-|-|-|-|-|
+| /api/users | **GET** | **token** | Devuelve todos los usuarios | ✅| 
+| /api/users | **POST** | **email,token** | Crea un usuario | ✅| 
+| /api/users/user | **GET** | **token** | Devuelve el usuario del token | ✅| 
+| /api/users/user/{id_user}  | **GET** | **token** | Devuelve un usuario | ✅| 
+| /api/users/user/{id_user} | **PUT** | **token** | Actualiza un usuario |  ✅| (opcionales): **name, image, surname, birthday, phone, schedule, duty_schedule, duty**|
+| /api/users/user/{id_user}/departments  | **GET** | **token** | Devuelve todos los departamentos del usuario | ✅ | |
+| /api/users/user/{id_user}/teams  | **GET** | **token** | Devuelve todos los equipos del usuario | ✅ | |
+
+**Departments:**
+
+ Ruta | Tipo | Parametros | Descripción | Estado |  Info |
+|-|-|-|-|-|-|
+| /api/departments | **GET** | **token** | Devuelve todos los departamentos |✅| 
+| /api/departments | **POST** | **name,token** | Crea un departamento |✅| 
+| /api/departments/{id_department}  | **GET** | **token** | Devuelve un departamento |✅| 
+| /api/departments/{id_department} | **POST** | **token** | Actualiza un departamento |✅| (opcionales): **name**|
+| /api/departments/{id_department}/users  | **GET** | **token** | Devuelve todos los usuarios de un departamento |✅| 
+| /api/departments/{id_department}/users | **POST** | **id_user,token** | Añade un usuario al departamento |✅|
+| /api/departments/{id_department}/teams | **GET** | **token** | Devuelve todos los equipos de un departamento |✅|
+| /api/departments/{id_department}/teams | **POST** | **name,token** | Añade un equipo al departamento |✅|
+
+**Teams:**
+
+Ruta | Tipo | Parametros | Descripción | Estado |  Info |
+|-|-|-|-|-|-|
+| /api/teams | **GET** | **token** | Devuelve todos los equipos |✅|
+ /api/teams/team/{id_team}/users  | **GET** | **token** | Devuelve todos los usuarios de un equipo |✅|
+| /api/teams/team/{id_team}/users  | **POST** | **token** | Asigna un usuario a un equipo |✅|
+| /api/teams/team/{id_team}/tasks  | **GET** | **token** | Devuelve todas las tareas de un equipo |✅|
+| /api/teams/team/{id_team}/tasks  | **POST** | **name,text,status,token** | Crea una tarea para un equipo |✅|

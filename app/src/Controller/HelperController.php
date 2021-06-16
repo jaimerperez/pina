@@ -1,0 +1,153 @@
+<?php
+
+namespace App\Controller;
+
+use Symfony\Component\Config\Definition\Exception\Exception;
+use App\Controller\CRUDController;
+
+class HelperController
+{
+
+	private static function validate_token($tk): Array
+    {
+        $token_CRUD = new CRUDController('tokens','value');
+        $token = $token_CRUD->one($tk);
+        //var_dump($token);
+        if($token === null || $token == false)
+            return [false,"ERROR: Token no valido"];
+
+        return [true,$token['id_user']];
+    }
+
+	public static function validate_req($req, $param, $token=true, $permits=3)
+	{
+		foreach ($param as $p) {
+            if( ! $req->has($p))
+                return [false,'ERROR: Falta el campo ' . $p];
+        }
+
+        if($token){
+            $tk = $req->get('token');
+            $validation = HelperController::validate_token($tk);
+            if( ! $validation[0] ){
+                return [false,$validation[1]];
+            }
+
+            $CRUD = new CRUDController('users','id');
+            $user = $CRUD->one($validation[1]);
+
+            if($permits < 3){
+                if($user["id_rol"] > $permits ){ // 1 = admin
+                    return [false,'ERROR: No tiene permisos para ejecutar esta accion'];
+                }
+            }
+            return [true,$user];
+        }
+
+        return [true];
+	}
+
+	public static function push_notification(Array $notification)
+	{
+		$CRUD_notifications = new CRUDController('notifications','id');
+		try {
+			$CRUD_notifications->add( $notification );
+		} catch (\Throwable $th) {
+			throw $th;
+		}
+	}
+
+	public static function check_post_events(Array $notification)
+	{
+		$CRUD_events = new CRUDController('events','id');
+		try {
+			$CRUD_events->add( $notification );
+		} catch (\Throwable $th) {
+			throw $th;
+		}
+	}
+
+	public static function upload_file($id)
+	{
+		$uploads_dir = "../public/assets/files/";
+        //Imagen
+        
+		if( ! isset($_FILES["image"]))
+			return;
+		$file =$_FILES["image"];
+		$name = "";
+
+        if( ! $file["error"])
+            try {
+                $tmp_name = $file["tmp_name"];
+				$path = $_FILES['image']['name'];
+				$ext = pathinfo($path, PATHINFO_EXTENSION);
+                $name = $id. '.' . $ext;
+
+                move_uploaded_file($tmp_name, "$uploads_dir/$name");
+            } catch (\Throwable $th) {
+                throw $th;
+            }
+
+		return $name;
+	}
+
+	public static function upload_img($dir="",$id=null)
+	{
+		#$uploads_dir = "build/images/uploads/" . $dir;
+		$uploads_dir = "../public/assets/images/" . $dir;
+        //Imagen
+        
+		if( ! isset($_FILES["image"]))
+			return;
+		$image =$_FILES["image"];
+
+        if( ! $image["error"])
+            try {
+                $tmp_name = $image["tmp_name"];
+                $name = $id.'.png' ?? basename($image["name"]);
+
+                move_uploaded_file($tmp_name, "$uploads_dir/$name");
+            } catch (\Throwable $th) {
+                throw $th;
+            }
+
+		return false;
+	}
+
+    public static function random_string(int $len = 8, string $type = 'alnum'): string
+	{
+		switch ($type)
+		{
+			case 'alnum':
+			case 'numeric':
+			case 'nozero':
+			case 'alpha':
+				switch ($type)
+				{
+					case 'alpha':
+						$pool = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+						break;
+					case 'alnum':
+						$pool = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+						break;
+					case 'numeric':
+						$pool = '0123456789';
+						break;
+					case 'nozero':
+						$pool = '123456789';
+						break;
+				}
+
+				return substr(str_shuffle(str_repeat($pool, ceil($len / strlen($pool)))), 0, $len);
+			case 'md5':
+				return md5(uniqid(mt_rand(), true));
+			case 'sha1':
+				return sha1(uniqid(mt_rand(), true));
+			case 'crypto':
+				return bin2hex(random_bytes($len / 2));
+		}
+		// 'basic' type treated as default
+		return (string) mt_rand();
+	}
+}
