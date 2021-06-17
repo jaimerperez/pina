@@ -10,5 +10,8 @@
 /node_modules/
 npm-debug.log
 yarn-error.log
-var/cache
+app/var/*
+mysql
+docker-compose.yml
 ###< symfony/webpack-encore-bundle ###
+

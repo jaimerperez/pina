@@ -107,7 +107,7 @@ class Auth extends AbstractController
         $email = new EmailController();
         $address = $req->get('email');
         $subject = 'Recuperar contraseña';
-        $body = "<a style='color:blue' href='http://10.10.244.230:8081/passwordchange?token=$token'> Click aqui para cambiar su contraseña </a>";
+        $body = "<a style='color:blue' href='http://". $_SERVER['HTTP_HOST'] ."/passwordchange?token=$token'> Click aqui para cambiar su contraseña </a>";
         
         $smtp_status = $email->send_email($address,$body,$subject);
         if( $smtp_status !== true )

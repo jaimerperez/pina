@@ -141,7 +141,7 @@ export default {
           }
           this.userInfo = data
 
-          fetch("http://10.10.244.230:8081/assets/images/users/" + this.userInfo.id ) 
+          fetch("/assets/images/users/" + this.userInfo.id ) 
           .then( response => {
 
               if(response.ok){

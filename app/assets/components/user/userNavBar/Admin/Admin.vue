@@ -6,7 +6,6 @@
               CREAR
           </button>
       </div>
-       <vue-editor v-model="content"></vue-editor>
       <modal name="my-first-modal">
            <div>
           Crear usuarios

@@ -53,7 +53,7 @@ class Users extends AbstractController
         $email = new EmailController();
         $address = $req->get('email');
         $subject = 'Email de verificación';
-        $body = '<p> Su contraseña es: <b style="color:red">'. $pass .'</b></p>'."<a style='color:blue' href='http://10.10.244.230:8081/user'> Piña </a>";
+        $body = '<p> Su contraseña es: <b style="color:red">'. $pass .'</b></p>'."<a style='color:blue' href='http://". $_SERVER['HTTP_HOST'] ."/user'> Piña </a>";
         
         $smtp_status = $email->send_email($address,$body,$subject);
         if( $smtp_status !== true )
