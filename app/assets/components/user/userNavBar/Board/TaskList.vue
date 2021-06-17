@@ -7,7 +7,7 @@
                     <!-- <input type="checkbox"> -->
                     <span  class="flex justify-between group pt-2"  @mouseover="editHidden = true" @mouseleave="editHidden = false">
                         <input type="checkbox" v-model="selected" :name="taskList.id" :value="taskList.id" class="mx-2">
-                        <p class="truncate px-2" :contenteditable="true" v-on:blur="editName(taskList.id, taskList.name)" :id="taskList.name" ref="input" >{{taskList.name}}</p> 
+                        <p class="truncate px-2" :contenteditable="true" v-on:blur="editName(taskList.id, taskList.name)" :id="taskList.name" ref="input" :title="taskList.name">{{taskList.name}}</p> 
                         <icon-base v-show="editHidden" viewBox="0 0 1080 1080"  width="25" height="25" icon-name="editar" @click.native="focusName" class="cursor-pointer inline-block"><Editar/></icon-base>
                         
                         <span class="relative inline-block" v-on:click="opentab=!opentab">
@@ -36,7 +36,7 @@
                                     <div v-if="index > 1">
                                     </div>
                                     <div v-else>
-                                        <img class="rounded-full w-8 h-8" :src="`/assets/images/users/${items.id_user}`">
+                                        <img class="rounded-full w-8 h-8" :title="searchForUsersName(items.id_user)" :src="`/assets/images/users/${items.id_user}`">
                                     </div>
                                 </div>
                                 <div v-if="size > 2" class="mx-2">
@@ -161,12 +161,15 @@
                     </div>
 
                     <!-- TIEMPOS -->
-                    <div class="w-32 hover:text-indigo-600 border border-white align-middle" @click="play(taskList.id)">
-                        <span class="flex justify-center pt-2">
-                        <icon-base :iconColor="color" width="25" height="25" icon-name="Play" v-show="taskList.pause == 1"><Play/></icon-base>
-                        <icon-base :iconColor="color" width="25" height="25" icon-name="Pause" v-show="taskList.pause == 0"><Pause/></icon-base>
+                    <div class="w-32 hover:text-indigo-600 border border-white align-middle" >
+                        <span class="flex justify-center pt-2" @click="play(taskList.id)">
+                            <icon-base :iconColor="color" width="25" height="25" icon-name="Play" v-show="taskList.pause == 1"><Play/></icon-base>
+                            <icon-base :iconColor="color" width="25" height="25" icon-name="Pause" v-show="taskList.pause == 0"><Pause/></icon-base>
                             {{tiempo}}
-                        </span>                 
+                        </span> 
+                        <div v-popover.bottom="{name: 'tiempo' + taskList.id}">
+                            <icon-base  class="cursor-pointer" width="14" height="14" viewBox="0 0 512 512" icon-name="add"><Add/></icon-base>
+                        </div>        
                     </div>
                     <!-- ULTIMA ACTUALIZACION -->
                     <div class="w-80 hover:text-indigo-600 border border-white align-middle ">
@@ -214,7 +217,7 @@
             <div v-for="user in responsable" :key="user.id">
                <div v-if="!searchForManager(user.id_user)">
                        <div v-if="searchForUsersName(user.id_user)" @click="addManager(user.id_user, taskList.id)">
-                           <img class="rounded-full w-8 h-8" :src="`/assets/images/users/${user.id_user}`">
+                           <img class="rounded-full w-8 h-8" :title="searchForUsersName(user.id_user)" :src="`/assets/images/users/${user.id_user}`">
                             {{searchForUsersName(user.id_user)}}
                        </div>
                </div>
@@ -224,10 +227,20 @@
         <popover :name="'resp' + taskList.id" :width="450">
             <div v-for="user in responsable" :key="user.id">
                <div v-if="searchForManager(user.id_user)" class="flex flex-row">
-                        <img class="rounded-full w-8 h-8" :src="`/assets/images/users/${user.id_user}`">
+                        <img class="rounded-full w-8 h-8" :title="searchForUsersName(user.id_user)" :src="`/assets/images/users/${user.id_user}`">
                         <span>{{searchForUsersName(user.id_user)}}</span>
                         <button class="rounded-full w-5 h-5 bg-white text-black self-center" v-on:click="deleteManager(user.id_user, taskList.id)">X</button>
                </div>
+            </div>
+        </popover>
+        <popover :name="'tiempo' + taskList.id" :width="150">
+            <div class="items-center">
+               Añadir sesión manualmente
+               <div>
+                   <input  class="border border-dotted" type="number" min="00" max="99" v-model="horas">:
+                   <input  class="border border-dotted" type="number" min="00" max="59" v-model="minutos">      
+               </div>
+               <button class="rounded-lg bg-sideBar-primary text-white" @click="setTime()">ENVIAR</button>
             </div>
         </popover>
         
@@ -336,6 +349,8 @@ export default {
             opentab: false,
             count: 0,
             size: 0,
+            horas: 0,
+            minutos: 0,
             
         }
     },
@@ -445,6 +460,16 @@ export default {
                  }
                     
             }
+        },
+        setTime(){
+            console.log('entra aqui')
+            let hours = this.horas * 3600
+            console.log(hours)
+            let minuts = this.minutos * 60
+            console.log(minuts)
+            let totaltime = hours + minuts
+            console.log(totaltime)
+            EventBus.$emit('settime', totaltime, this.taskList.id)
         },
         select(status) {
 
@@ -614,8 +639,7 @@ export default {
                         return items.name
             }
             return false
-        },
-        
+        },      
     },
        
 }

@@ -351,8 +351,19 @@ class Tasks extends AbstractController
         $CRUD_tasks = new CRUDController('tasks','id');
 
         $task = $CRUD_tasks->one($id_task);
+        //$time_working = intval($task['time_working']) + intval($req->get('time_working'));
+        $time_working = intval($req->get('time_working'));
 
-        return $this->json('ok');
+        try {
+            $CRUD_tasks->update( $id_task ,array(
+                'time_working' => $time_working
+            ));
+        } catch (\Throwable $th) {
+            //throw $th;
+            return $this->json('ERROR: No se ha podido eliminar el mensaje','400');
+        }
+
+        return $this->json('Se han añadido '. $req->get('time_working') . 'segundos a la tarea');
     }
 
      /**

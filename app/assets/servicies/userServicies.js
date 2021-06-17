@@ -80,7 +80,7 @@ export function getTaskStored(token, id_team){
   }
 
     
-    //POST
+    //POST //departmens
     export function postDepartment(formData){
         return fetch("/api/departments?token=" + token,
         {  
@@ -92,7 +92,38 @@ export function getTaskStored(token, id_team){
             }
           })
     }
+    export function postTeamToDepartment(formData, departmentID){
+      return fetch("/api/departments/" + departmentID + "/teams",{
+           method: "POST",
+           body: formData 
+           })
+          .then(resp =>  { 
+            if(resp.status >= 200 && resp.status < 300) {
+                return Promise.resolve(resp)
+              } else {
+                return Promise.reject(new Error(resp.statusText))
+              }        
+          })
+          .then(resp => {
+            return resp.json()
+          })
+   }
+   export function postUserToDepartment(formData, departmentID){
+    return   fetch("/api/departments/" + departmentID + "/users",{
+        method: "POST",
+        body: formData 
+        })
+       .then(resp =>  { 
+         if(resp.status >= 200 && resp.status < 300) {
+         return resp.json()
+         }
+       })
+       
+}
+
     
+
+    //POST //tasks
     export function postTime(formData,id_task){
       return fetch("/api/tasks/" + id_task + "/time_working",
       {  
@@ -115,27 +146,17 @@ export function getTaskStored(token, id_team){
         }
       })
 }
-  export function postTimeSubtask(formData,id_subtask){
-    return fetch("/api/subtasks/" + id_subtask + "/time_working",
-    {  
-      method: "POST",
-       body: formData })
-    .then(response =>  { 
-        if (response.status === 404) {
-          return response.json()
-        }
-      })
-}
-  export function postFilesTask(formData,id_task){
-    return fetch("/api/tasks/" + id_task + "/file",
-    {  
-      method: "POST",
-       body: formData })
-    .then(response =>  { 
-        if (response.status === 404) {
-          return response.json()
-        }
-      })
+
+export function postFilesTask(formData,id_task){
+  return fetch("/api/tasks/" + id_task + "/file",
+  {  
+    method: "POST",
+     body: formData })
+  .then(response =>  { 
+      if (response.status === 404) {
+        return response.json()
+      }
+    })
 }
 export function postStoreTask(formData,id_task){
   return fetch("/api/tasks/" + id_task + "/store",
@@ -146,83 +167,6 @@ export function postStoreTask(formData,id_task){
       if (response.status === 404) {
         return response.json()
       }
-    })
-}
-    export function postIncident(formData, id_team){
-      return fetch("/api/incidents/" + id_team,
-      {  
-        method: "POST",
-         body: formData })
-      .then(response =>  { 
-          if (response.status === 404) {
-            return response.json()
-          }
-        })
-  }
-     //POST
-     export function changePassword(formData, userID){
-      return fetch("/api/users/user/" + userID,
-      {  
-        method: "POST",
-         body: formData })
-      .then(response =>  { 
-          if (response.status === 404) {
-            return response.json()
-          }
-        })
-  }
-    export function postTeamToDepartment(formData, departmentID){
-       return fetch("/api/departments/" + departmentID + "/teams",{
-            method: "POST",
-            body: formData 
-            })
-           .then(resp =>  { 
-             if(resp.status >= 200 && resp.status < 300) {
-                 return Promise.resolve(resp)
-               } else {
-                 return Promise.reject(new Error(resp.statusText))
-               }        
-           })
-           .then(resp => {
-             return resp.json()
-           })
-    }
-
-    export function postUserToDepartment(formData, departmentID){
-        return   fetch("/api/departments/" + departmentID + "/users",{
-            method: "POST",
-            body: formData 
-            })
-           .then(resp =>  { 
-             if(resp.status >= 200 && resp.status < 300) {
-             return resp.json()
-             }
-           })
-           
-    }
-   
-    //POST
-export function createUserInTeam(formData, teamID){
-    fetch("/api/teams/team/" + teamID + "/users",{
-        method: "POST",
-        body: formData 
-        })
-       .then(resp =>  { 
-         if(!resp.ok){
-           throw new Error('No se ha podido crear elS usuario');
-         }
-       })
-}
-export function createUser(formData){
-  return fetch("/api/users",
-  {  
-    method: "POST",
-     body: formData })
-     .then(resp =>  { 
-      if(!resp.ok){
-        throw new Error('No se ha podido crear el usuario');
-      }
-            
     })
 }
 export function postMessage(formData, id_task){
@@ -237,72 +181,116 @@ export function postMessage(formData, id_task){
         return resp.json()
       }) 
 }
-export function postSubtaskMessage(formData, id_subtask){
-  fetch("/api/subtasks/" + id_subtask + "/message",{
+export function setDate(formData, id_task){
+  return fetch("/api/tasks/"+ id_task + "/time_limit",{
+    method: "POST",
+    body: formData 
+    })
+   .then(resp =>  { 
+     if(!resp.ok){
+       throw new Error(resp.statusText);
+     }
+     return resp.json()
+   })  
+ }
+ export function postAddUserToTask(formData, id_task){
+  return fetch("/api/tasks/" + id_task + "/user",{
+    method: "POST",
+    body: formData 
+    })
+   .then(resp =>  { 
+     if(!resp.ok){
+       throw new Error(resp.statusText);
+     }
+     return resp.json()
+   })  
+ }
+ export function postSubTask(formData, id_task){
+  return fetch("/api/tasks/"+ id_task + "/subtask",{
+    method: "POST",
+    body: formData 
+    })
+   .then(resp =>  { 
+     if(!resp.ok){
+       throw new Error(resp.statusText);
+     }
+     return resp.json()
+   })  
+ }
+        ///PUT //task
+ export function putChangeTags(formData, id_task){
+  return fetch("/api/tasks/" + id_task + "/tags" ,{
       method: "POST",
       body: formData 
       })
-      .then(resp =>  { 
-        if(!resp.ok){
-          throw new Error(resp.statusText);
-        }
-        return resp.json()
-      }) 
-}
-
-export function postTaskToTeam(formData, teamID){
-    return fetch("/api/teams/team/" + teamID + "/tasks",
-    {  
+     .then(resp =>  { 
+       if(!resp.ok){
+         throw new Error(resp.statusText);
+       }
+       return resp.json()
+     })  
+ }
+ export function putChangeStatusTask(id_status, token, id_task){
+  return fetch("/api/tasks/" + id_task + "/status" ,{
+      method: "PUT",
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded'
+      },
+      body: 'id_status='+id_status+'&token='+token
+      })
+     .then(resp =>  { 
+       return resp.json()
+     })  
+ }
+//POST //subtasks
+export function postEditNameSubtask(formData,id_subtask){
+  return fetch("/api/subtasks/" + id_subtask + "/name",
+  {  
     method: "POST",
-    body: formData })
-    .then(response =>  { 
-        if (response.status === 404) {
+     body: formData })
+  .then(response =>  { 
+      if (response.status === 404) {
         return response.json()
-        }
+      }
     })
 }
-
-   export function Login(formData){
-    return fetch("/api/auth/login",{
+  export function postTimeSubtask(formData,id_subtask){
+    return fetch("/api/subtasks/" + id_subtask + "/time_working",
+    {  
+      method: "POST",
+       body: formData })
+    .then(response =>  { 
+        if (response.status === 404) {
+          return response.json()
+        }
+      })
+}
+  
+    export function postIncident(formData, id_team){
+      return fetch("/api/incidents/" + id_team,
+      {  
+        method: "POST",
+         body: formData })
+      .then(response =>  { 
+          if (response.status === 404) {
+            return response.json()
+          }
+        })
+  }
+  export function postSubtaskMessage(formData, id_subtask){
+    fetch("/api/subtasks/" + id_subtask + "/message",{
         method: "POST",
         body: formData 
         })
-       .then(resp =>  { 
-         if(!resp.ok){
-           throw new Error(resp.statusText);
-         }
-         return resp.json()
-       })  
-   }
-
-   export function setDate(formData, id_task){
-    return fetch("/api/tasks/"+ id_task + "/time_limit",{
-      method: "POST",
-      body: formData 
-      })
-     .then(resp =>  { 
-       if(!resp.ok){
-         throw new Error(resp.statusText);
-       }
-       return resp.json()
-     })  
-   }
-
-   export function ChangeSubTags(formData, id_subtask){
+        .then(resp =>  { 
+          if(!resp.ok){
+            throw new Error(resp.statusText);
+          }
+          return resp.json()
+        }) 
+  }
+  export function ChangeSubTags(formData, id_subtask){
     return fetch("/api/subtasks/"+ id_subtask + "/subtag",{
-      method: "POST",
-      body: formData 
-      })
-     .then(resp =>  { 
-       if(!resp.ok){
-         throw new Error(resp.statusText);
-       }
-       return resp.json()
-     })  
-   }
-
-   export function postAddUserToTask(formData, id_task){
-    return fetch("/api/tasks/" + id_task + "/user",{
       method: "POST",
       body: formData 
       })
@@ -325,9 +313,20 @@ export function postTaskToTeam(formData, teamID){
        return resp.json()
      })  
    }
-
-   export function postSubTask(formData, id_task){
-    return fetch("/api/tasks/"+ id_task + "/subtask",{
+   export function setDateSubtask(formData, id_subtask){
+    return fetch("/api/tasks/"+ id_subtask + "/time_limit",{
+      method: "POST",
+      body: formData 
+      })
+     .then(resp =>  { 
+       if(!resp.ok){
+         throw new Error(resp.statusText);
+       }
+       return resp.json()
+     })  
+   }
+   export function setTime(formData, id_task){
+    return fetch("/api/tasks/" + id_task + "/time_working/add",{
       method: "POST",
       body: formData 
       })
@@ -339,31 +338,43 @@ export function postTaskToTeam(formData, teamID){
      })  
    }
 
-   ///PUT
-   export function putChangeTags(formData, id_task){
-    return fetch("/api/tasks/" + id_task + "/tags" ,{
+    //POST //teams
+export function createUserInTeam(formData, teamID){
+    fetch("/api/teams/team/" + teamID + "/users",{
         method: "POST",
         body: formData 
         })
        .then(resp =>  { 
          if(!resp.ok){
-           throw new Error(resp.statusText);
+           throw new Error('No se ha podido crear elS usuario');
          }
-         return resp.json()
-       })  
-   }
-   export function putChangeStatusTask(id_status, token, id_task){
-    return fetch("/api/tasks/" + id_task + "/status" ,{
-        method: "PUT",
-        headers: {
-          'Content-Type': 'application/x-www-form-urlencoded'
-        },
-        body: 'id_status='+id_status+'&token='+token
-        })
-       .then(resp =>  { 
-         return resp.json()
-       })  
-   }
+       })
+}
+export function postTaskToTeam(formData, teamID){
+  return fetch("/api/teams/team/" + teamID + "/tasks",
+  {  
+  method: "POST",
+  body: formData })
+  .then(response =>  { 
+      if (response.status === 404) {
+      return response.json()
+      }
+  })
+}
+
+//POST users
+export function createUser(formData){
+  return fetch("/api/users",
+  {  
+    method: "POST",
+     body: formData })
+     .then(resp =>  { 
+      if(!resp.ok){
+        throw new Error('No se ha podido crear el usuario');
+      }
+            
+    })
+}
 export function changeProfile(formData, userID){
   return   fetch("/api/users/user/" + userID,
   {  
@@ -375,8 +386,33 @@ export function changeProfile(formData, userID){
       }
     })
 }
+export function changePassword(formData, userID){
+  return fetch("/api/users/user/" + userID,
+  {  
+    method: "POST",
+     body: formData })
+  .then(response =>  { 
+      if (response.status === 404) {
+        return response.json()
+      }
+    })
+}
+
+   export function Login(formData){
+    return fetch("/api/auth/login",{
+        method: "POST",
+        body: formData 
+        })
+       .then(resp =>  { 
+         if(!resp.ok){
+           throw new Error(resp.statusText);
+         }
+         return resp.json()
+       })  
+   }
 
 
+   
    //DELETE
    export function deleteTask(token, id_task){
     return fetch("/api/tasks/" + id_task ,{
@@ -438,8 +474,6 @@ export function changeProfile(formData, userID){
          return resp.json()
        })  
    }
-
-
    export function deleteManager(token, id_task, id_user){
     return fetch("/api/tasks/"+ id_task + "/user",{
         method: "DELETE",

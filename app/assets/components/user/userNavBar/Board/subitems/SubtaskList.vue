@@ -4,7 +4,7 @@
             <!-- NAME SUBTASK -->
         <div class="w-80 flex flex-row hover:text-indigo-600 border border-white align-middle ">
             <span class="flex w-full justify-between" v-on:click="toggle(subtask.id, subtask.name)">
-                <p class="truncate px-2" :contenteditable="true" v-on:blur="editName(subtask.id)" :id="'name' + subtask.id" ref="input" >{{subtask.name}}</p> 
+                <p class="truncate px-2" :contenteditable="true" v-on:blur="editName(subtask.id)" :title="subtask.name" :id="'name' + subtask.id" ref="input" >{{subtask.name}}</p> 
                 <icon-base viewBox="0 0 1080 1080"  width="25" height="25" icon-name="editar" @click.native="focusName" class="cursor-pointer inline-block"><Editar/></icon-base>
                 <span class="p-2 cursor-pointer" v-on:click="opentab=!opentab">
                     <icon-base :iconColor="color" width="25" height="25" icon-name="message" ><Message/></icon-base>
@@ -95,7 +95,7 @@ import Pause from '../../../../icons/Pause.vue'
 import DatePicker from '../subitems/DatePicker'
 import Popper from '../popover/Popper'
 import ImageMembers from '../../Welcome/tabs/ImageMembers' 
-import {getAllSubTags, getUserTeams, getAllUsers,  getSubtaskMessage } from '../../../../../servicies/userServicies'
+import {getAllSubTags, getUserTeams, getAllUsers,  getSubtaskMessage, postEditNameSubtask } from '../../../../../servicies/userServicies'
 import Tag from '../popover/Tag'
 import SlidePanel from './SlidePanel.vue'
 export default {
@@ -190,20 +190,21 @@ export default {
             this.hide()
         },
         editName(id_task){
-            const valor = document.getElementById('name' + subtask.id);
+            const valor = document.getElementById('name' + this.subtask.id);
             const text = valor.textContent
-            console.log(text)
+            
             const token = localStorage.getItem('validation_token');
             const formData = new FormData()
             formData.append('name', text);
             formData.append('token', token);
           
             let promise = new Promise((resolve, reject) => {
-                resolve(postEditName(formData, id_task));
+                resolve(postEditNameSubtask(formData, id_task));
               });
               promise.then((response) => {
                 console.log(response);
                 this.fetchData()
+                EventBus.$emit('editname')
               });
         },
          hide () {

@@ -14,7 +14,7 @@
         <div v-popover:filterMembers.bottom>
           <icon-base class="cursor-pointer" iconColor="#4D4D4D" width="25" height="25" viewBox="0 0 760 652" icon-name="filterperson" ><FilterPerson/></icon-base>
         </div>
-        <div v-if="userInfo.id_rol != 1" class="class-icon px-4" >
+        <div v-if="userInfo.id_rol != 3" class="class-icon px-4" >
           <icon-base class="cursor-pointer" iconColor="#4D4D4D" width="25" height="25" icon-name="iconadduser" v-popover:adduser.bottom>
             <IconAddUser/>
           </icon-base>
@@ -116,7 +116,7 @@ import ImageMembers from './Welcome/tabs/ImageMembers'
 import {getAllUsers, getUserToken, createUserInTeam, getAllTaskFromTeam, postTaskToTeam, 
 putChangeTags, deleteTask,putChangeStatusTask, setDate, ChangeSubTags, postSubTask, 
 postTime, postFilesTask, deleteFiles, postAddUserToTask, deleteManager, getUserTeams, createUser,
-postTimeSubtask, deleteSubTask, postStoreTask, postAddUserToSubTask, postMessage, postSubtaskMessage} from '../../../servicies/userServicies'
+postTimeSubtask, deleteSubTask, postStoreTask, postAddUserToSubTask, postMessage, postSubtaskMessage, setTime} from '../../../servicies/userServicies'
 Vue.use(Popover)
 
 export default {
@@ -427,6 +427,20 @@ export default {
         toggle(){
           this.open = !this.open
        },
+       setTime(totaltime, id_task){
+         const token = localStorage.getItem('validation_token');
+          const formData = new FormData()
+          formData.append('time_working', totaltime);
+          formData.append('token', token);
+          
+            let promise = new Promise((resolve, reject) => {
+                resolve(setTime(formData, id_task));
+              });
+              promise.then((response) => {
+                console.log(response);
+                this.fetchData()
+              });
+       },
        typeStatus(type){
         
          EventBus.$emit('type', type)
@@ -532,11 +546,13 @@ export default {
     EventBus.$on('updateFiles', this.updateFiles)
     EventBus.$on('deleteFile', this.deleteFile)
     EventBus.$on('addmanager', this.addManager)
-     EventBus.$on('addmanagersubtask', this.addManagerSubtask)
+    EventBus.$on('addmanagersubtask', this.addManagerSubtask)
     EventBus.$on('deletemanager', this.deleteManager)
     EventBus.$on('changeStatus', this.changeStatusDragg)
     EventBus.$on('submitmessage', this.submitMessage)
     EventBus.$on('submitmessagesubtask', this.submitMessageSubtask)
+    EventBus.$on('editname', this.fetchData)
+    EventBus.$on('settime', this.setTime)
   },
     watch: {
       '$route': 'fetchData',

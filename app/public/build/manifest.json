@@ -1,12 +1,13 @@
 {
-  "build/app.css": "/build/app.3215426a.css",
-  "build/app.js": "/build/app.22937e61.js",
-  "build/tailwind.css": "/build/tailwind.05274e2c.css",
-  "build/runtime.js": "/build/runtime.2eab0b83.js",
-  "build/241.ed7127af.js": "/build/241.ed7127af.js",
-  "build/813.fd1f1431.js": "/build/813.fd1f1431.js",
-  "build/459.511a6bd4.js": "/build/459.511a6bd4.js",
-  "build/796.8c655132.js": "/build/796.8c655132.js",
+  "build/app.css": "/build/app.css",
+  "build/app.js": "/build/app.js",
+  "build/tailwind.css": "/build/tailwind.css",
+  "build/runtime.js": "/build/runtime.js",
+  "build/assets_views_Login_vue.js": "/build/assets_views_Login_vue.js",
+  "build/assets_views_User_vue.js": "/build/assets_views_User_vue.js",
+  "build/assets_views_Logout_vue.js": "/build/assets_views_Logout_vue.js",
+  "build/vendors-node_modules_core-js_modules_es_array_filter_js-node_modules_core-js_modules_es_array-9c7f27.css": "/build/vendors-node_modules_core-js_modules_es_array_filter_js-node_modules_core-js_modules_es_array-9c7f27.css",
+  "build/vendors-node_modules_core-js_modules_es_array_filter_js-node_modules_core-js_modules_es_array-9c7f27.js": "/build/vendors-node_modules_core-js_modules_es_array_filter_js-node_modules_core-js_modules_es_array-9c7f27.js",
   "build/images/LOGO_Piña-02.png": "/build/images/LOGO_Piña-02.69385b12.png",
   "build/images/avatar-loading.png": "/build/images/avatar-loading.6559e259.png",
   "build/images/LOGO_Piña-01.png": "/build/images/LOGO_Piña-01.1c5ff16b.png",
@@ -19,5 +20,9 @@
   "build/images/4.png": "/build/images/4.923834ce.png",
   "build/images/118.png": "/build/images/118.47733eae.png",
   "build/images/10.png": "/build/images/10.57586ddd.png",
-  "build/images/images.png": "/build/images/images.30f3f3f2.png"
+  "build/images/images.png": "/build/images/images.30f3f3f2.png",
+  "build/vendors-node_modules_core-js_modules_es_array_from_js-node_modules_core-js_modules_es_array_i-2579ef.css": "/build/vendors-node_modules_core-js_modules_es_array_from_js-node_modules_core-js_modules_es_array_i-2579ef.css",
+  "build/vendors-node_modules_core-js_modules_es_array_from_js-node_modules_core-js_modules_es_array_i-2579ef.js": "/build/vendors-node_modules_core-js_modules_es_array_from_js-node_modules_core-js_modules_es_array_i-2579ef.js",
+  "build/vendors-node_modules_core-js_modules_es_array_filter_js-node_modules_core-js_modules_es_array-9f917e.css": "/build/vendors-node_modules_core-js_modules_es_array_filter_js-node_modules_core-js_modules_es_array-9f917e.css",
+  "build/vendors-node_modules_core-js_modules_es_array_filter_js-node_modules_core-js_modules_es_array-9f917e.js": "/build/vendors-node_modules_core-js_modules_es_array_filter_js-node_modules_core-js_modules_es_array-9f917e.js"
 }

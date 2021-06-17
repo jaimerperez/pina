@@ -42,6 +42,27 @@ class SubTasks extends AbstractController
         $this->add_id_user_update($id_subtask,$validation[1]['id']);
         return $this->json('Tarea eliminada con exito');
     }
+
+    /**
+        * @Route("/{id_subtask}/name", methods={"POST"})
+     */
+    public function update_subtask_name(String $id_subtask,Request $request): Response
+    {
+        $req = $request->request; //'POST
+        $parameters = ['name','token'];
+        $validation = HelperController::validate_req($req,$parameters);
+        if(! $validation[0])
+            return $this->json($validation[1],'400');
+
+        $CRUD_subtasks = new CRUDController('subtasks','id');
+        $CRUD_subtasks->update($id_subtask,array(
+            'name' => $req->get('name')
+        ));
+        
+        $this->add_id_user_update($id_subtask,$validation[1]['id']);
+        return $this->json('ok');
+    }
+
     /**
         * @Route("/{id_subtask}/subtag", methods={"POST"})
      */
