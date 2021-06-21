@@ -17,6 +17,8 @@ use Symfony\Component\HttpFoundation\File\Stream;
 use Symfony\Component\HttpFoundation\HeaderUtils;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 
+use Spipu\Html2Pdf\Html2Pdf;
+
 class APIController extends AbstractController
 {
 
@@ -149,19 +151,73 @@ class APIController extends AbstractController
     }
 
     /**
+     * @Route("/api/generar_informe", methods={"GET"})
+     */
+    public function generar_informe(Request $request): Response
+    {
+        $req = $request->query; //GET
+        //$req = $request->request; //'POST
+        
+        $id_team = $req->get('id_team');
+        $CRUD_teams = new CRUDController('teams','id');
+        $team = $CRUD_teams->one($id_team);
+
+        $dia = date("d");
+        $mes = date("n");
+        $mesesN=array(1=>"Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre");
+        $ano = date("Y");
+        $today = "$dia". " $mesesN[$mes] $ano";
+
+        $email = new EmailController();
+        $address = 'cristian.perez.hernandez.96@gmail.com';
+        $subject = 'Informe tareas ' . $team['name'] . '('. $today .')';
+        $body = "<h1>$subject</h1>";
+        
+        //PDF
+        ob_start();
+        include '../templates/api/tabla.php';
+        $content = ob_get_clean();
+        $html2pdf = new Html2Pdf('L');
+        $html2pdf->writeHTML($content);
+
+        //PDF
+        
+        $attachment = $html2pdf->output($subject, 'S');
+        $r = $email->send_email_with_pdf($address,$body,$subject,$attachment, $subject);
+        if( ! $r )
+            return $this->json('ERROR:','400'); 
+        
+        return $this->json('ok','200');
+    }
+
+    /**
      * @Route("/api/test", methods={"GET"})
      */
     public function test_route(Request $request): Response
     {
+        $html2pdf->writeHTML('<h1>Informe de tareas</h1>');
+        
+
+        
         $email = new EmailController();
         $address = 'cristian.perez.hernandez.96@gmail.com';
-        $body = '12345';
+        $subject = 'probar';
 
-        $r = $email->send_email($address,$body);
-        if( $r )
-            return $this->json('ok','200');
-        
-        return $this->json('ERROR:','400'); 
+        $body =  '<h1>Informe de tareas</h1>';
+        $attachment = $html2pdf->output('informe_tareas', 'S');
+        /*
+        $body =  $attachment;
+        $r = $email->send_email($address,$body,$subject);
+         */ 
+        $r = $email->send_email_with_pdf($address,$body,$subject,$attachment);
+
+
+        if( ! $r )
+            return $this->json('ERROR:','400'); 
+          
+
+
+        return $this->json('ok','200');
     }
     
 }

@@ -3,11 +3,11 @@
     "app": {
       "js": [
         "/build/runtime.js",
-        "/build/vendors-node_modules_core-js_modules_es_array_filter_js-node_modules_core-js_modules_es_array-9c7f27.js",
+        "/build/vendors-node_modules_core-js_modules_es_array_filter_js-node_modules_core-js_modules_es_array-edd701.js",
         "/build/app.js"
       ],
       "css": [
-        "/build/vendors-node_modules_core-js_modules_es_array_filter_js-node_modules_core-js_modules_es_array-9c7f27.css",
+        "/build/vendors-node_modules_core-js_modules_es_array_filter_js-node_modules_core-js_modules_es_array-edd701.css",
         "/build/app.css"
       ]
     },

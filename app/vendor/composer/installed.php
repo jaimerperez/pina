@@ -312,6 +312,15 @@
       ),
       'reference' => '430d14c01836b77c28092883d195a43ce413ee32',
     ),
+    'spipu/html2pdf' => 
+    array (
+      'pretty_version' => 'v5.2.1',
+      'version' => '5.2.1.0',
+      'aliases' => 
+      array (
+      ),
+      'reference' => '7dca57b61fdb2d6920635ff2332dbc82d4be19f3',
+    ),
     'symfony/asset' => 
     array (
       'pretty_version' => 'v5.2.1',
@@ -704,6 +713,15 @@
       array (
       ),
       'reference' => '290ea5e03b8cf9b42c783163123f54441fb06939',
+    ),
+    'tecnickcom/tcpdf' => 
+    array (
+      'pretty_version' => '6.4.1',
+      'version' => '6.4.1.0',
+      'aliases' => 
+      array (
+      ),
+      'reference' => '5ba838befdb37ef06a16d9f716f35eb03cb1b329',
     ),
     'twig/extra-bundle' => 
     array (

@@ -150,4 +150,18 @@ class HelperController
 		// 'basic' type treated as default
 		return (string) mt_rand();
 	}
+
+	function SpanishDate($separador="-",$time=null)
+	{
+
+		$ano = date('Y',$time);
+		$mes = date('n',$time);
+		$dia = date('d',$time);
+		$diasemana = date('w',$time);
+		$diassemanaN= array("Domingo","Lunes","Martes","Miércoles",
+						"Jueves","Viernes","Sábado");
+		$mesesN=array(1=>"Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio",
+					"Agosto","Septiembre","Octubre","Noviembre","Diciembre");
+		return $diassemanaN[$diasemana].", $dia de ". $mesesN[$mes] ." de $ano";
+	}  
 }

@@ -53,10 +53,10 @@
             </div>
             <div class="message-section mb-2 mx-2" v-html="item.message">
             </div>
-            <!-- <div @click="deleteMsg(item.id, ID)">
+            <div @click="deleteMsg(item.id, ID)">
               {{item.id}}
               <icon-base class="cursor-pointer" viewBox="0 0 512 512" width="25" height="25" icon-name="trash" ><Trash/></icon-base>
-            </div>   -->
+            </div>  
           </div>
            
             <div class="spacer bg-sideBar-primary w-11/12 h-0.5 my-40"></div>
@@ -128,8 +128,7 @@ export default {
       });
       promise.then((response) => {
         console.log(response);
-        
-        this.open = !this.open;
+        EventBus.$emit('deletemessage')
       });
     },
 

@@ -115,7 +115,6 @@
                             <div v-if="items.id == el.id_tag">
                                 <div v-if="items.id_type=='4'" v-popover:entregado.bottom v-on:click="setID=taskList.id">
                                     <Tag :tagName="items.name"/>
-                                    
                                 </div>
                             </div>
                             </div>
@@ -127,7 +126,7 @@
                     <!-- PLAZO -->
                     <div  class="w-80 border border-white items-center align-middle">
                         <div class="items-center align-middle pt-2">
-                            <DatePicker :date="taskList.time_limit" :taskStatus="taskList.id_status" :id_task="taskList.id"/>
+                            <DatePicker :date="taskList.time_limit" :dateend="taskList.time_limit_end" :taskStatus="taskList.id_status" :id_task="taskList.id"/>
                         </div>
                     </div>
 
@@ -262,7 +261,9 @@
 </template>
 
 <script>
-import Vue from 'vue';
+import Vue from 'vue'
+  import VueConfetti from 'vue-confetti'
+  
 import {EventBus} from '../../../../event-bus.js'
 import Popover from 'vue-js-popover'
 import Draggable from 'vuedraggable'
@@ -287,6 +288,8 @@ import DateRangePicker from 'vue2-daterange-picker'
 //you need to import the CSS manually
 import 'vue2-daterange-picker/dist/vue2-daterange-picker.css'
 Vue.use(Popover)
+Vue.use(VueConfetti)
+
 export default {
     components: {
         Draggable,
@@ -376,7 +379,8 @@ export default {
         EventBus.$on('reset', this.reset);
         EventBus.$on('closeslidepanel', this.closeSlide)
         EventBus.$on('updatemessage', this.fetchData)
-        
+        EventBus.$on('deletemessage', this.fetchData)
+        EventBus.$on('confeti', this.start)
         
         this.date = this.taskList.time_limit
         this.numberSubtask = this.taskList.subtasks.length
@@ -462,13 +466,13 @@ export default {
             }
         },
         setTime(){
-            console.log('entra aqui')
+            
             let hours = this.horas * 3600
-            console.log(hours)
+            
             let minuts = this.minutos * 60
-            console.log(minuts)
+            
             let totaltime = hours + minuts
-            console.log(totaltime)
+            
             EventBus.$emit('settime', totaltime, this.taskList.id)
         },
         select(status) {
@@ -639,7 +643,15 @@ export default {
                         return items.name
             }
             return false
-        },      
+        },
+        start() {
+        this.$confetti.start();
+        setTimeout(() => {  this.stop() }, 2000);
+      },
+ 
+      stop() {
+        this.$confetti.stop();
+      },  
     },
        
 }

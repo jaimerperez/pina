@@ -9,7 +9,7 @@
                                             <div class="text-center">
                                                 <div class="flex flex-col justify-center items-center">
                                                     <div class="w-16">
-                                                        <ImageMembers v-if="id" :ID="id"/>
+                                                        <ImageMembers v-if="id" :ID="id" :toprofile="true"/>
                                                     </div>
                                                     <div class="text-gray-600">
                                                         <p>{{usersName}}</p>

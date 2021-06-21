@@ -22,7 +22,7 @@ const router = new VueRouter({
   routes:[
     {
       path: '/',
-      name: 'Login',
+      name: 'Raiz',
       component: () => import('./views/Login.vue'),
     },
     {

@@ -34,7 +34,7 @@
                         
                             <!-- FECHAS SUBTASK -->
                             <div class="w-52 border border-white align-middle">
-                                <DatePicker :date="subtask.time_limit" :taskStatus="subtask.id_status" :id_task="subtask.id"/>
+                                <DatePicker :date="subtask.time_limit" :dateend="subtask.time_limit_end" :taskStatus="subtask.id_status" :id_task="subtask.id"/>
                             </div>
 
                             <!-- TIME SUBTASK -->
@@ -43,7 +43,10 @@
                                 <icon-base :iconColor="color" width="25" height="25" icon-name="Play" v-show="subtask.pause == 1"><Play/></icon-base>
                                 <icon-base :iconColor="color" width="25" height="25" icon-name="Pause" v-show="subtask.pause == 0"><Pause/></icon-base>
                                     {{tiempo}}
-                                </span>                 
+                                </span>
+                                <div v-popover.bottom="{name: 'tiempo' + subtask.id}">
+                                    <icon-base  class="cursor-pointer" width="14" height="14" viewBox="0 0 512 512" icon-name="add"><Add/></icon-base>
+                                </div>                
                             </div>
                             <!-- UPDATE SUBTASK -->
                             <div class="w-52 border border-white align-middle">
@@ -78,6 +81,16 @@
                                         {{searchForUsersName(user.id_user)}}
                                 </div>
                             </div>
+                        </div>
+                    </popover>
+                    <popover :name="'tiempo' + subtask.id" :width="150">
+                        <div class="items-center">
+                        Añadir sesión manualmente
+                        <div>
+                            <input  class="border border-dotted" type="number" min="00" max="99" v-model="horas">:
+                            <input  class="border border-dotted" type="number" min="00" max="59" v-model="minutos">      
+                        </div>
+                        <button class="rounded-lg bg-sideBar-primary text-white" @click="setTime()">ENVIAR</button>
                         </div>
                     </popover>
         </div>
@@ -132,7 +145,9 @@ export default {
             show: false,
             tiempo: null,
             addUser:false,
-            opentab: false
+            opentab: false,
+            horas: 0,
+            minutos: 0,
             }
     }, 
     
@@ -299,6 +314,16 @@ export default {
                         return items.name
             }
             return false
+        },
+        setTime(){
+           
+            let hours = this.horas * 3600
+            console.log(hours)
+            let minuts = this.minutos * 60
+            console.log(minuts)
+            let totaltime = hours + minuts
+            console.log(totaltime)
+            EventBus.$emit('settimesubtask', totaltime, this.subtask.id)
         },
         
     }
