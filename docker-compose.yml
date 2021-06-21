@@ -18,13 +18,13 @@ services:
             - node-service
         labels:
           traefik.enable: true
-          traefik.http.routers.pinha-http.rule: "Host(`pinha.hydra-net.es`)"
+          traefik.http.routers.pinha-http.rule: "Host(`xn--pia-8ma.org`) || Host(`pinha.hydra-net.es`)"
           traefik.http.routers.pinha-http.entrypoints: web
           traefik.http.routers.pinha-http.middlewares: pinha-https
           traefik.http.middlewares.pinha-https.redirectscheme.scheme: https
           traefik.http.middlewares.pinha-https.redirectscheme.permanent: true
           traefik.http.routers.pinha-https.entrypoints: websecure
-          traefik.http.routers.pinha-https.rule: "Host(`pinha.hydra-net.es`)"
+          traefik.http.routers.pinha-https.rule: "Host(`xn--pia-8ma.org`) || Host(`pinha.hydra-net.es`)"
           traefik.http.services.pinha-https.loadbalancer.server.port: 80
           traefik.http.routers.pinha-https.tls: true
           traefik.http.routers.pinha-https.tls.certresolver: cerbot
