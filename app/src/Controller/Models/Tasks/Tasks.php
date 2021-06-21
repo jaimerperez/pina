@@ -154,7 +154,7 @@ class Tasks extends AbstractController
     public function update_task_time_limit(String $id_task,Request $request): Response
     {
         $req = $request->request; //'POST
-        $parameters = ['time_limit','token'];
+        $parameters = ['time_limit','time_limit_end','token'];
         $validation = HelperController::validate_req($req,$parameters);
         if(! $validation[0])
             return $this->json($validation[1],'400');
@@ -164,6 +164,7 @@ class Tasks extends AbstractController
         try {
             $CRUD_tasks->update($id_task,array(
                 'time_limit' => $req->get('time_limit')
+                ,'time_limit_end' => $req->get('time_limit_end')
             ));
         } catch (\Throwable $th) {
             //throw $th;
@@ -187,6 +188,8 @@ class Tasks extends AbstractController
 
         $CRUD = new CRUDController('subtasks','id');
 
+        if( $req->get('name') == "" )
+            return $this->json('ERROR: No se ha podido crear la tarea','400');
 
         try {
             $CRUD->add( array(

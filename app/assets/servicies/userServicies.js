@@ -217,6 +217,18 @@ export function setDate(formData, id_task){
      return resp.json()
    })  
  }
+ export function setTime(formData, id_task){
+  return fetch("/api/tasks/" + id_task + "/time_working/add",{
+    method: "POST",
+    body: formData 
+    })
+   .then(resp =>  { 
+     if(!resp.ok){
+       throw new Error(resp.statusText);
+     }
+     return resp.json()
+   })  
+ }
         ///PUT //task
  export function putChangeTags(formData, id_task){
   return fetch("/api/tasks/" + id_task + "/tags" ,{
@@ -242,6 +254,7 @@ export function setDate(formData, id_task){
        return resp.json()
      })  
  }
+ 
 //POST //subtasks
 export function postEditNameSubtask(formData,id_subtask){
   return fetch("/api/subtasks/" + id_subtask + "/name",
@@ -325,8 +338,9 @@ export function postEditNameSubtask(formData,id_subtask){
        return resp.json()
      })  
    }
-   export function setTime(formData, id_task){
-    return fetch("/api/tasks/" + id_task + "/time_working/add",{
+  
+   export function setTimeSubtask(formData, id_task){
+    return fetch("/api/subtasks/" + id_task + "/time_working/add",{
       method: "POST",
       body: formData 
       })

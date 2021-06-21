@@ -120,6 +120,9 @@
             "config/packages/sensio_framework_extra.yaml"
         ]
     },
+    "spipu/html2pdf": {
+        "version": "v5.2.1"
+    },
     "symfony/asset": {
         "version": "v5.2.1"
     },
@@ -347,6 +350,9 @@
     },
     "symfony/yaml": {
         "version": "v5.2.1"
+    },
+    "tecnickcom/tcpdf": {
+        "version": "6.4.1"
     },
     "twig/extra-bundle": {
         "version": "v3.2.1"

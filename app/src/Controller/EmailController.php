@@ -46,4 +46,28 @@ class EmailController
         
         return true;
     }
+
+    public function send_email_with_pdf($address,$body,$subject,$attachment= null, $name = 'informe_tareas.pdf')
+    {
+        $mail = $this->mail;
+        $mail->addAddress($address);     // Add a recipient
+        
+        //Content
+        //$mail->isHTML(true);                                  // Set email format to HTML
+        $mail->Subject = $subject;
+        $mail->Body    = $body;
+        $mail->AltBody = 'Lo sentimos, utilice un cliente de correo que soporte HTML';
+
+        if( $attachment != null ){
+            $mail->AddStringAttachment( $attachment,$name.'.pdf', 'base64', 'application/pdf');
+        }
+        
+        try {
+            $mail->send();
+        } catch (Exception $e) {
+            return [false,'Mailer Error: ' . $mail->ErrorInfo];
+        }
+        
+        return true;
+    }
 }

@@ -6,7 +6,7 @@
             <div class="text-center">
                 <div class="flex flex-col justify-center items-center">
                     <div class="w-16">
-                        <ImageMembers  :ID="department.id"/>
+                        <ImageMembers  :ID="department.id" :toprofile="true"/>
                     </div>
                     <div class="text-gray-600">
                         <div>
@@ -25,7 +25,7 @@
                             <div class="text-center">
                                 <div class="flex flex-col justify-center items-center">
                                     <div class="w-16">
-                                       <ImageMembers v-if="team.id" :ID="team.id"/>
+                                       <ImageMembers v-if="team.id" :ID="team.id" :toprofile="true"/>
                                     </div>
                                     <div class="text-gray-600">
                                         <p>{{team.name}}</p>

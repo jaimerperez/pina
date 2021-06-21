@@ -96,7 +96,7 @@ class SubTasks extends AbstractController
     public function update_task_time_limit(String $id_subtask,Request $request): Response
     {
         $req = $request->request; //'POST
-        $parameters = ['time_limit','token'];
+        $parameters = ['time_limit','time_limit_end','token'];
         $validation = HelperController::validate_req($req,$parameters);
         if(! $validation[0])
             return $this->json($validation[1],'400');
@@ -106,6 +106,7 @@ class SubTasks extends AbstractController
         try {
             $CRUD_subtasks->update($id_subtask,array(
                 'time_limit' => $req->get('time_limit')
+                ,'time_limit_end' => $req->get('time_limit_end')
             ));
         } catch (\Throwable $th) {
             //throw $th;
@@ -159,6 +160,35 @@ class SubTasks extends AbstractController
 
         $messages = $CRUD->plenty( array('id_subtask' => $id_subtask));
         return $this->json($messages);
+    }
+
+    /**
+        * @Route("/{id_subtask}/time_working/add", methods={"POST"})
+     */
+    public function update_time_working_manual(String $id_subtask,Request $request): Response
+    {
+        $req = $request->request; //'POST
+        $parameters = ['token','time_working']; //segundos
+        $validation = HelperController::validate_req($req,$parameters);
+        if(! $validation[0])
+            return $this->json($validation[1],'400');
+
+        $CRUD_subtasks = new CRUDController('subtasks','id');
+
+        $subtask = $CRUD_subtasks->one($id_subtask);
+        //$time_working = intval($task['time_working']) + intval($req->get('time_working'));
+        $time_working = intval($req->get('time_working'));
+
+        try {
+            $CRUD_subtasks->update( $id_subtask ,array(
+                'time_working' => $time_working
+            ));
+        } catch (\Throwable $th) {
+            //throw $th;
+            return $this->json('ERROR: No se ha podido eliminar el mensaje','400');
+        }
+
+        return $this->json('Se han añadido '. $req->get('time_working') . 'segundos a la tarea');
     }
 
     /**

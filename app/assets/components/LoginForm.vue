@@ -6,10 +6,10 @@
       <label for="email" class="w-2/6 text-right mx-3 lg:text-3xl pr-4">Email </label>
       <input type="email" id="email" name="email" v-model="input.email" class="w-2/6 lg:w-4/12 lg:h-full bg-gray-200 border border-transparent focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:border-transparent rounded-lg" >
     </div>
-    <div class="flex py-2">
+    <form class="flex py-2">
       <label for="password" class=" w-2/6 text-right mx-3 lg:text-3xl pr-4" > Contraseña </label>
       <input type="password" id="password" name="password" v-model="input.password" class="w-2/6 lg:w-4/12 lg:h-full bg-gray-200 border border-transparent focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:border-transparent rounded-lg">
-    </div>
+    </form>
     <div class="flex flex-col py-2 justify-center items-center"><router-link class=" italic pr-96 text-lg font-medium text-sideBar-primary" to='/passwordreset'>¿ Olvidaste la contraseña ?</router-link></div>
     <div class="flex  justify-center items-center mt-10">
       <button type="button" v-on:click="login" class="w-4/12 lg:w-1/12 lg:h-5/6 my-3 inline-flex items-center justify-center bg-sideBar-primary hover:bg-block-working-primary lg:text-xl text-white rounded-lg">Entrar </button>

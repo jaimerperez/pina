@@ -1,5 +1,5 @@
 <template>
-<div class="board overflow-x-auto" >
+<div class="board" style="width:3000px">
     <div class="w-full">
             <div class="flex" style="width:3000px">
                 <div class="flex flex-row justify-around">
@@ -29,7 +29,7 @@
                         <div class="w-52 text-black text-center font-fontColor-primary font-semibold">Autorización</div>
                         <div class="w-52 text-black text-center font-fontColor-primary font-semibold">Haciéndose</div>
                         <div class="w-52 text-black text-center font-fontColor-primary font-semibold">Entregado</div>
-                        <div class="w-80 text-black text-center font-fontColor-primary font-semibold">Plazo</div>
+                        <div class="w-80 text-black text-center font-fontColor-primary font-semibold" @click="sort">Plazo</div>
                         <div class="w-32 text-black text-center font-fontColor-primary font-semibold">Progreso</div>
                         <div class="w-32 text-black text-center font-fontColor-primary font-semibold">Tiempos</div>
                         <div class="w-80 text-black text-center font-fontColor-primary font-semibold">Última actualización</div>
@@ -58,7 +58,7 @@
 
             </draggable>  
         </div>
-        <div>
+        <div style="width:2850px">
             <input contenteditable="true" :id="taskStatus" :placeholder="placeholder" v-model="content" class="border text-fontColor-primary w-full" v-on:keyup.enter="onUpdate">
             <button @click="onUpdate">AGREGAR</button>
         </div> 
@@ -146,7 +146,8 @@ export default {
             tiempo: null,
             idchange: '',
             statusupdate: '',
-            openMenu: false
+            openMenu: false,
+            sortDirection: ''
             
             }
     }, 
@@ -185,6 +186,12 @@ export default {
         onEnd: function(evt) {
             EventBus.$emit('changeStatus', evt.to.id, evt.item.id)    
         },
+        sort(){
+            if(this.sortDirection == 'asc')
+               this.sortDirection = 'desc'
+            else
+                this.sortDirection = 'asc'
+        },
 
         managerFilter(id_user){
             if(id_user != 0){
@@ -205,6 +212,7 @@ export default {
     },
   computed:{
       filterTask: function(){
+          if(this.filtro)
           return this.taskList.filter((task) => {
             if(this.filtro)
                 for(let items in task.users){
@@ -215,9 +223,24 @@ export default {
                 }
             else
               return task.name.match(this.search)
-          })
+          });
+          else
+          return this.taskList.sort((p1,p2) => {
+                    let modifier = 1;
+                    if(this.sortDirection === 'desc') 
+                        modifier = -1;
+                    else if (this.sortDirection === 'asc')
+                        modifier = 1;
+                    else
+                        modifier = 0;
+                    if(p1.time_limit_end < p2.time_limit_end) 
+                        return -1 * modifier; 
+                    if(p1.time_limit_end > p2.time_limit_end) 
+                        return 1 * modifier;
+                    return 0;
+                });
       },
-
+      
        
   }
 }

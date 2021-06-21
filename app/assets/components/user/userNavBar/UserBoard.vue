@@ -1,5 +1,5 @@
 <template>
-  <div class="w-full h-full">
+  <div class="w-full h-full ">
     
     <div class="h-16 flex justify-between items-center">
       <div class="text-4xl capitalize ml-20">
@@ -28,13 +28,13 @@
       </div> 
     </div>
       <div class="flex justify-center mb-10">
-        <div class="spacer bg-fontColor-primary justify-self-center self-center w-11/12 h-0.5 mt-1"></div>
+        <div class="spacer bg-fontColor-primary justify-self-center self-center h-0.5 mt-1 w-11/12"></div>
       </div>
       
       
       
       <!-- SECCIONES DE ESTADOS  -->
-    <div class="text-block-working-primary bg-block-working-secondary mx-12 my-16 xl:max-w-2xl" style="max-width:1650px"  @mouseover="typeStatus(1)">
+    <div class="text-block-working-primary bg-block-working-secondary mx-12 my-16" style="width:2850px" @mouseover="typeStatus(1)">
       <TaskStatus
       id="board-1" 
       v-if="boardTeamID" 
@@ -45,7 +45,7 @@
       class=" col-3" status="Trabajando" taskStatus="1" :ht="'#1DA0B5'" :color="'bg-block-working-secondary'" :placeholder="'+ Añadir nueva tarea'" 
       />
     </div>
-    <div class="text-block-pending-primary bg-block-pending-secondary mx-12 my-16" style="max-width:1650px" @mouseover="typeStatus(3)"> 
+    <div class="text-block-pending-primary bg-block-pending-secondary mx-12 my-16" style="width:2850px" @mouseover="typeStatus(3)"> 
       <TaskStatus
       id="board-2"
       v-if="boardTeamID" 
@@ -56,7 +56,7 @@
       class="col-3" status="Pendientes" taskStatus="3" :ht="'#DE650F'" :color="'bg-block-pending-secondary'" :placeholder="'+ Añadir nueva tarea'"
       />
     </div>
-    <div class="text-block-complete-primary bg-block-complete-secondary mx-12 my-16" style="max-width:1650px" @mouseover="typeStatus(4)">
+    <div class="text-block-complete-primary bg-block-complete-secondary mx-12 my-16" style="width:2850px" @mouseover="typeStatus(4)">
       <TaskStatus
         id="board-3"
         v-if="boardTeamID" 
@@ -116,7 +116,7 @@ import ImageMembers from './Welcome/tabs/ImageMembers'
 import {getAllUsers, getUserToken, createUserInTeam, getAllTaskFromTeam, postTaskToTeam, 
 putChangeTags, deleteTask,putChangeStatusTask, setDate, ChangeSubTags, postSubTask, 
 postTime, postFilesTask, deleteFiles, postAddUserToTask, deleteManager, getUserTeams, createUser,
-postTimeSubtask, deleteSubTask, postStoreTask, postAddUserToSubTask, postMessage, postSubtaskMessage, setTime} from '../../../servicies/userServicies'
+postTimeSubtask, deleteSubTask, postStoreTask, postAddUserToSubTask, postMessage, postSubtaskMessage, setTime, setTimeSubtask} from '../../../servicies/userServicies'
 Vue.use(Popover)
 
 export default {
@@ -338,10 +338,11 @@ export default {
                 this.fetchData()
               });
         },
-        dateLimit(id_task, dateSelected){
+        dateLimit(id_task, dateSelected, dateend){
           const formData = new FormData()
           const token = localStorage.getItem('validation_token');
           formData.append('time_limit', dateSelected);
+          formData.append('time_limit_end', dateend);
           formData.append('token', token);
           
           let promise = new Promise((resolve, reject) => {
@@ -441,6 +442,20 @@ export default {
                 this.fetchData()
               });
        },
+        setTimeSubtask(totaltime, id_subtask){
+          const token = localStorage.getItem('validation_token');
+          const formData = new FormData()
+          formData.append('time_working', totaltime);
+          formData.append('token', token);
+          
+            let promise = new Promise((resolve, reject) => {
+                resolve(setTimeSubtask(formData, id_subtask));
+              });
+              promise.then((response) => {
+                console.log(response);
+                this.fetchData()
+              });
+        },
        typeStatus(type){
         
          EventBus.$emit('type', type)
@@ -553,6 +568,7 @@ export default {
     EventBus.$on('submitmessagesubtask', this.submitMessageSubtask)
     EventBus.$on('editname', this.fetchData)
     EventBus.$on('settime', this.setTime)
+    EventBus.$on('settimesubtask', this.setTimeSubtask)
   },
     watch: {
       '$route': 'fetchData',
