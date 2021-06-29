@@ -1,10 +1,10 @@
 <template>
 <div class="flex flex-row">
     <div v-if="exist" class="profile-image" >
-        <img :src="require(`../../../../../media/users/${userID}.png`)" class="w-10 h-10 opacity-1 rounded-full">
+        <img :src="`/assets/images/users/${userID}`" class="w-10 h-10 opacity-1 rounded-full">
     </div>
-    <div v-else class="w-10 h-10">
-        <img :src="require(`../../../../../media/users/avatar-loading.png`)" title="mammals">
+    <div v-else >
+        <img class="w-10 h-10" :src="require(`../../../../../media/users/avatar-loading.png`)" title="mammals">
     </div>
    <span class="text-xl">{{userName}}{{userSurname}}</span>
 </div>

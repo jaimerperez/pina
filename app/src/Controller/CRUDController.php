@@ -133,6 +133,14 @@ class CRUDController
         $query_1 .= ")"; $query_2 .= ")";    
 
         $statement = $this->db->executeQuery( "INSERT INTO " . $this->table . $query_1 . " VALUES " . $query_2);
+
+        try {
+            $id = $this->db->lastInsertId();
+	        return $id;
+        } catch (\Throwable $th) {
+            //throw $th;
+        }
+
 	    return $statement;
     }
 

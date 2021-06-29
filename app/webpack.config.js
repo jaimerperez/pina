@@ -14,7 +14,7 @@ Encore
     .setPublicPath('/build')
   
     .addEntry('app', './assets/app.js')
-    .enableVueLoader()
+    .enableVueLoader(() => {}, { runtimeCompilerBuild: false })
     .addStyleEntry('tailwind', './assets/styles/tailwind.css')
    
     .enablePostCssLoader()

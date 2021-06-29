@@ -8,7 +8,7 @@
     </div>
     <div class="department-content w-full h-full flex flex-wrap flex-row justify-center items-center">
       <div class="flex h-2/5 w-2/5 justify-center items-center align-middle" v-for="index in teamsDepartment" :key="index.id" :value="index.id">
-        <ChangeImg :ID="index.id"/>
+        <img class="w-24 h-24" :src="`/assets/images/departments/${index.id}`">
         <router-link :to="{ name: 'welcometeams', params: {departmentName: index.name, departmentID: index.id } }"> <p class="text-center"> {{index.name}}</p> </router-link>
       </div>
     </div>
@@ -17,9 +17,8 @@
 
 <script>
 import { getAllTeamsFromDepartment, getUserDepartments, getUserToken, postDepartment} from '../../../servicies/userServicies';
-import ChangeImg from './ChangeImg.vue';
 export default {
-  components: { ChangeImg },
+  components: {  },
   data(){
     return {
       userDepartmentInfo: [],
@@ -27,17 +26,9 @@ export default {
       userInfo: [],
       name: "",
       departmentname: "",
-      selectedFile: null,
-      exist: false
     }
   },
   methods:{
-    show () {
-        this.$modal.show('my-first-modal');
-    },
-     hide () {
-        this.$modal.hide('my-first-modal');
-    },
     createDepartment(){
         const token = localStorage.getItem('validation_token');
         const formData = new FormData()

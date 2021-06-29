@@ -1,18 +1,10 @@
 <template>
     <div class="flex flex-row mx-4 justify-center">
-       <!-- <datepicker placeholder="Seleccionar fecha" 
-            @mouseover="info" 
-            :monday-first="true" 
-            v-model="dateLimit" 
-            @input="datePicked" 
-            :language="es"
-            :input-class="[taskStatus == 1 ? 'bg-block-working-primary' : taskStatus == 3 ? 'bg-block-pending-primary' : 'bg-block-complete-primary', 'rounded-xl text-white text-center placeholder-white placeholder-opacity-50 cursor-pointer']">
-       </datepicker> -->
        <div 
             @click="focusDatepicker"
             :class="[taskStatus == 1 ? 'bg-block-working-primary' : taskStatus == 3 ? 'bg-block-pending-primary' : 'bg-block-complete-primary', 'rounded-xl p-2 text-white text-center placeholder-white placeholder-opacity-50 cursor-pointer']">
            <div v-if="fechaInicioFormateada == fechaFinalFormateada">
-               {{fechaInicioFormateada}}
+               {{fechaFinalFormateada}}
            </div>
            <div v-else>
                {{fechaInicioFormateada}} - {{fechaFinalFormateada}}
@@ -31,9 +23,7 @@
             @date-applied="datepicked"
             v-popover.top="{name: 'Plazo' + id_task}"
             :is-monday-first="true"/>
-      
-       
-        
+         
         
         <popover event="hover" :name="'Plazo'+ id_task" :width="150">
             <div v-if="outDate">Venció hace {{this.days}} días</div>
@@ -59,25 +49,20 @@ export default {
 
   },
   props:{
-      date: '',
-      dateend: '',
+      date: String,
+      dateend: String,
       taskStatus: '',
       id_task: ''
   },
   data(){
     return {
-        checkin: '',
-        dateLimit: this.date,
         dateLimitEnd: this.dateend,
         color: ''  ,
-        dateSelected: '',
         datestart:'',
         datefinal:'',
         today: '',
         finalDate: '',
         days: '',
-        fechaInicioFormateada: '',
-        fechaFinalFormateada: '',
         outDate: false,
         dates1: [new Date(this.date), new Date (this.dateend)],
         sameDateformat: {
@@ -99,12 +84,10 @@ export default {
   methods:{
     
     focusDatepicker(){
-        console.log( document.getElementById("fecha"+this.id_task))
+        
           document.getElementById("fecha"+this.id_task).click()
 },
     datepicked(date1, date2){
-        console.log(date1)
-        console.log(date2)
         let daystart = date1.getDate()
         let monthstart = date1.getMonth()+1
         let yearstart = date1.getFullYear()
@@ -115,9 +98,18 @@ export default {
         let yearend = date2.getFullYear()
         this.datefinal = yearend + '-' + monthend + '-' + dayend
         EventBus.$emit('datelimit', this.id_task, this.datestart, this.datefinal)
+        
     },
-      info(){
+      fetchData(){
+         
+        let fecha = new Date(this.dateend)
+        this.today=new Date()
+        this.finalDate = this.today - fecha
+        if(this.finalDate / (60*60*24*1000) > 0)
+            this.outDate = true
 
+        this.days = Math.abs(this.finalDate / (60*60*24*1000)).toFixed()
+        
       },
   },
   mounted(){
@@ -130,25 +122,28 @@ export default {
           else{
               this.color = 'bg-block-completed-primary'
           }
+        EventBus.$on('changedate', this.fetchData)
+        this.fetchData()
         
-        let fecha = new Date(this.dateend)
-        this.today=new Date()
-        this.finalDate = this.today - fecha
-        if(this.finalDate / (60*60*24*1000) > 0)
-            this.outDate = true
-
-        this.days = Math.abs(this.finalDate / (60*60*24*1000)).toFixed()
-       
+  },
+  computed:{
+      fechaInicioFormateada(){
         let fechaInicio = new Date(this.date)
-        let fechafinal = new Date(this.dateend)
-
-       let mesformateadoInicio = fechaInicio.getMonth()
+        let mesformateadoInicio = fechaInicio.getMonth()
         let diaformateadoInicio = fechaInicio.getDate()
-       this.fechaInicioFormateada = diaformateadoInicio + '-' + this.monthNames[mesformateadoInicio]
-        
+       return diaformateadoInicio + '-' + this.monthNames[mesformateadoInicio]
+      },
+      fechaFinalFormateada(){
+        let fechafinal = new Date(this.dateend)
         let mesformateadoFinal = fechafinal.getMonth()
-       let diaformateadoFinal = fechafinal.getDate()
-        this.fechaFinalFormateada = diaformateadoFinal + '-' + this.monthNames[mesformateadoFinal]
-  }
+        let diaformateadoFinal = fechafinal.getDate()
+        return diaformateadoFinal + '-' + this.monthNames[mesformateadoFinal]
+      }
+  },
+   watch: {
+    '$route': 'fetchData',
+   
+  },
 }
 </script>
+

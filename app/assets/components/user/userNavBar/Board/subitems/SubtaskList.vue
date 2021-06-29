@@ -18,7 +18,9 @@
                 <icon-base class="cursor-pointer" width="25" height="25" viewBox="0 0 512 512" icon-name="add"><Add/></icon-base>
             </button>
             <div v-for="items in subtask.users" :key="items.id" class="flex flex-row" @mouseover="deletemanager = true" @mouseleave="deletemanager = false"> 
-                <ImageMembers class="w-8 h-8 m-2" :ID="items.id_user" :toprofile="true"/>
+                <router-link :to="{ name: 'profileUser', params: {idUser: items.id_user } }">
+                    <img class="rounded-full w-8 h-8 m-2"  :src="`/assets/images/users/${items.id_user}`">
+                </router-link>
                 <button v-show="deletemanager" class="rounded-full w-5 h-5 bg-white text-black self-center" v-on:click="deleteManager(items.id_user, subtask.id)">X</button>
             </div>       
         </div>
@@ -51,7 +53,9 @@
                             <!-- UPDATE SUBTASK -->
                             <div class="w-52 border border-white align-middle">
                                 <span class="flex justify-center pt-2">
-                                    <ImageMembers class="w-5 h-5 ml-2 pt-2" :ID="subtask.id_user_update" :toprofile="true"/>
+                                    <router-link :to="{ name: 'profileUser', params: {idUser: subtask.id_user_update } }">
+                                        <img class="w-5 h-5 ml-2 pt-2 rounded-full"  :src="`/assets/images/users/${subtask.id_user_update}`">
+                                    </router-link>
                                    <span class="relative inline-block px-2"> {{subtask.updated_at}}</span>
                                 </span>
                             </div>
@@ -107,7 +111,6 @@ import Message from '../../../../icons/Message.vue'
 import Pause from '../../../../icons/Pause.vue'
 import DatePicker from '../subitems/DatePicker'
 import Popper from '../popover/Popper'
-import ImageMembers from '../../Welcome/tabs/ImageMembers' 
 import {getAllSubTags, getUserTeams, getAllUsers,  getSubtaskMessage, postEditNameSubtask } from '../../../../../servicies/userServicies'
 import Tag from '../popover/Tag'
 import SlidePanel from './SlidePanel.vue'
@@ -122,7 +125,6 @@ export default {
         Tag,
         Trash,
         Add,
-        ImageMembers,
         Message, 
         SlidePanel,
         Edit
@@ -135,8 +137,6 @@ export default {
     },
     data () {
         return {
-            
-            active: true,
             subtagsList: [],
             responsable: [],
             usuarios: [],

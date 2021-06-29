@@ -2,20 +2,20 @@
   "entrypoints": {
     "app": {
       "js": [
-        "/build/runtime.71fd2eb2.js",
-        "/build/399.7022bb4e.js",
-        "/build/app.e858bbca.js"
+        "/build/runtime.a04f94ea.js",
+        "/build/540.fee36dbe.js",
+        "/build/app.785153e3.js"
       ],
       "css": [
-        "/build/app.3215426a.css"
+        "/build/540.608c1230.css"
       ]
     },
     "tailwind": {
       "js": [
-        "/build/runtime.71fd2eb2.js"
+        "/build/runtime.a04f94ea.js"
       ],
       "css": [
-        "/build/tailwind.05274e2c.css"
+        "/build/tailwind.ab129e55.css"
       ]
     }
   }

@@ -162,15 +162,22 @@ class APIController extends AbstractController
         $CRUD_teams = new CRUDController('teams','id');
         $team = $CRUD_teams->one($id_team);
 
-        $dia = date("d");
-        $mes = date("n");
         $mesesN=array(1=>"Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre");
         $ano = date("Y");
-        $today = "$dia". " $mesesN[$mes] $ano";
 
+        $dia = date("j");
+        $mes = date("n");
+        $mes_str = $mesesN[$mes];
+
+        $date_start = time() - (5 * 24 * 60 * 60);
+        $dia_start  = date("j", $date_start);
+        $mes_start  = date("n", $date_start);
+        $mes_start_str = $mesesN[$mes_start];
+        
         $email = new EmailController();
-        $address = 'cristian.perez.hernandez.96@gmail.com';
-        $subject = 'Informe tareas ' . $team['name'] . '('. $today .')';
+        $address = $id_team == 4 ? 'sandra.soutelo@postal3.es' : 'cristian.perez@postal3.es';
+        $subject = 'INFORME SEMANAL ' . strtoupper($team['name']);
+        $periodo = "$dia_start de $mes_start_str al $dia de $mes_str";
         $body = "<h1>$subject</h1>";
         
         //PDF
@@ -181,13 +188,14 @@ class APIController extends AbstractController
         $html2pdf->writeHTML($content);
 
         //PDF
-        
-        $attachment = $html2pdf->output($subject, 'S');
-        $r = $email->send_email_with_pdf($address,$body,$subject,$attachment, $subject);
+        $pdf_name = "$subject $dia"."_$mes_str"."_$ano";
+        $attachment = $html2pdf->output($pdf_name, 'S');
+        $r = $email->send_email_with_pdf($address,$body,$subject,$attachment, $pdf_name);
         if( ! $r )
             return $this->json('ERROR:','400'); 
         
         return $this->json('ok','200');
+        
     }
 
     /**
@@ -195,28 +203,7 @@ class APIController extends AbstractController
      */
     public function test_route(Request $request): Response
     {
-        $html2pdf->writeHTML('<h1>Informe de tareas</h1>');
-        
-
-        
-        $email = new EmailController();
-        $address = 'cristian.perez.hernandez.96@gmail.com';
-        $subject = 'probar';
-
-        $body =  '<h1>Informe de tareas</h1>';
-        $attachment = $html2pdf->output('informe_tareas', 'S');
-        /*
-        $body =  $attachment;
-        $r = $email->send_email($address,$body,$subject);
-         */ 
-        $r = $email->send_email_with_pdf($address,$body,$subject,$attachment);
-
-
-        if( ! $r )
-            return $this->json('ERROR:','400'); 
-          
-
-
+    
         return $this->json('ok','200');
     }
     

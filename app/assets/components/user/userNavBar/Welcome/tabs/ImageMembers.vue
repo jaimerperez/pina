@@ -3,19 +3,19 @@
     <div v-if="toprofile">
         <router-link :to="{ name: 'profileUser', params: {idUser: id_user } }">
             <div v-if="checkImg()" class=" rounded-full shadow-md group cursor-pointer" :title="name">
-                <img class="rounded-full" :src="`/assets/images/users/${this.ID}`"> 
+                <img class="rounded-full w-8 h-8" :src="`/assets/images/users/${this.ID}`"> 
             </div>
             <div v-else class="rounded-full shadow-md group cursor-pointer" :title="name">
-                <img :src="require(`../../../../../media/users/avatar-loading.png`)">
+                <img class="rounded-full w-8 h-8" :src="require(`../../../../../media/users/avatar-loading.png`)">
             </div>
         </router-link>
     </div>
     <div v-else>
         <div v-if="checkImg()" class=" rounded-full shadow-md group cursor-pointer" :title="name">
-                <img class="rounded-full" :src="`/assets/images/users/${this.ID}`"> 
+                <img class="rounded-full w-8 h-8" :src="`/assets/images/users/${this.ID}`"> 
             </div>
             <div v-else class="rounded-full shadow-md group cursor-pointer" :title="name">
-                <img :src="require(`../../../../../media/users/avatar-loading.png`)">
+                <img class="rounded-full w-8 h-8" :src="require(`../../../../../media/users/avatar-loading.png`)">
             </div>
     </div>
 

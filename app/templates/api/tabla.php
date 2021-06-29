@@ -54,6 +54,7 @@ td{
 <page>
     <br><br><br><br>
     <h1><?=$subject;?></h1>
+    <h3><?=$periodo;?></h3>
 </page>
 
 <?php
@@ -78,17 +79,32 @@ td{
             echo "<h2 style='color:Blue;'>".$user['name']."</h2>";
             echo "<table>";
                 //echo "<thead><tr><th>&nbsp;&nbsp;&nbsp;&nbsp;</th><th>&nbsp;&nbsp;Prioridad&nbsp;&nbsp;</th><th>&nbsp;&nbsp;Autorización&nbsp;&nbsp;</th><th>&nbsp;&nbsp;Haciéndose&nbsp;&nbsp;</th><th>&nbsp;&nbsp;Entregado&nbsp;&nbsp;</th><th>&nbsp;&nbsp;Plazo&nbsp;&nbsp;</th><th>&nbsp;&nbsp;Tiempo&nbsp;&nbsp;</th><th>&nbsp;&nbsp;ID&nbsp;&nbsp;</th></tr></thead>";
-                echo "<thead><tr><th>&nbsp;&nbsp;&nbsp;&nbsp;</th><th>&nbsp;&nbsp;Prioridad&nbsp;&nbsp;</th><th>&nbsp;&nbsp;Autorización&nbsp;&nbsp;</th><th>&nbsp;&nbsp;Haciéndose&nbsp;&nbsp;</th><th>&nbsp;&nbsp;Entregado&nbsp;&nbsp;</th><th>&nbsp;&nbsp;Tiempo&nbsp;&nbsp;</th><th>&nbsp;&nbsp;ID&nbsp;&nbsp;</th></tr></thead>";
+                echo "<thead><tr><th>&nbsp;&nbsp;&nbsp;&nbsp;</th><th>&nbsp;&nbsp;Prioridad&nbsp;&nbsp;</th><th>&nbsp;&nbsp;Autorización&nbsp;&nbsp;</th><th>&nbsp;&nbsp;Haciéndose&nbsp;&nbsp;</th><th>&nbsp;&nbsp;Entregado&nbsp;&nbsp;</th><th>&nbsp;&nbsp;Plazo&nbsp;&nbsp;</th><th>&nbsp;&nbsp;Tiempo&nbsp;&nbsp;</th><th>&nbsp;&nbsp;ID&nbsp;&nbsp;</th></tr></thead>";
                 $user_tasks = $CRUD_users_tasks->plenty( array( 'id_user' => $id_user ) );
                 foreach ($user_tasks as $u_task) {
                     $id_task = $u_task['id_task'];
                     $index_task = array_search($id_task,array_column($tasks, 'id'));
-                    if( $index_task != false ){
+                    if( $index_task !== false ){
                         echo "<tr>";
 
-                            $tname =  strlen($tasks[$index_task]['name']) > 50 ? substr($tasks[$index_task]['name'],0,47) . "..." :  $tasks[$index_task]['name'] ;
+                            $t_name = ucfirst(strtolower($tasks[$index_task]['name']));
+                            if( strlen($t_name) > 35 ){
+                                $words = explode(" ", $t_name);
+                                $line = 0;
+                                $t_name = "";
+                                foreach ($words as $i => $word) {
+                                    $len = strlen($word);
+                                    if( ($line + $len) > 35 ){
+                                        $t_name .=  "<br>";
+                                        $line = 0;
+                                    }
+                                    $t_name .= "$word ";
+                                    $line += $len +1;
+                                }
+                            }
+                            //$tname =  strlen($tasks[$index_task]['name']) > 30 ? substr($tasks[$index_task]['name'],0,30) . "<br>" .  substr($tasks[$index_task]['name'],30,30) :  $tasks[$index_task]['name'] ;
 
-                            echo "<td style='text-align:left;color: black;'>". $tname ."</td>";
+                            echo "<td style='text-align:left;color: black;'>". $t_name ."</td>";
 
                             $tasks_tags = $CRUD_tasks_tags->plenty( array('id_task' => $tasks[$index_task]['id'] ));
                             $tags = [];
@@ -111,6 +127,13 @@ td{
                                 }
                                 
                             }
+
+                            $p_start = $tasks[$index_task]['time_limit'];
+                            $p_start = substr($p_start,8,2) . '/' . substr($p_start,5,2);
+                            $p_end = $tasks[$index_task]['time_limit_end'];
+                            $p_end = substr($p_end,8,2) . '/' . substr($p_end,5,2);
+                            $plazo = ($p_start != $p_end) ? $p_start . " - " . $p_end :  $p_start;
+                            echo "<td style='color: black;'>$plazo</td>";
 
                             $time_working = $tasks[$index_task]['time_working'];
                             $hours = intdiv($time_working, 3600);

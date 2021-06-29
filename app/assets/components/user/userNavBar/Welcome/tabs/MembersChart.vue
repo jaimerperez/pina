@@ -9,7 +9,9 @@
                                             <div class="text-center">
                                                 <div class="flex flex-col justify-center items-center">
                                                     <div class="w-16">
-                                                        <ImageMembers v-if="id" :ID="id" :toprofile="true"/>
+                                                        <router-link :to="{ name: 'profileUser', params: {idUser: id} }">
+                                                            <img class="h-10 w-10 rounded mx-3 mt-2"  :src="`/assets/images/users/${id}`">
+                                                        </router-link>
                                                     </div>
                                                     <div class="text-gray-600">
                                                         <p>{{usersName}}</p>
@@ -21,14 +23,12 @@
 </template>
 
 <script>
-import ImageMembers from './ImageMembers.vue'
 export default {
     props:{
         usersName: String,
         id: String
     },
-    components:{
-        ImageMembers    }
+    components:{}   
 }
 </script>
 

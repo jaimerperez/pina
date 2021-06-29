@@ -240,19 +240,17 @@ class Teams extends AbstractController
             return $this->json('ERROR: No se ha podido crear la tarea','400');
 
         try {
-            $CRUD->add( array(
+            $id_task = $CRUD->add( array(
                     'name' => $req->get('name')
                     //,'id_user ' => $team['id_user']
                     ,'id_status' => $req->get('status')
                     ,'id_team' => $id_team
                 ));
-            
-            $task = $CRUD->read_ordered( 'id','DESC',1)[0];
 
             $tasks_tags_CRUD = new CRUDController('tasks_tags','id');
             for ($i=1; $i < 5 ; $i++) { 
                 $tasks_tags_CRUD->add( array(
-                    'id_task' => $task['id']
+                    'id_task' => $id_task 
                     ,'id_tag ' => $i
                 ));
             }
@@ -263,7 +261,7 @@ class Teams extends AbstractController
             $team = $CRUD_teams->one($id_team);
             $CRUD_users_tasks->add( array(
                 'id_user' => $team['id_user']
-                ,'id_task' => $task['id']
+                ,'id_task' => $id_task 
             ));
 
 

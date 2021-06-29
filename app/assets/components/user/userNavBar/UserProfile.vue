@@ -65,7 +65,7 @@
                       <input class="border m-1" type="password" placeholder="Current password" @change="checkpassword" v-model="currentPassword">
                       <input class="border m-1" type="password" placeholder="New password" v-model="newPassword">
                       <input class="border m-1" type="password" placeholder="Repeat new password" @change="repeatedPasswordReceived" v-model="newRepeatedPassword">
-                      <button class="bg-sideBar-primary text-white border rounded-full py-1 px-2" v-on:click="changePassword">Cambiar contraseña</button>
+                      <button class="bg-sideBar-primary text-white border rounded-full py-1 px-2" @click="changePassword">Cambiar contraseña</button>
                     </div>
               </div>
               <div class="p-2">
@@ -202,10 +202,6 @@ export default {
         formData.append('token', token);
         changeProfile(formData, this.userInfo.id)
       },
-      forceRerender(){
-        this.random = Math.random();
-      }
-      
   }
 }
 </script>

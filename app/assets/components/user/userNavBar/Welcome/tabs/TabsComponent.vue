@@ -22,7 +22,9 @@
                       <Organization :id_team="departmentID"/>    
             </div>
             <div v-bind:class="{'hidden': openTab !== 2, 'block': openTab === 2}">
-              <ImageMembers class="w-10 h-10 opacity-1 rounded-full" :ID="organization.team.id"/> 
+              <router-link :to="{ name: 'profileUser', params: {idUser: organization.team.id } }">
+                <img class="h-10 w-10 rounded mx-3 mt-2"  :src="`/assets/images/users/${organization.team.id}`">
+              </router-link>
               <span>{{organization.team.name}}</span>
               <div v-for="items in organization.users" :key="items.id">
                    <MembersList  
@@ -45,7 +47,6 @@ import Organization from './Organization.vue'
 import TabComponent from './TabComponent'
 import TeamsList from './TeamsList.vue'
 import {getAllUsersFromDepartment, getAllUsers, getAllTeamsFromDepartment, getOrganization, postUserToDepartment} from '../../../../../servicies/userServicies'
-import ImageMembers from './ImageMembers'
 export default {
   name: "blue-tabs",
   components:{
@@ -53,7 +54,6 @@ export default {
     MembersList,
     TeamsList,
     Organization,
-    ImageMembers
   },
   props: {
     departmentID: String,

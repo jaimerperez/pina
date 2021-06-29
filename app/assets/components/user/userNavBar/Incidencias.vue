@@ -8,7 +8,7 @@
     </div>
     <div class="department-content w-full h-full flex flex-wrap flex-row justify-center items-center">
       <div class="flex h-2/5 w-2/5 justify-center items-center align-middle" v-for="index in teamsDepartment" :key="index.id" :value="index.id">
-        <ChangeImg :ID="index.id"/>
+        <img class="w-24 h-24" :src="`/assets/images/departments/${index.id}`">
         <div>
            <p class="text-center"> {{index.name}}</p> 
           <div class="text-lg"><InformationText :id="index.id" :teamName="index.name" :deparmentName="departmentName"/></div>
@@ -21,23 +21,19 @@
 
 <script>
 import {  postDepartment, getAllTeamsFromDepartment } from '../../../servicies/userServicies';
-import ChangeImg from './ChangeImg.vue';
 import InformationText from './Department/InformationText.vue';
 export default {
-  components: { ChangeImg, InformationText },
+  components: { InformationText },
   props:{
     departmentID: String,
     departmentName: String, 
   },
   data(){
     return {
-      userDepartmentInfo: [],
+
        teamsDepartment: [],
-      userInfo: [],
       name: "",
       departmentname: "",
-      selectedFile: null,
-      exist: false,
     }
   },
   methods:{

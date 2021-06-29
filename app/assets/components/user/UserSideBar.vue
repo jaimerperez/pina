@@ -2,7 +2,7 @@
   <div class="sideNavBar-container h-full flex flex-col flex-wrap items-center bg-sideBar-primary md:w-full">
     <div class="h-screen flex flex-col flex-wrap items-center bg-sideBar-primary md:w-full">
       <div class="flex">
-        <router-link to="/user/department"><img class="my-10 w-10 h-10 sm:w-24 sm:h-24 " :src="require('../../media/LOGO/LOGO_Piña-02.png')"></router-link>  
+        <router-link to="/user/department"><img class="my-10 w-10 h-10 sm:w-24 sm:h-24" src="/assets/images/build/LOGO_Piña-02.png"></router-link>  
       </div>
       <div class="block sm:hidden">
         <button v-on:click="toggle" class="flex items-center px-3 py-2 border rounded text-teal-lighter border-teal-light hover:text-white hover:border-white">
@@ -45,10 +45,10 @@
             <div v-if="userInfo.id" class="w-12 h-12 place-self-center cursor-pointer m-2">
               <router-link :to="{ name: 'profileUser', params: {idUser: userInfo.id }}">  
               <div v-if="exist">
-                <img :src="`/assets/images/users/${userInfo.id}`" @error="require(`../../media/users/avatar-loading.png`)" class="rounded-full">
+                <img class="w-12 h-12 rounded-full " :src="`/assets/images/users/${userInfo.id}`" >
               </div>
               <div v-else>
-                <img :src="require(`../../media/users/avatar-loading.png`)" @error="require(`../../media/users/avatar-loading.png`)" class="rounded-full">
+                <img class="w-12 h-12 rounded-full " src="/assets/images/avatar-loading.png">
               </div>
               </router-link>     
             </div>
@@ -119,9 +119,6 @@ export default {
     },
     logout(){
       this.$router.push('/logout')
-    },
-    showBoard(){
-      this.active = !this.active
     },
     profileImg(file){
       this.src = file

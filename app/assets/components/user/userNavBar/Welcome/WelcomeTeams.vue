@@ -2,11 +2,8 @@
   <div>
       <div class="h-full flex flex-col justify-around items-center">
         <div class="flex flex-row w-full justify-evenly justify-center items-center">
-              <div v-if="checkImg()" class="w-24 h-24 group cursor-pointer" >
-                <img class="w-28 h-24" :src="require(`../../../../media/departments/${departmentID}.png`)">
-              </div>
-              <div v-else class="w-24 h-2/5 group cursor-pointer">
-                  <img :src="require(`../../../../media/users/avatar-loading.png`)">
+              <div  class="w-24 h-24 group cursor-pointer" >
+                <img class="w-24 h-24" :src="`/assets/images/departments/${departmentID}`">
               </div>
               <div class="text-5xl text-sideBar-primary uppercase italic">Equipo de {{departmentName}}</div>
         </div>
@@ -40,17 +37,6 @@ export default {
         getAllTeamsFromDepartment(token, this.departmentID)
         .then(data => (this.teams = data));
     },
-    methods:{
-       checkImg(){
-            try {
-                require(`../../../../media/departments/${this.departmentID}.png`).default
-                return true
-                }
-                catch (e) {
-                    return false
-                }
-        }
-    }
 }
 </script>
 

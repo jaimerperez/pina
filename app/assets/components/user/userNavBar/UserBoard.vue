@@ -42,6 +42,9 @@
       @click="tagIdChange"
       :taskList="taskListWorking"
       :search="search"
+      :responsable="responsable"
+      :usuarios="users"
+      :tagsList="tagsList"
       class=" col-3" status="Trabajando" taskStatus="1" :ht="'#1DA0B5'" :color="'bg-block-working-secondary'" :placeholder="'+ Añadir nueva tarea'" 
       />
     </div>
@@ -52,7 +55,10 @@
       @click="tagIdChange"
       :search="search"
       :boardTeamID="boardTeamID" 
-      :taskList="taskListPending" 
+      :taskList="taskListPending"
+      :responsable="responsable"
+      :usuarios="users"
+      :tagsList="tagsList"
       class="col-3" status="Pendientes" taskStatus="3" :ht="'#DE650F'" :color="'bg-block-pending-secondary'" :placeholder="'+ Añadir nueva tarea'"
       />
     </div>
@@ -63,7 +69,10 @@
         @click="tagIdChange"
         :search="search"
         :boardTeamID="boardTeamID"
-        :taskList="taskListCompleted" 
+        :taskList="taskListCompleted"
+        :responsable="responsable"
+        :usuarios="users"
+        :tagsList="tagsList"
         class=" col-3" status="Completadas" taskStatus="4" :ht="'#199961'" :color="'bg-block-complete-secondary'" :placeholder="'+ Añadir nueva tarea'" 
         />
     </div>
@@ -73,7 +82,9 @@
       <popover :name="'adduser'" :width="400" >
         <div v-for="user in users" :key="user.id" class="flex flex-wrap justify-center items-center w-96 max-h-96 " >
           <div v-if="!searchUserinTeam(user.id)">
-            <ImageMembers class="w-8 h-8 m-2" :ID="user.id" :toprofile="true"/>
+            <router-link :to="{ name: 'profileUser', params: {idUser: user.id } }">
+              <img class="rounded-full w-8 h-8 m-2"  :src="`/assets/images/users/${user.id}`">
+            </router-link>
             <div v-if="user.name === null ">
               {{user.email}}
             </div>
@@ -89,7 +100,7 @@
       <!-- POPOVER -->
       <popover :name="'filterMembers'" :width="150">
             <div v-for="user in responsable" :key="user.id" class="inline-block">
-                <ImageMembers v-on:click.native="filterMember(user.id_user)" class="w-8 h-8 m-2 cursor-pointer" :ID="user.id_user" :toprofile="false"/>
+                <img v-on:click="filterMember(user.id_user)" class="rounded-full w-8 h-8 m-2"  :src="`/assets/images/users/${user.id_user}`">
             </div>
             <button class="rounded-full w-5 h-5 bg-white text-black self-center" v-on:click="filterMember(0)">
               X
@@ -112,11 +123,10 @@ import Draggable from 'vuedraggable'
 import TaskStatus from './Board/TaskStatus.vue'
 import SlidePanel from './Board/subitems/SlidePanel'
 import DatePicker from './Board/subitems/DatePicker'
-import ImageMembers from './Welcome/tabs/ImageMembers'
 import {getAllUsers, getUserToken, createUserInTeam, getAllTaskFromTeam, postTaskToTeam, 
 putChangeTags, deleteTask,putChangeStatusTask, setDate, ChangeSubTags, postSubTask, 
 postTime, postFilesTask, deleteFiles, postAddUserToTask, deleteManager, getUserTeams, createUser,
-postTimeSubtask, deleteSubTask, postStoreTask, postAddUserToSubTask, postMessage, postSubtaskMessage, setTime, setTimeSubtask} from '../../../servicies/userServicies'
+postTimeSubtask, deleteSubTask, postStoreTask, postAddUserToSubTask, postMessage, postSubtaskMessage, setTime, setTimeSubtask, getAllTags} from '../../../servicies/userServicies'
 Vue.use(Popover)
 
 export default {
@@ -131,7 +141,6 @@ export default {
     SlidePanel,
     DatePicker,
     FilterPerson,
-    ImageMembers
   },
   props:{
     boardName: String,
@@ -144,14 +153,13 @@ export default {
       email: "",
       name: this.boardTeamID,
       users: [],
-      idUser: "",
       taskList: [],
       taskListCompleted: [],
       taskListWorking: [],
       taskListPending:[],
+      tagsList: {},
       open: false,
       state: 'collapse',
-      gravity: 'right',
       dismissedState: 'dismissedState',
       search: '',   
     }
@@ -184,6 +192,9 @@ export default {
 
       getAllUsers(token)
       .then(data => (this.users = data));
+
+      getAllTags(token)
+      .then(data => (this.tagsList = data));
     },
     createUserTeam(id_user){
       const token = localStorage.getItem('validation_token');
@@ -209,7 +220,7 @@ export default {
               formData.append('token', localStorage.getItem('validation_token'));
 
               let promise = new Promise((resolve, reject) => {
-                console.log(taskStatus)
+                
                 resolve(postTaskToTeam(formData, this.boardTeamID));
               });
               promise.then((response) => {
@@ -425,9 +436,6 @@ export default {
                 EventBus.$emit('updatemessagesubtask')
               });
         },
-        toggle(){
-          this.open = !this.open
-       },
        setTime(totaltime, id_task){
          const token = localStorage.getItem('validation_token');
           const formData = new FormData()
@@ -518,31 +526,9 @@ export default {
             }
             return false
         },
-        show () {
-          this.$modal.show('my-first-modal');
-        },
-        hide () {
-          this.$modal.hide('my-first-modal');
-        },
-        checkImg(id_user){
-            try {
-                require(`../../../media/users/${id_user}.png`)
-                return true
-                }
-                catch (e) {
-                    return false
-                }
-        },
-      
     },
   created(){
      this.fetchData()
-      if ('loading' in HTMLImageElement.prototype) {
-        console.log('El navegador soporta `lazy-loading`...');
-      } else {
-        console.log('`lazy-loading` no soportado...');
-      }
-      
   },
 
   mounted(){

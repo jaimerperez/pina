@@ -25,7 +25,6 @@ export default {
     data(){
         return{
             email: '',
-            content: ''
         }
     },
     components: {

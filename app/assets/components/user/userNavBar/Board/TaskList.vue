@@ -36,7 +36,7 @@
                                     <div v-if="index > 1">
                                     </div>
                                     <div v-else>
-                                        <img class="rounded-full w-8 h-8" :title="searchForUsersName(items.id_user)" :src="`/assets/images/users/${items.id_user}`">
+                                        <img class="w-8 h-8 rounded-full " :title="searchForUsersName(items.id_user)" :src="`/assets/images/users/${items.id_user}`">
                                     </div>
                                 </div>
                                 <div v-if="size > 2" class="mx-2">
@@ -79,7 +79,6 @@
                                 </div>
                             </div>
                     </div>
-
                     <!-- AUTORIZACION -->
                     <div class="w-52 hover:text-indigo-600 border border-white align-middle">
                         <div v-for="items in tagsList.tags" :key="items.id">
@@ -93,7 +92,6 @@
                             </div>
                         </div>                
                     </div>
-
                     <!-- HACIENDOSE -->
                     <div class="w-52 hover:text-indigo-600 border border-white align-middle">
                         <h1 v-for="items in tagsList.tags" :key="items.id">
@@ -107,7 +105,6 @@
                             </div>
                         </h1>                        
                     </div>
-
                     <!-- ENTREGADO -->
                     <div class="w-52 hover:text-indigo-600 border border-white align-middle">
                         <h1 v-for="items in tagsList.tags" :key="items.id">
@@ -119,10 +116,7 @@
                             </div>
                             </div>
                         </h1>                         
-                    </div>
-                
-                <!-- PLAZO, PROGRESO, TIEMPOS, UPDATE, ID, EMAIL, BORRAR -->
-                
+                    </div>            
                     <!-- PLAZO -->
                     <div  class="w-80 border border-white items-center align-middle">
                         <div class="items-center align-middle pt-2">
@@ -173,7 +167,9 @@
                     <!-- ULTIMA ACTUALIZACION -->
                     <div class="w-80 hover:text-indigo-600 border border-white align-middle ">
                         <span class="flex justify-center pt-2">
-                            <ImageMembers class="w-5 h-5 ml-2 pt-2" :ID="taskList.id_user_update" :toprofile="true"/>
+                            <router-link :to="{ name: 'profileUser', params: {idUser: taskList.id_user_update } }">
+                                <img class="rounded-full w-8 h-8 m-2"  :src="`/assets/images/users/${taskList.id_user_update}`">
+                            </router-link>
                             <span class="relative inline-block px-2">{{taskList.updated_at}}</span>
                         </span>
                     </div>
@@ -283,7 +279,6 @@ import DatePicker from './subitems/DatePicker'
 import SubTask from './subitems/SubTask'
 import SubtaskList from './subitems/SubtaskList'
 import SlidePanel from './subitems/SlidePanel'
-import ImageMembers from '../Welcome/tabs/ImageMembers'
 import DateRangePicker from 'vue2-daterange-picker'
 //you need to import the CSS manually
 import 'vue2-daterange-picker/dist/vue2-daterange-picker.css'
@@ -303,7 +298,6 @@ export default {
         Trash,
         SubTask,
         DatePicker,
-        ImageMembers,
         DateRangePicker,
         Add, 
         SubtaskList,
@@ -315,21 +309,19 @@ export default {
     props: {
         taskList: Object,
         color: String,
-        taskTag: Array,
         taskStatus: String,
         draggable: Boolean,
         id: String,
         teamid: String,
         progress: Number,
+        tagsList: Object,
+        usuarios: Array,
+        responsable: Array
     },
     data() {
         return{
             date: new Date().toISOString().substr(0, 10),
-            tagsList: [],
-            responsable: [],
-            usuarios: [],
             messages: [],
-            active: true,
             setID: '',
             modal: false,   
             numberSubtask: '',
@@ -347,10 +339,7 @@ export default {
             editHidden: false,
             contentEdit: false,
             selected: [],
-		    selectAll: false,
-            state: '',
             opentab: false,
-            count: 0,
             size: 0,
             horas: 0,
             minutos: 0,
@@ -358,9 +347,7 @@ export default {
         }
     },
    created() {
-        this.fetchData()
-        this.selectAll = false
-        
+        this.fetchData()  
         if(this.taskList.pause == 0)
             var parar = setInterval(() => {
                 this.time()
@@ -403,34 +390,12 @@ export default {
     methods:{
         fetchData() {
             const token = localStorage.getItem('validation_token');
-           getAllTags(token)
-            .then(data => (this.tagsList = data));
-            
-            getUserTeams(token,this.teamid)
-                .then(data => (this.responsable = data));
-                
-            getAllUsers(token)
-                .then(data => (this.usuarios = data));
-           
             getMessage(token, this.taskList.id)
             .then(data =>{ (this.messages = data) });
                
         },
         closeSlide(){
             this.opentab = false
-        },
-        contador(){
-            this.count + 1
-        },
-        onInput(){
-            console.log('rr')
-        },
-         showModal(status){
-            this.state = status
-            this.$modal.show('deleteSeleccionadas');
-        },
-        hideModal() {
-            this.$modal.hide('deleteSeleccionadas');
         },
         deleteSelectedTask(status){
             let value = document.getElementsByName(this.taskList.id)
@@ -490,13 +455,12 @@ export default {
             }
 		},
         focusName(){
-            console.log('222')
             this.$refs.input.focus()
         },
         editName(id_task,task_name){
             const valor = document.getElementById(task_name);
             const text = valor.textContent
-            console.log(text)
+           
             const token = localStorage.getItem('validation_token');
             const formData = new FormData()
             formData.append('name', text);
@@ -516,21 +480,6 @@ export default {
         reset(){
             this.setID = ''
         },
-        progreso(value){
-            this.progress = +value
-        },
-        checkImg(id_user){
-            try {
-                require(`../../../../media/users/${id_user}.png`)
-                return true
-                }
-                catch (e) {
-                    return false
-                }
-        },
-        changeStatus(){
-            EventBus.$emit('changes', 3, this.taskList.id)
-        },
         createSubtask(id_task){
            EventBus.$emit('subtask',this.nameSubtask, id_task)
            this.nameSubtask = ''
@@ -543,10 +492,6 @@ export default {
         showSubtask(){
             
             this.showed = !this.showed
-        },
-        toggle(ID,NAME){
-           if(!this.contentEdit)
-            EventBus.$emit('slide',ID, NAME)
         },
         show(){
             this.$modal.show(this.taskList.id);
@@ -562,12 +507,10 @@ export default {
             EventBus.$emit('deleteFile', filename)
         },
          deleteManager(id_manager, id_task){
-             console.log(id_manager)
-             console.log(id_task)
             EventBus.$emit('deletemanager', id_manager, id_task)
         },
         addManager(ID, id_task){
-            console.log('entra')
+            
             EventBus.$emit('addmanager', ID, id_task)
         },
         update(event){
@@ -646,7 +589,7 @@ export default {
         },
         start() {
         this.$confetti.start();
-        setTimeout(() => {  this.stop() }, 2000);
+        setTimeout(() => {  this.stop() }, 1000);
       },
  
       stop() {
@@ -656,10 +599,3 @@ export default {
        
 }
 </script>
-
-<style>
-.taskContainer {
-    color: red;
-    width: 1920px;
-}
-</style>

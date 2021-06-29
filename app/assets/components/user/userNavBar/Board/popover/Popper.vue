@@ -60,7 +60,6 @@ export default {
     props:{
         taskListId: String,
         name: String,
-        width: 400,
         subtaskID: String
     },
     methods:{

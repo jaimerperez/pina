@@ -10,15 +10,3 @@
         </div>
             
 </template>
-
-<script>
-export default {
-    props:{
-            taskList: Object
-        }
-}
-</script>
-
-<style>
-
-</style>

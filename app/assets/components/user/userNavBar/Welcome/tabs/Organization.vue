@@ -6,7 +6,9 @@
             <div class="text-center">
                 <div class="flex flex-col justify-center items-center">
                     <div class="w-16">
-                        <ImageMembers  :ID="department.id" :toprofile="true"/>
+                        <router-link :to="{ name: 'profileUser', params: {idUser: department.id} }">
+                            <img class="h-10 w-10 rounded mx-3 mt-2"  :src="`/assets/images/users/${department.id}`">
+                        </router-link>
                     </div>
                     <div class="text-gray-600">
                         <div>
@@ -25,7 +27,9 @@
                             <div class="text-center">
                                 <div class="flex flex-col justify-center items-center">
                                     <div class="w-16">
-                                       <ImageMembers v-if="team.id" :ID="team.id" :toprofile="true"/>
+                                        <router-link :to="{ name: 'profileUser', params: {idUser: team.id} }">
+                                            <img class="h-10 w-10 rounded mx-3 mt-2"  :src="`/assets/images/users/${team.id}`">
+                                        </router-link>
                                     </div>
                                     <div class="text-gray-600">
                                         <p>{{team.name}}</p>
@@ -48,15 +52,12 @@
 
 <script>
 import {getAllUsersFromDepartment, getAllUsers, getOrganization} from '../../../../../servicies/userServicies'
-import ImageMembers from './ImageMembers.vue'
 import MembersChart from './MembersChart.vue'
 export default {
     data() {
         return {
-        openTab: 1,
         teams: [],
         users: [],
-        usersDepartments: [],
         organization: [],
         department: [],
         team: [],
@@ -65,7 +66,6 @@ export default {
     },
     components:{
         MembersChart,
-        ImageMembers,
     },
     props:{
         id_team: String,

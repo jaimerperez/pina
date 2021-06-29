@@ -1,15 +1,15 @@
 <template>
 <div class="board" style="width:3000px">
     <div class="w-full">
-            <div class="flex" style="width:3000px">
-                <div class="flex flex-row justify-around">
+            <div class="flex bg-white" style="width:3000px">
+                <div class="flex flex-row justify-around ">
                         <div class="w-80" >
                             <h1 class="flex cursor-pointer font-semibold" >
                                 <div @click.prevent="active = !active">
                                     <icon-base v-show="active" viewBox="0 0 512 512" width="25" height="25" icon-name="expand"><Expand/></icon-base>
                                     <icon-base v-show="!active" viewBox="0 0 24 24" width="25" height="25" icon-name="collapse"><Collap/></icon-base>
                                 </div>
-                                {{status}}
+                               <span class="text-2xl">{{status}}</span> 
                                     <span @click="openMenu = !openMenu" class="mx-6">
                                         ...
                                     </span>
@@ -29,7 +29,7 @@
                         <div class="w-52 text-black text-center font-fontColor-primary font-semibold">Autorización</div>
                         <div class="w-52 text-black text-center font-fontColor-primary font-semibold">Haciéndose</div>
                         <div class="w-52 text-black text-center font-fontColor-primary font-semibold">Entregado</div>
-                        <div class="w-80 text-black text-center font-fontColor-primary font-semibold" @click="sort">Plazo</div>
+                        <div class="w-80 text-black text-center font-fontColor-primary font-semibold cursor-pointer" @click="sort"> 	↨ Plazo</div>
                         <div class="w-32 text-black text-center font-fontColor-primary font-semibold">Progreso</div>
                         <div class="w-32 text-black text-center font-fontColor-primary font-semibold">Tiempos</div>
                         <div class="w-80 text-black text-center font-fontColor-primary font-semibold">Última actualización</div>
@@ -53,6 +53,9 @@
                     :draggable="true"
                     @change="statuschange(items.id)"
                     :taskList="items"
+                    :responsable="responsable"
+                    :tagsList="tagsList"
+                    :usuarios="usuarios"
                     :color="ht">
                     </TaskList>
 
@@ -113,6 +116,9 @@ export default {
         taskList: Array,
         ht: String,
         search: String,
+        tagsList: Object,
+        usuarios: Array,
+        responsable: Array,
         
     },
     components: {
@@ -135,17 +141,9 @@ export default {
         return {
             content: "",
             active: true,
-            subtagsList: [],
-            setID: '',
             show: false,
-            idTask: '',
-            nameSubtask: "",
-            idStatus: '',
             filterRespon: '',
             filtro: false,
-            tiempo: null,
-            idchange: '',
-            statusupdate: '',
             openMenu: false,
             sortDirection: ''
             
@@ -179,9 +177,6 @@ export default {
             EventBus.$emit('update',this.content, this.taskStatus)
             this.content = ''
             },  
-         reset(){
-            this.setID = ''
-        },
        
         onEnd: function(evt) {
             EventBus.$emit('changeStatus', evt.to.id, evt.item.id)    
@@ -206,9 +201,6 @@ export default {
     },
     created() {
         EventBus.$on('managerfilter', this.managerFilter)
-    },
-     mounted(){
-        EventBus.$on('reset', this.reset);
     },
   computed:{
       filterTask: function(){
@@ -245,7 +237,3 @@ export default {
   }
 }
 </script>
-
-<style>
-
-</style>
