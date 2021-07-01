@@ -217,7 +217,7 @@ export default {
                 resolve(postEditNameSubtask(formData, id_task));
               });
               promise.then((response) => {
-                console.log(response);
+                
                 this.fetchData()
                 EventBus.$emit('editname')
               });
@@ -318,11 +318,11 @@ export default {
         setTime(){
            
             let hours = this.horas * 3600
-            console.log(hours)
+            
             let minuts = this.minutos * 60
-            console.log(minuts)
+            
             let totaltime = hours + minuts
-            console.log(totaltime)
+            
             EventBus.$emit('settimesubtask', totaltime, this.subtask.id)
         },
         

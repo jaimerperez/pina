@@ -10,11 +10,11 @@
                         <p class="truncate px-2" :contenteditable="true" v-on:blur="editName(taskList.id, taskList.name)" :id="taskList.name" ref="input" :title="taskList.name">{{taskList.name}}</p> 
                         <icon-base v-show="editHidden" viewBox="0 0 1080 1080"  width="25" height="25" icon-name="editar" @click.native="focusName" class="cursor-pointer inline-block"><Editar/></icon-base>
                         
-                        <span class="relative inline-block" v-on:click="opentab=!opentab">
+                        <span class="relative inline-block" v-on:click="opentab=!opentab, getmessages()">
                             <icon-base :iconColor="color" width="25" height="25" icon-name="message" ><Message/></icon-base>
                             <span v-if="numbermessage != 0" class="absolute top-0 right-0 inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-red-100 transform translate-x-1/2 -translate-y-1/2 bg-red-600 rounded-full">{{numbermessage}}
                             </span>
-                         </span>
+                        </span>
                     </span>
                     
                 </div>
@@ -258,8 +258,6 @@
 
 <script>
 import Vue from 'vue'
-  import VueConfetti from 'vue-confetti'
-  
 import {EventBus} from '../../../../event-bus.js'
 import Popover from 'vue-js-popover'
 import Draggable from 'vuedraggable'
@@ -283,8 +281,6 @@ import DateRangePicker from 'vue2-daterange-picker'
 //you need to import the CSS manually
 import 'vue2-daterange-picker/dist/vue2-daterange-picker.css'
 Vue.use(Popover)
-Vue.use(VueConfetti)
-
 export default {
     components: {
         Draggable,
@@ -389,10 +385,16 @@ export default {
   },
     methods:{
         fetchData() {
+            
+            this.getmessages()
+               
+        },
+        getmessages(){
             const token = localStorage.getItem('validation_token');
+            if(this.opentab){
             getMessage(token, this.taskList.id)
             .then(data =>{ (this.messages = data) });
-               
+            }    
         },
         closeSlide(){
             this.opentab = false
@@ -443,7 +445,7 @@ export default {
         select(status) {
 
 			let value = document.getElementsByName(this.taskList.id)
-            console.log(value)
+            
             for(let i of value){
                 
                  if(status == this.taskStatus)
@@ -470,7 +472,7 @@ export default {
                 resolve(postEditName(formData, id_task));
               });
               promise.then((response) => {
-                console.log(response);
+                
                 this.fetchData()
               });
         },
@@ -587,14 +589,6 @@ export default {
             }
             return false
         },
-        start() {
-        this.$confetti.start();
-        setTimeout(() => {  this.stop() }, 1000);
-      },
- 
-      stop() {
-        this.$confetti.stop();
-      },  
     },
        
 }

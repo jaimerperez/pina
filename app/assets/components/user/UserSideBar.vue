@@ -1,5 +1,5 @@
 <template>
-  <div class="sideNavBar-container h-full flex flex-col flex-wrap items-center bg-sideBar-primary md:w-full">
+  <div class="sideNavBar-container h-full flex flex-col flex-wrap items-center bg-sideBar-primary md:w-full z-10">
     <div class="h-screen flex flex-col flex-wrap items-center bg-sideBar-primary md:w-full">
       <div class="flex">
         <router-link to="/user/department"><img class="my-10 w-10 h-10 sm:w-24 sm:h-24" src="/assets/images/build/LOGO_Piña-02.png"></router-link>  

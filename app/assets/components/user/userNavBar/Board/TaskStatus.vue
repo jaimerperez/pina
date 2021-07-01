@@ -104,6 +104,7 @@ import Tag from './popover/Tag'
 import Popper from './popover/Popper'
 import SubtaskList from './subitems/SubtaskList'
 import DatePicker from './subitems/DatePicker'
+import { getOrganization } from '../../../../servicies/userServicies.js'
 export default {
     props:{
         
@@ -145,9 +146,85 @@ export default {
             filterRespon: '',
             filtro: false,
             openMenu: false,
-            sortDirection: ''
-            
+            sortDirection: '',
+            resp: [],
+            manager: '',
+             tarea: {
+                "id": "1",
+                "id_user_update": null,
+                name: '',
+                "store": "0",
+                "time_limit": "0000-00-00 00:00:00",
+                "time_limit_end": "0000-00-00 00:00:00",
+                "messages": "0",
+                "incident": "0",
+                "email": null,
+                "last_play": "0000-00-00 00:00:00",
+                "time_working": "0",
+                "pause": "1",
+                "id_status": this.taskStatus,
+                "id_team": this.boardTeamID,
+                "created_at": "2021-06-30 11:33:48",
+                "updated_at": "2021-06-30 11:33:48",
+                "deleted_at": "0000-00-00 00:00:00",
+                "deleted": "0",
+                "status": "WORKING",
+                "tags": [
+                {
+                    "id": "3657",
+                    "id_task": "1",
+                    "id_tag": "1",
+                    "created_at": "2021-06-30 11:33:48",
+                    "updated_at": "2021-06-30 11:33:48",
+                    "deleted_at": "0000-00-00 00:00:00",
+                    "deleted": "0"
+                },
+                {
+                    "id": "3658",
+                    "id_task": "1",
+                    "id_tag": "2",
+                    "created_at": "2021-06-30 11:33:48",
+                    "updated_at": "2021-06-30 11:33:48",
+                    "deleted_at": "0000-00-00 00:00:00",
+                    "deleted": "0"
+                },
+                {
+                    "id": "3659",
+                    "id_task": "1",
+                    "id_tag": "3",
+                    "created_at": "2021-06-30 11:33:48",
+                    "updated_at": "2021-06-30 11:33:48",
+                    "deleted_at": "0000-00-00 00:00:00",
+                    "deleted": "0"
+                },
+                {
+                    "id": "3660",
+                    "id_task": "1",
+                    "id_tag": "4",
+                    "created_at": "2021-06-30 11:33:48",
+                    "updated_at": "2021-06-30 11:33:48",
+                    "deleted_at": "0000-00-00 00:00:00",
+                    "deleted": "0"
+                }
+                ],
+                "subtasks": [],
+                "users": [
+                {
+                    "id": "1006",
+                    id_user: "",
+                    "id_task": "1",
+                    "created_at": "2021-06-30 11:33:48",
+                    "updated_at": "2021-06-30 11:33:48",
+                    "deleted_at": "0000-00-00 00:00:00",
+                    "deleted": "0"
+                }
+                ],
+                "files": [],
+                "progress": 0
             }
+            
+        }
+
     }, 
     methods:{
        
@@ -174,6 +251,9 @@ export default {
             this.$modal.hide('store'+this.status)
         },
         onUpdate(){
+            this.tarea.name = this.content
+            this.tarea.users[0].id_user = this.resp.team.id
+            this.taskList.push(this.tarea)
             EventBus.$emit('update',this.content, this.taskStatus)
             this.content = ''
             },  
@@ -197,10 +277,20 @@ export default {
                 this.filtro = false
             
         },
+        declareManager(){
+            const token = localStorage.getItem('validation_token');
+            getOrganization(token, this.boardTeamID)
+            .then(data =>{ 
+                (this.resp = data) 
+                this.manager = this.resp.team.id
+            })
+                  console.log('resp: ' + this.manager)  
+        },
        
     },
     created() {
         EventBus.$on('managerfilter', this.managerFilter)
+        this.declareManager()
     },
   computed:{
       filterTask: function(){

@@ -83,7 +83,7 @@ export default {
             break;
           }
         }
-        console.log(this.idUser)
+        
         const formData = new FormData()
         formData.append('id_user', this.idUser);
         formData.append('token', token);

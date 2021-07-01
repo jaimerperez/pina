@@ -78,8 +78,8 @@ class Teams extends AbstractController
         }
 
         //Notificacion
-        $notification =  array( 'id_user' => $req->get('id_user'), 'text' => 'Se le ha asignado un nuevo equipo' );
-        HelperController::push_notification($notification);
+        //$notification =  array( 'id_user' => $req->get('id_user'), 'text' => 'Se le ha asignado un nuevo equipo' );
+        //HelperController::push_notification($notification);
         //Notificacion
 
         return $this->json('Se ha añadido el usuario al equipo con exito');
@@ -242,7 +242,7 @@ class Teams extends AbstractController
         try {
             $id_task = $CRUD->add( array(
                     'name' => $req->get('name')
-                    //,'id_user ' => $team['id_user']
+                    ,'id_user_update ' => $validation[1]['id']
                     ,'id_status' => $req->get('status')
                     ,'id_team' => $id_team
                 ));

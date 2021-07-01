@@ -47,8 +47,14 @@ class HelperController
         return [true];
 	}
 
-	public static function push_notification(Array $notification)
+	public static function push_notification(int $id_user, string $message="", int $mension=0, int $assign=0)
 	{
+		$notification = array(
+            'id_user' => $id_user
+			,'message' => $message
+			,'mension' => $mension
+			,'assign' => $assign
+        );
 		$CRUD_notifications = new CRUDController('notifications','id');
 		try {
 			$CRUD_notifications->add( $notification );
@@ -57,15 +63,6 @@ class HelperController
 		}
 	}
 
-	public static function check_post_events(Array $notification)
-	{
-		$CRUD_events = new CRUDController('events','id');
-		try {
-			$CRUD_events->add( $notification );
-		} catch (\Throwable $th) {
-			throw $th;
-		}
-	}
 
 	public static function upload_file($id)
 	{

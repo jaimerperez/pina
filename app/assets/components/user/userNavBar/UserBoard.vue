@@ -1,5 +1,11 @@
 <template>
   <div class="w-full h-full ">
+  <div :class="overlay" style="position: fixed;width: 100%;height: 100%;top: 0;left: 0;right: 0;bottom: 0;background-color: rgba(120,120,120,0.1);z-index: 2;cursor: progress;"> 
+    <div style="position: absolute;top: 50%;left: 50%;font-size: 50px;color: white;transform: translate(-50%,-50%);-ms-transform: translate(-50%,-50%);">
+    <span>
+      </span>
+    </div>
+  </div>
     
     <div class="h-16 flex justify-between items-center">
       <div class="text-4xl capitalize ml-20">
@@ -28,7 +34,7 @@
       </div> 
     </div>
       <div class="flex justify-center mb-10">
-        <div class="spacer bg-fontColor-primary justify-self-center self-center h-0.5 mt-1 w-11/12"></div>
+        <div class="spacer bg-fontColor-primary justify-self-center self-center h-0.5 m-auto w-11/12"></div>
       </div>
       
       
@@ -161,28 +167,35 @@ export default {
       open: false,
       state: 'collapse',
       dismissedState: 'dismissedState',
-      search: '',   
+      search: '',
+      overlay:'',
     }
   },
   methods:{
    
     fetchData() {
+      this.overlay = '';
       const token = localStorage.getItem('validation_token');
 
       //obtenemos todas las tareas del equipo y le asignamos a un array dependiendo de su estado
       getAllTaskFromTeam(token, this.boardTeamID) 
       .then(tasks => {
-          this.taskListCompleted = []
-          this.taskListWorking = []
-          this.taskListPending = []
+          let taskListCompleted = []
+          let taskListWorking = []
+          let taskListPending = []
+       
         for(let task of tasks){
           if(task.id_status == "1")
-              this.taskListWorking.push(task) 
+              taskListWorking.push(task) 
           else if(task.id_status == "3")
-              this.taskListPending.push(task)   
+              taskListPending.push(task)   
           else
-              this.taskListCompleted.push(task)
+              taskListCompleted.push(task)
         }
+        this.taskListWorking = taskListWorking
+        this.taskListPending = taskListPending
+        this.taskListCompleted = taskListCompleted
+        this.overlay = 'hidden';
       });
       getUserTeams(token, this.boardTeamID)
         .then(data => (this.responsable = data));
@@ -206,7 +219,7 @@ export default {
                 resolve(createUserInTeam(formData, this.boardTeamID));
               });
               promise.then((response) => {
-                console.log(response);
+                
                 this.fetchData()
               });
    },
@@ -224,7 +237,7 @@ export default {
                 resolve(postTaskToTeam(formData, this.boardTeamID));
               });
               promise.then((response) => {
-                console.log(response);
+               
                 this.fetchData()
               });
     },
@@ -240,7 +253,7 @@ export default {
                 resolve(postSubTask(formData, id_task));
               });
               promise.then((response) => {
-                console.log(response);
+                
                 this.fetchData()
               });
   
@@ -255,7 +268,7 @@ export default {
                 resolve(putChangeTags(formData, ID));
               });
               promise.then((response) => {
-                console.log(response);
+                
                 this.fetchData()
               });
         },
@@ -268,7 +281,7 @@ export default {
                 resolve(ChangeSubTags(formData, ID_subtask));
               });
               promise.then((response) => {
-                console.log(response);
+               
                 this.fetchData()
               });
         },
@@ -279,19 +292,18 @@ export default {
                 resolve(putChangeStatusTask(id_status, token, ID));
               });
               promise.then((response) => {
-                console.log(response);
+                
                 this.fetchData()
               });
         },
         deleteTask(id_task){
-            console.log(id_task)
             const token = localStorage.getItem('validation_token');
             
             let promise = new Promise((resolve, reject) => {
                 resolve(deleteTask(token, id_task));
               });
               promise.then((response) => {
-                console.log(response);
+                
                 this.$vToastify.success("tareas eliminada con exito");
                 this.fetchData()
               });
@@ -304,7 +316,7 @@ export default {
                 resolve(postStoreTask(formData, id_task));
               });
               promise.then((response) => {
-                console.log(response);
+                
                 this.fetchData()
               });
         },
@@ -316,7 +328,7 @@ export default {
                 resolve(deleteSubTask(token, id_subtask));
               });
               promise.then((response) => {
-                console.log(response);
+                
                 this.$vToastify.success("subtarea eliminada con exito");
                 this.fetchData()
               });
@@ -330,7 +342,7 @@ export default {
                 resolve(postAddUserToTask(formData, task_id));
               });
               promise.then((response) => {
-                console.log(response);
+                
                 this.$vToastify.success("Responsable añadido con éxito a la tarea");
                 this.fetchData()
               });
@@ -344,7 +356,7 @@ export default {
                 resolve(postAddUserToSubTask(formData, task_id));
               });
               promise.then((response) => {
-                console.log(response);
+                
                 this.$vToastify.success("Responsable añadido con éxito a la subtarea");
                 this.fetchData()
               });
@@ -360,7 +372,7 @@ export default {
                 resolve(setDate(formData, id_task));
               });
               promise.then((response) => {
-                console.log(response);
+                
                 this.fetchData()
               });
         },
@@ -374,7 +386,7 @@ export default {
                 resolve(setDate(formData, id_task));
               });
               promise.then((response) => {
-                console.log(response);
+                
                 this.fetchData()
               });
         },
@@ -388,12 +400,12 @@ export default {
                 resolve(postTime(formData, ID));
               });
               promise.then((response) => {
-                console.log(response);
+                
                 this.fetchData()
               });
         },
         playSubtask(ID){
-          console.log(ID)
+          
           const formData = new FormData()
            const token = localStorage.getItem('validation_token');
           formData.append('token', token);
@@ -402,7 +414,7 @@ export default {
                 resolve( postTimeSubtask(formData, ID));
               });
               promise.then((response) => {
-                console.log(response);
+                
                 this.fetchData()
               });
         },
@@ -416,7 +428,7 @@ export default {
               resolve( postMessage(formData, id));
               });
               promise.then((response) => {
-                console.log(response);
+                
                 this.fetchData()
                 EventBus.$emit('updatemessage')
               });
@@ -431,7 +443,7 @@ export default {
               resolve( postSubtaskMessage(formData, id));
               });
               promise.then((response) => {
-                console.log(response);
+               
                 this.fetchData()
                 EventBus.$emit('updatemessagesubtask')
               });
@@ -446,7 +458,7 @@ export default {
                 resolve(setTime(formData, id_task));
               });
               promise.then((response) => {
-                console.log(response);
+               
                 this.fetchData()
               });
        },
@@ -460,7 +472,7 @@ export default {
                 resolve(setTimeSubtask(formData, id_subtask));
               });
               promise.then((response) => {
-                console.log(response);
+                
                 this.fetchData()
               });
         },
@@ -478,7 +490,7 @@ export default {
                 resolve(postFilesTask(formData, ID));
               });
               promise.then((response) => {
-                console.log(response);
+                
                 this.fetchData()
               });
       },
@@ -489,7 +501,7 @@ export default {
                 resolve(deleteFiles(token, file));
               });
               promise.then((response) => {
-                console.log(response);
+                
                 this.fetchData()
               });
       },
@@ -500,7 +512,7 @@ export default {
                 resolve(deleteManager(token, task_id, user_id));
               });
               promise.then((response) => {
-                console.log(response);
+                
                 this.fetchData()
               });
         },
@@ -511,7 +523,7 @@ export default {
                 resolve( putChangeStatusTask(id_status, token, id_task));
               });
               promise.then((response) => {
-                console.log(response);
+                
                 this.fetchData()
               });
         },

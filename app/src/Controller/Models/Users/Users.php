@@ -214,4 +214,54 @@ class Users extends AbstractController
         return $this->json($teams);
     }
 
+    /**
+        * @Route("/user/{id_user}/notifications", methods={"GET"})
+     */
+    public function show_notifications(String $id_user,Request $request): Response
+    {
+        try {
+            
+            $req = $request->query; //GET
+            $validation = HelperController::validate_req($req,['token']);
+            if(! $validation[0])
+                return $this->json($validation[1],'400');
+
+            $CRUD = new CRUDController('users','id');
+
+            if( ! $CRUD->exist($id_user) )
+                return $this->json('ERROR: El usuario no existe',400);
+
+            
+            $CRUD = new CRUDController('notifications','id');
+
+            $user_notifications = $CRUD->plenty( array('id_user' => $id_user));
+
+            $no_read = [];
+            $mension = [];
+            $assign = [];
+            
+            foreach ($user_notifications as $notification) {
+                if( $notification['readed'] == 0 )
+                    array_push($no_read,$notification);
+                if( $notification['mension'] == 1 )
+                    array_push($mension,$notification);
+                if( $notification['assign'] == 1 )
+                    array_push($assign,$notification);
+            }
+
+            $notifications = [];
+            $notifications['all'] = $user_notifications;
+            $notifications['no_read'] = $no_read;
+            $notifications['mension'] = $mension;
+            $notifications['assign'] = $assign;
+
+            return $this->json($notifications,200);
+            
+        } catch (\Throwable $th) {
+            //throw $th;
+        }
+
+        return $this->json('error',400);
+    }
+
 }

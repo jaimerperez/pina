@@ -163,7 +163,7 @@ export default {
         resolve( deleteMessage(token, id_message));
       });
       promise.then((response) => {
-        console.log(response);
+        
         EventBus.$emit('deletemessage')
       });
     },

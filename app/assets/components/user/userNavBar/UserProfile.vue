@@ -176,7 +176,7 @@ export default {
                 resolve(changeProfile(formData, this.userInfo.id));
               });
               promise.then((response) => {
-                console.log(response);
+                
                 this.fetchData()
               });
       },
@@ -185,10 +185,10 @@ export default {
       },
       repeatedPasswordReceived () {
         if (this.newPassword === this.newRepeatedPassword) {
-          console.log('son iguales')
+          
           this.readytosend = true
         } else {
-          console.log('no lo son')
+          
           this.readytosend = false
         }
       },

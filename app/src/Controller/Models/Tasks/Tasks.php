@@ -445,7 +445,18 @@ class Tasks extends AbstractController
              return $this->json('ERROR: No se ha podido añadir un usuario responsable','400');
          }
 
-        $this->add_id_user_update($id_task,$validation[1]['id']);
+        try {
+            $this->add_id_user_update($id_task,$validation[1]['id']);
+            //Notificacion
+            $CRUD_tasks = new CRUDController('tasks','id');
+            $task = $CRUD_tasks->one($id_task);
+            $notification_text = 'Tarea asignada: "'. $task['name'] . '" ('. $id_task .')';
+            HelperController::push_notification( $req->get('id_user'), $notification_text, 0, 1 );
+            //Notificacion
+        } catch (\Throwable $th) {
+            //throw $th;
+        }
+
         return $this->json('OK');
     }
 

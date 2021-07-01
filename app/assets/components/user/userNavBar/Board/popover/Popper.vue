@@ -37,7 +37,7 @@
             <div class="tags-container w-96 max-h-96 flex flex-wrap items-center cursor-default">
               
                 <div class="bg-tags-paso w-24 h-12 m-4 text-center align-middle cursor-pointer" v-on:click="tagChange('4') ">PASO</div>
-                <div class="bg-tags-normal w-24 h-12 m-4 text-center align-middle cursor-pointer" v-on:click="tagChange('135'), confetti() ">LISTO</div>
+                <div class="bg-tags-normal w-24 h-12 m-4 text-center align-middle cursor-pointer" v-on:click="tagChange('135') ">LISTO</div>
                 <div class="bg-tags-proceso w-24 h-12 m-4 text-center align-middle cursor-pointer" v-on:click="tagChange('117') ">EN PROCESO</div>
         
             </div>
@@ -72,9 +72,6 @@ export default {
             EventBus.$emit('subtagchange', this.subtaskID,  id_subtag);
            EventBus.$emit('resetSubtask')
         },
-        confetti(){
-            EventBus.$emit('confeti')
-        }
     }
 }
 </script>
