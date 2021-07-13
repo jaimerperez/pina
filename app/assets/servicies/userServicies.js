@@ -28,6 +28,11 @@
         return fetch("/api/teams/team/" + id_team + "/users?token=" + token) 
           .then(response => response.json())
       }
+      export function getNotifications(token, id_user){
+        return fetch("/api/users/user/" + id_user + "/notifications?token=" + token) 
+          .then(response => response.json())
+      }
+
     
       //********DEPARTMENTS**************
     export function getAllTeamsFromDepartment(token, departmentID){
@@ -146,7 +151,17 @@ export function getTaskStored(token, id_team){
         }
       })
 }
-
+export function postFilesUpload(formData){
+  return fetch("/api/upload",
+  {  
+    method: "POST",
+     body: formData })
+  .then(response =>  { 
+      if (response.status === 200) {
+        return response.json()
+      }
+    })
+}
 export function postFilesTask(formData,id_task){
   return fetch("/api/tasks/" + id_task + "/file",
   {  
@@ -424,6 +439,17 @@ export function changePassword(formData, userID){
          return resp.json()
        })  
    }
+   export function readNotifications(formData, id_user){
+    return fetch("/api/users/user/" + id_user + "/notifications",
+    {  
+      method: "POST",
+       body: formData })
+    .then(response =>  { 
+        if (response.status === 404) {
+          return response.json()
+        }
+      })
+}
 
 
    

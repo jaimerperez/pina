@@ -53,7 +53,7 @@
             <div @click="setFilterDate" class="cursor-pointer hover:bg-blue-500 hover:text-white">
               filtrar por fecha
             </div>
-            <div @click="setFilterUser" class="cursor-pointer hover:bg-blue-500 hover:text-white">
+            <div @click="setFilterUser"  v-popover:users.bottom class="cursor-pointer hover:bg-blue-500 hover:text-white">
               filtrar por usuario
             </div>
             <div @click="setFilterName" class="cursor-pointer hover:bg-blue-500 hover:text-white">
@@ -63,15 +63,27 @@
               X
             </div>
         </popover>
+        <popover :name="'users'" :width="150">
+            <div v-for="user in filteredTask" :key="user.id" class="inline-block">
+                <img v-on:click="filterMember(user.id_user_update)" class="rounded-full cursor-pointer w-8 h-8 m-2"  :src="`/assets/images/users/${user.id_user_update}`">
+                {{searchForUsersName(user.id_user_update)}}
+            </div>
+            <button class="rounded-full w-5 h-5 bg-white text-black self-center" v-on:click="filterMember(0)">
+              X
+            </button>
+        </popover>
   </div>
 </template>
 
 <script>
+import Vue from 'vue';
 import {getTaskStored, getAllUsers} from '../../../../../servicies/userServicies'
 import IconBase from '../../../../icons/IconBase.vue'
 import Filtro from '../../../../icons/Filtro.vue'
 import Search from '../../../../icons/Search.vue'
 import Stored from '../../../../icons/Stored.vue'
+import Popover from 'vue-js-popover'
+Vue.use(Popover)
 export default {
 name: 'StoreFile',
 components:{
@@ -88,6 +100,7 @@ components:{
     return{
       taskstored: [],
       usuarios: [],
+      userfilter: [],
       search: '',
       date: '',
       filt: false,
@@ -102,6 +115,11 @@ components:{
        .then(data => (this.taskstored = data));
        getAllUsers(token)
         .then(data => (this.usuarios = data));
+
+        for(items in this.taskstored){
+          if(!userfilter.includes( this.taskstored.id_user_update))
+              userfilter.push(this.taskstored.id_user_update)
+        }
   },
   methods:{
      searchForUsersName(id_user){
@@ -114,6 +132,9 @@ components:{
                         return items.name
             }
             return false
+        },
+        filterMembers(id){
+          this.search = id
         },
         setFilterDate(){
           this.fecha=true;

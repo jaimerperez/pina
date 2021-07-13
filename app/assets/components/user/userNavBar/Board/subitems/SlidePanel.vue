@@ -4,7 +4,6 @@
      <div class="pulse_container">
                   <div class="flexible-header">
                       <div class="pulse-tittle flex my-5 align-middle justify-center justify-evenly">
-                        <div>RESPONDER COMENTARIOS</div>
                           <span>{{name}}</span>
                       </div>
                       <div class="items-views">
@@ -25,7 +24,7 @@
             <div :class="{'hidden': openTab !== 1, 'block': openTab === 1}">
               <div class="w-full h-full">
                 <div>
-                  <vue-editor :editorToolbar="customToolbar" v-model="textContent" @text-change="custom(textContent)"></vue-editor>
+                  <tiptap v-model="textContent" :mentionList="mentionList"/>
                 </div>
                 <div class="flex justify-end">
                   <button type = "submit" value = "submit" class="h-2/6 border rounded-xl py-2 px-4 bg-sideBar-primary text-white mb-5 text-base self-end " @click="submitMessage(textContent, id)">ENVIAR </button>
@@ -66,8 +65,10 @@
       </div>
         <button style="user-select:none;" class="close-btn absolute top-0 left-0 m-4 text-xl" @click="closeSlidePanel"> X </button>
     </div>
-    
+     
+
   </div>
+  
 </template>
 
 <script>
@@ -76,6 +77,41 @@ import IconBase from '../../../../icons/IconBase.vue'
 import Trash from '../../../../icons/Trash.vue'
 import { VueEditor } from "vue2-editor";
 import { postMessage, postSubtaskMessage, deleteMessage} from '../../../../../servicies/userServicies'
+import { Mentionable } from 'vue-mention'
+import Tiptap from './TipTap.vue' 
+import At from 'vue-at'
+const uss = [
+  {
+    value: 'akryum',
+    firstName: 'Guillaume',
+  },
+  {
+    value: 'posva',
+    firstName: 'Eduardo',
+  },
+  {
+    value: 'atinux',
+    firstName: 'Sébastien',
+  },
+]
+
+const issues = [
+  {
+    value: 123,
+    label: 'Error with foo bar',
+    searchText: 'foo bar'
+  },
+  {
+    value: 42,
+    label: 'Cannot read line',
+    searchText: 'foo bar line'
+  },
+  {
+    value: 77,
+    label: 'I have a feature suggestion',
+    searchText: 'feature'
+  }
+]
 export default {
   props:{
     id: String,
@@ -83,10 +119,12 @@ export default {
     task: Boolean,
     opentab: Boolean,
     message: Array,
-    users: Array
+    users: Array,
+    mentionList: Array,
   },
   data() {
     return {
+      text: '',
       open: true,
       openTab: 1,
       textContent: '',
@@ -126,14 +164,16 @@ export default {
         ["image", "video"],
         ["clean"]
       ],
-
+      items: [],
     };
   },
   components:{
     VueEditor,
     IconBase, 
-    Trash
-    
+    Trash,
+    Mentionable,
+    At,
+    Tiptap
   },
   
   methods: {
@@ -173,9 +213,23 @@ export default {
         this.textContent = text.replace(urlRegex, function(url) {
         return '<a href="' + url + '"  style="color:blue;" >' + url + '</a>';
       })
+      let mentionRegex = /\B@[a-z]*[^\s]/g
+      if(mentionRegex.test(text)){
+        console.log('true')
+        var ctl = document.getElementsByTagName('input');
+        var startPos = ctl.selectionStart;
+        var endPos = ctl.selectionEnd;
+       console.log(startPos + ", " + endPos);
+       this.$modal.show('mention' + this.id)
+      }
 
     },
-
+    onOpen (key) {
+      this.items = key === '@' ? uss : issues
+    },
+    method () {
+      console.log('@')
+    },
   },
 };
 </script>

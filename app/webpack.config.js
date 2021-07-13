@@ -12,9 +12,9 @@ Encore
     .setOutputPath('public/build/')
    
     .setPublicPath('/build')
-  
+    
     .addEntry('app', './assets/app.js')
-    .enableVueLoader(() => {}, { runtimeCompilerBuild: false })
+    .enableVueLoader(() => {}, { runtimeCompilerBuild: false, useJsx: false })
     .addStyleEntry('tailwind', './assets/styles/tailwind.css')
    
     .enablePostCssLoader()
@@ -40,11 +40,13 @@ Encore
     })
     .addPlugin(new VuetifyLoaderPlugin())
   
-    .enableSassLoader(options => {
-        options.implementation = require('sass')
-        
-    })
+    .enableSassLoader()
 
+    // processes files ending in .less
+    .enableLessLoader()
+
+    // processes files ending in .styl
+    .enableStylusLoader()
 ;
 
-module.exports = Encore.getWebpackConfig();
+module.exports =   Encore.getWebpackConfig(); 

@@ -143,11 +143,24 @@ class APIController extends AbstractController
     /**
      * @Route("/api/upload", methods={"POST"})
      */
-    public function test_upload(Request $request): Response
+    public function upload(Request $request): Response
     {
-        //HelperController::upload_img('users','1');
+        $req = $request->request; //'POST
+        $parameters = ['token'];
+        $validation = HelperController::validate_req($req,$parameters);
+        if(! $validation[0])
+            return $this->json($validation[1],'400');
+
+        $file_name = '';
+        try {
+            $name = uniqid();
+            $file_name = HelperController::upload_file($name); //Subir imagen  
+
+         } catch (\Throwable $th) {
+             return $this->json('ERROR: No se ha podido guardar el archivo','400');
+         }
         
-        return $this->json('OK','200');
+        return $this->json($file_name);
     }
 
     /**

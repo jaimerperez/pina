@@ -1,44 +1,45 @@
 <template>
-  <div class="w-full h-full ">
-  <div :class="overlay" style="position: fixed;width: 100%;height: 100%;top: 0;left: 0;right: 0;bottom: 0;background-color: rgba(120,120,120,0.1);z-index: 2;cursor: progress;"> 
-    <div style="position: absolute;top: 50%;left: 50%;font-size: 50px;color: white;transform: translate(-50%,-50%);-ms-transform: translate(-50%,-50%);">
-    <span>
-      </span>
+  <div class="w-full h-full">
+    <div :class="overlay" style="position: fixed;width: 100%;height: 100%;top: 0;left: 0;right: 0;bottom: 0;background-color: rgba(120,120,120,0.1);z-index: 2;cursor: progress;"> 
+      <div style="position: absolute;top: 50%;left: 50%;font-size: 50px;color: white;transform: translate(-50%,-50%);-ms-transform: translate(-50%,-50%);">
+      <span>
+        </span>
+      </div>
     </div>
-  </div>
     
-    <div class="h-16 flex justify-between items-center">
-      <div class="text-4xl capitalize ml-20">
-      {{boardName}}
+    <div class="fixed top-0 bg-white z-30" style="width:2850px">
+      <div class="h-16 justify-between items-center bg-opacity-100  mb-10">
+        <div class="flex fixed text-4xl capitalize ml-20 pt-10">
+        {{boardName}}
+        </div>
+        <div class="flex fixed right-0 mr-20 pt-10">
+          <div class="cursor-pointer mx-2">
+            <router-link :to="{ name: 'StoreFile', params: {boardName:boardName, boardId:boardTeamID }}">
+            Archivo
+            </router-link>
+          </div>
+          <div v-popover:filterMembers.bottom>
+            <icon-base class="cursor-pointer" iconColor="#4D4D4D" width="25" height="25" viewBox="0 0 760 652" icon-name="filterperson" ><FilterPerson/></icon-base>
+          </div>
+          <div v-if="userInfo.id_rol != 3" class="class-icon px-4" >
+            <icon-base class="cursor-pointer" iconColor="#4D4D4D" width="25" height="25" icon-name="iconadduser" v-popover:adduser.bottom>
+              <IconAddUser/>
+            </icon-base>
+          </div>
+          <div class=" relative text-gray-600 focus-within:text-gray-400 border-2 border-black rounded-full">
+              <div class="absolute inset-y-0 left-0 flex items-center pl-2">
+                <icon-base iconColor="#4D4D4D" width="15" height="15" icon-name="search"><Search/></icon-base>
+              </div>
+              <input type="search" id="search" v-model="search" name="email" @focus="focusSearch" placeholder="Buscar" class="pl-10 rounded-lg z-0 focus:shadow focus:outline-none" >
+          </div>
+        </div> 
       </div>
-      <div class="flex  mr-20">
-        <div class="cursor-pointer mx-2">
-           <router-link :to="{ name: 'StoreFile', params: {boardName:boardName, boardId:boardTeamID }}">
-          Archivo
-          </router-link>
-        </div>
-        <div v-popover:filterMembers.bottom>
-          <icon-base class="cursor-pointer" iconColor="#4D4D4D" width="25" height="25" viewBox="0 0 760 652" icon-name="filterperson" ><FilterPerson/></icon-base>
-        </div>
-        <div v-if="userInfo.id_rol != 3" class="class-icon px-4" >
-          <icon-base class="cursor-pointer" iconColor="#4D4D4D" width="25" height="25" icon-name="iconadduser" v-popover:adduser.bottom>
-            <IconAddUser/>
-          </icon-base>
-        </div>
-        <div class=" relative text-gray-600 focus-within:text-gray-400 border-2 border-black rounded-full">
-            <div class="absolute inset-y-0 left-0 flex items-center pl-2">
-              <icon-base iconColor="#4D4D4D" width="15" height="15" icon-name="search"><Search/></icon-base>
-            </div>
-            <input type="search" id="search" v-model="search" name="email" placeholder="Buscar" class="pl-10 rounded-lg z-0 focus:shadow focus:outline-none" >
-        </div>
-      </div> 
+      <div class="spacer fixed bg-fontColor-primary h-0.5 mx-12 mt-12" style="width:2850px"></div>
     </div>
-      <div class="flex justify-center mb-10">
-        <div class="spacer bg-fontColor-primary justify-self-center self-center h-0.5 m-auto w-11/12"></div>
-      </div>
       
-      
-      
+    <div>
+      <br><br><br>
+    </div>
       <!-- SECCIONES DE ESTADOS  -->
     <div class="text-block-working-primary bg-block-working-secondary mx-12 my-16" style="width:2850px" @mouseover="typeStatus(1)">
       <TaskStatus
@@ -51,6 +52,7 @@
       :responsable="responsable"
       :usuarios="users"
       :tagsList="tagsList"
+      :mentionList="mentionList"
       class=" col-3" status="Trabajando" taskStatus="1" :ht="'#1DA0B5'" :color="'bg-block-working-secondary'" :placeholder="'+ Añadir nueva tarea'" 
       />
     </div>
@@ -65,6 +67,7 @@
       :responsable="responsable"
       :usuarios="users"
       :tagsList="tagsList"
+      :mentionList="mentionList"
       class="col-3" status="Pendientes" taskStatus="3" :ht="'#DE650F'" :color="'bg-block-pending-secondary'" :placeholder="'+ Añadir nueva tarea'"
       />
     </div>
@@ -79,6 +82,7 @@
         :responsable="responsable"
         :usuarios="users"
         :tagsList="tagsList"
+        :mentionList="mentionList"
         class=" col-3" status="Completadas" taskStatus="4" :ht="'#199961'" :color="'bg-block-complete-secondary'" :placeholder="'+ Añadir nueva tarea'" 
         />
     </div>
@@ -106,12 +110,18 @@
       <!-- POPOVER -->
       <popover :name="'filterMembers'" :width="150">
             <div v-for="user in responsable" :key="user.id" class="inline-block">
-                <img v-on:click="filterMember(user.id_user)" class="rounded-full w-8 h-8 m-2"  :src="`/assets/images/users/${user.id_user}`">
+                <img v-on:click="filterMember(user.id_user)" class="rounded-full cursor-pointer w-8 h-8 m-2"  :src="`/assets/images/users/${user.id_user}`">
             </div>
             <button class="rounded-full w-5 h-5 bg-white text-black self-center" v-on:click="filterMember(0)">
               X
             </button>
         </popover>
+
+        <div class="fixed right-44 w-54 h-54" v-show="showNotifications">
+            <div>
+              DIVVVVV
+            </div>
+        </div>
   </div>
 </template>
 
@@ -163,12 +173,14 @@ export default {
       taskListCompleted: [],
       taskListWorking: [],
       taskListPending:[],
+      mentionList: [],
       tagsList: {},
       open: false,
       state: 'collapse',
       dismissedState: 'dismissedState',
       search: '',
       overlay:'',
+      showNotifications: false
     }
   },
   methods:{
@@ -176,14 +188,14 @@ export default {
     fetchData() {
       this.overlay = '';
       const token = localStorage.getItem('validation_token');
-
+      
       //obtenemos todas las tareas del equipo y le asignamos a un array dependiendo de su estado
       getAllTaskFromTeam(token, this.boardTeamID) 
       .then(tasks => {
           let taskListCompleted = []
           let taskListWorking = []
           let taskListPending = []
-       
+          
         for(let task of tasks){
           if(task.id_status == "1")
               taskListWorking.push(task) 
@@ -202,9 +214,15 @@ export default {
       
       getUserToken(token)
       .then(data => (this.userInfo = data));
-
+     
+     
+     this.mentionList = []
       getAllUsers(token)
-      .then(data => (this.users = data));
+      .then(data => {(this.users = data)
+        this.users.forEach(element => {
+          this.mentionList.push(element.email.split('@')[0])
+        })
+      });
 
       getAllTags(token)
       .then(data => (this.tagsList = data));
@@ -224,7 +242,7 @@ export default {
               });
    },
 
-  
+
    createTask(content,taskStatus){
             
               const formData = new FormData()
@@ -538,6 +556,9 @@ export default {
             }
             return false
         },
+        focusSearch(){
+          EventBus.$emit('focussearch')
+        }
     },
   created(){
      this.fetchData()

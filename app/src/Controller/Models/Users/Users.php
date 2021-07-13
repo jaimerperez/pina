@@ -234,7 +234,7 @@ class Users extends AbstractController
             
             $CRUD = new CRUDController('notifications','id');
 
-            $user_notifications = $CRUD->plenty( array('id_user' => $id_user));
+            $user_notifications = array_reverse( $CRUD->plenty( array('id_user' => $id_user)) );
 
             $no_read = [];
             $mension = [];
@@ -264,4 +264,28 @@ class Users extends AbstractController
         return $this->json('error',400);
     }
 
+    /**
+        * @Route("/user/{id_user}/notifications", methods={"POST"})
+     */
+    public function read_notification(String $id_user,Request $request): Response
+    {
+        $req = $request->request; //'POST
+        
+        $parameters = ['id_notification','token'];
+        $validation = HelperController::validate_req($req,$parameters);
+        if(! $validation[0])
+            return $this->json($validation[1],'400');
+        
+        $CRUD = new CRUDController('notifications','id');
+
+        try {
+            $CRUD->update($req->get('id_notification'),array(
+                'readed' => 1
+            ));
+        } catch (\Throwable $th) {
+            return $this->json('error',400);
+        }
+
+        return $this->json('ok',200);
+    }
 }

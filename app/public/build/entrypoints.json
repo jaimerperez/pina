@@ -2,20 +2,21 @@
   "entrypoints": {
     "app": {
       "js": [
-        "/build/runtime.738412a3.js",
-        "/build/802.b1ff95b5.js",
-        "/build/app.81d11697.js"
+        "/build/runtime.js",
+        "/build/vendors-node_modules_tiptap_extension-image_dist_tiptap-extension-image_esm_js-node_modules_t-392db8.js",
+        "/build/app.js"
       ],
       "css": [
-        "/build/802.608c1230.css"
+        "/build/vendors-node_modules_tiptap_extension-image_dist_tiptap-extension-image_esm_js-node_modules_t-392db8.css",
+        "/build/app.css"
       ]
     },
     "tailwind": {
       "js": [
-        "/build/runtime.738412a3.js"
+        "/build/runtime.js"
       ],
       "css": [
-        "/build/tailwind.ba82b90d.css"
+        "/build/tailwind.css"
       ]
     }
   }

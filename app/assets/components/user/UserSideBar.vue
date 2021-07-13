@@ -1,6 +1,6 @@
 <template>
-  <div class="sideNavBar-container h-full flex flex-col flex-wrap items-center bg-sideBar-primary md:w-full z-10">
-    <div class="h-screen flex flex-col flex-wrap items-center bg-sideBar-primary md:w-full">
+  <div class="sideNavBar-container h-full flex flex-col flex-wrap items-center bg-sideBar-primary md:w-full ">
+    <div class="h-screen flex flex-col flex-wrap items-center bg-sideBar-primary md:w-full ">
       <div class="flex">
         <router-link to="/user/department"><img class="my-10 w-10 h-10 sm:w-24 sm:h-24" src="/assets/images/build/LOGO_Piña-02.png"></router-link>  
       </div>
@@ -23,9 +23,13 @@
               
             </div>
           </div>
-          <div  class="text-white  ml-3 hover:text-indigo-500 cursor-pointer flex flex-row m-2" v-popover:foo.right>
+          <div  class="text-white  ml-3 hover:text-indigo-500 cursor-pointer flex flex-row m-2" @click="showNotifications=!showNotifications">
             <icon-base icon-name="notification"><Notification/></icon-base>
-            <div> <a class="ml-3 mr-3">Notificaciones</a></div>
+            <div>
+              <a class=" ml-3 mr-3">Notificaciones</a>
+              <span v-if="numbernotifications != 0" class=" items-center justify-center px-2 py-1 text-xs font-bold leading-none text-red-100 transform translate-x-1/2 -translate-y-1/2 bg-red-600 rounded-full">{{numbernotifications}}
+              </span>
+            </div>
             
           </div>
           <div v-if="idRol === 'administrador'|| 'responsable'" class="text-white  ml-3 hover:text-indigo-500 cursor-pointer flex flex-row m-2">
@@ -59,16 +63,32 @@
         </div>
       </div>
     </div>
-    <popover name="foo" :width="500">
+    <div class="fixed top-[200px] left-[200px] w-[500px] h-[300px] z-[51px] bg-white rounded-lg overflow-auto" v-show="showNotifications">
       Notificaciones
-      <div class="flex flex-row justify-around">
-        <div class="hover:text-sideBar-primary cursor-pointer">Todos</div>
-        <div>No leido</div>
-        <div>Me mencionaron</div>
-        <div>Me asignaron</div>
+      <div>
+        <div class="flex flex-row justify-around">
+          <div class="hover:text-sideBar-primary cursor-pointer" @click="openNotifications('all')">Todos</div>
+          <div class="hover:text-sideBar-primary cursor-pointer" @click="openNotifications('notread')">No leido</div>
+          <div class="hover:text-sideBar-primary cursor-pointer" @click="openNotifications('mentioned')">Me mencionaron</div>
+          <div class="hover:text-sideBar-primary cursor-pointer" @click="openNotifications('asigned')">Me asignaron</div>
+        </div>
+        <div class="spacer bg-sideBar-primary w-full h-0.5"></div>
+        <div class="tab-content">
+          <div id="sidebar" v-for="items in content" :key="items">
+            {{items['message']}}
+            <button v-show="items.readed == 0" @click="readed(items.id)">
+            read
+          </button>
+          <div>
+            {{items.created_at}}
+          </div>
+          </div>
+          
+        </div>
+      
       </div>
-      <div class="spacer bg-sideBar-primary w-full h-0.5"></div>
-    </popover>
+      
+    </div>
   </div>
 </template>
 
@@ -80,7 +100,7 @@ import List from '../icons/List.vue'
 import Mail from '../icons/Mail.vue'
 import Notification from '../icons/Notification.vue'
 import Schedule from '../icons/Schedule.vue'
-import { getUserToken, getUserDepartments, getAllTeamsFromDepartment } from '../../servicies/userServicies'
+import { getUserToken, getUserDepartments, getAllTeamsFromDepartment, getNotifications, readNotifications } from '../../servicies/userServicies'
 import { EventBus } from '../../event-bus'
 import Incidencias from '../icons/Incidencias.vue'
 
@@ -107,8 +127,15 @@ export default {
     departments: [],
     active: false,
     src: '',
-    exist: false
-    }
+    exist: false,
+    content: [],
+    all: [],
+    assign: [],
+    mention: [],
+    no_read:[],
+    notifications: {},
+    numbernotifications: 0,
+    showNotifications: false,    }
   },
   methods:{
     show () {
@@ -122,13 +149,49 @@ export default {
     },
     profileImg(file){
       this.src = file
-    }
-    
-  },
-  created(){
-       //GET USER departments
-      
-        const token = localStorage.getItem('validation_token');
+    },
+    readed(id_notification){
+            const token = localStorage.getItem('validation_token');
+            const formData = new FormData()
+            formData.append('id_notification', id_notification);
+            formData.append('token', token);
+      let promise = new Promise((resolve, reject) => {
+                resolve(readNotifications(formData, this.userInfo.id));
+              });
+              promise.then((response) => {
+                
+                this.fetchData()
+                this.openNotifications('notread')
+              });
+     
+    },
+    openNotifications(text){
+      this.content = ''
+      if(text == 'all')
+        this.content = this.all    
+      else if(text == 'notread')
+         this.content = this.no_read
+      else if(text == 'asigned')
+         this.content = this.assign
+      else
+        this.content = this.mention
+    },
+    getNotis(){
+      const token = localStorage.getItem('validation_token');
+      getNotifications(token,this.userInfo.id)
+      .then(data => {
+        this.notifications = data
+        this.all = data.all
+        if(this.content.length === 0)
+          this.content = data.all
+        this.no_read = data.no_read
+        this.numbernotifications = this.no_read.length
+        this.mention = data.mension
+        this.assign = data.assign
+      })
+    },
+    fetchData(){
+      const token = localStorage.getItem('validation_token');
         getUserToken(token)
         .then(data => {
           if(data == "ERROR: Token no valido" ){
@@ -150,14 +213,26 @@ export default {
           } ).catch(error => {
             this.exist = false
           })
-
-
-          getUserDepartments(token, this.userInfo.id).then(data => {
+      
+      this.getNotis()
+      getUserDepartments(token, this.userInfo.id).then(data => {
             this.departments = data
             getAllTeamsFromDepartment(token, this.departments[0].id).then(data => (this.teams = data))
             })
       });
-
+    },
+    
+  },
+  mounted(){
+    setInterval(()=> {
+     this.getNotis()}, 100000);
+    
+  },
+  created(){
+       //GET USER departments
+      
+        this.fetchData()
+        
       EventBus.$on('imgProfile', this.profileImg)
   },
 

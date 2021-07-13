@@ -30,7 +30,7 @@
                         <div class="w-52 text-black text-center font-fontColor-primary font-semibold">Haciéndose</div>
                         <div class="w-52 text-black text-center font-fontColor-primary font-semibold">Entregado</div>
                         <div class="w-80 text-black text-center font-fontColor-primary font-semibold cursor-pointer" @click="sort"> 	↨ Plazo</div>
-                        <div class="w-32 text-black text-center font-fontColor-primary font-semibold">Progreso</div>
+                        <!-- <div class="w-32 text-black text-center font-fontColor-primary font-semibold">Progreso</div> -->
                         <div class="w-32 text-black text-center font-fontColor-primary font-semibold">Tiempos</div>
                         <div class="w-80 text-black text-center font-fontColor-primary font-semibold">Última actualización</div>
                         <div class="w-32 text-black text-center font-fontColor-primary font-semibold">ID</div>
@@ -56,6 +56,8 @@
                     :responsable="responsable"
                     :tagsList="tagsList"
                     :usuarios="usuarios"
+                    :mentionList="mentionList"
+                    :numberResponsable="items.users.length"
                     :color="ht">
                     </TaskList>
 
@@ -120,7 +122,7 @@ export default {
         tagsList: Object,
         usuarios: Array,
         responsable: Array,
-        
+        mentionList: Array,
     },
     components: {
         TaskList,
@@ -148,6 +150,7 @@ export default {
             openMenu: false,
             sortDirection: '',
             resp: [],
+            orden: false,
             manager: '',
              tarea: {
                 "id": "1",
@@ -262,6 +265,7 @@ export default {
             EventBus.$emit('changeStatus', evt.to.id, evt.item.id)    
         },
         sort(){
+            this.orden = true
             if(this.sortDirection == 'asc')
                this.sortDirection = 'desc'
             else
@@ -269,7 +273,8 @@ export default {
         },
 
         managerFilter(id_user){
-            if(id_user != 0){
+
+          if(id_user != 0){
                 this.filtro = true
                 this.filterRespon = id_user
             }
@@ -290,37 +295,48 @@ export default {
     },
     created() {
         EventBus.$on('managerfilter', this.managerFilter)
+        EventBus.$on('focussearch', this.focusSearch)
         this.declareManager()
+        if(this.taskStatus == 1)
+            this.active = true
+        else if(this.taskStatus == 3)
+            this.active = false
+        else
+            this.active = false
     },
   computed:{
       filterTask: function(){
-          if(this.filtro)
           return this.taskList.filter((task) => {
             if(this.filtro)
                 for(let items in task.users){
                     if( parseInt(task.users[items].id_user)  ==  parseInt(this.filterRespon) ){
-                        return true
+                        return task.name.toUpperCase().match(this.search.toUpperCase())
                     }
                     return false
                 }
+                else if(this.orden){
+                    return this.taskList.sort((p1,p2) => {
+                        let modifier = 1;
+                        if(this.sortDirection === 'desc') 
+                            modifier = -1;
+                        else if (this.sortDirection === 'asc')
+                            modifier = 1;
+                        else
+                            modifier = 0;
+                        if(p1.time_limit_end < p2.time_limit_end) 
+                            return -1 * modifier; 
+                        if(p1.time_limit_end > p2.time_limit_end) 
+                            return 1 * modifier;
+                        return 0;
+                    });
+                }
+                else if(this.filter){
+                    return task.name.toUpperCase().match(this.search.toUpperCase())
+                }
             else
-              return task.name.match(this.search)
-          });
-          else
-          return this.taskList.sort((p1,p2) => {
-                    let modifier = 1;
-                    if(this.sortDirection === 'desc') 
-                        modifier = -1;
-                    else if (this.sortDirection === 'asc')
-                        modifier = 1;
-                    else
-                        modifier = 0;
-                    if(p1.time_limit_end < p2.time_limit_end) 
-                        return -1 * modifier; 
-                    if(p1.time_limit_end > p2.time_limit_end) 
-                        return 1 * modifier;
-                    return 0;
-                });
+              return task.name.toUpperCase().match(this.search.toUpperCase())
+          })
+         
       },
       
        

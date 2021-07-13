@@ -219,7 +219,7 @@ class Tasks extends AbstractController
             return $this->json($validation[1],'400');
 
         $CRUD = new CRUDController('tasks_files','id');
-
+        $file_name = '';
         try {
             $name = uniqid();
 
@@ -231,13 +231,12 @@ class Tasks extends AbstractController
             ));
 
          } catch (\Throwable $th) {
-             throw $th;
              //return $this->json($th,'400');
              return $this->json('ERROR: No se ha podido guardar el archivo','400');
          }
 
         $this->add_id_user_update($id_task,$validation[1]['id']);
-        return $this->json('OK');
+        return $this->json($file_name);
     }
 
     /**
@@ -280,10 +279,29 @@ class Tasks extends AbstractController
             ));
 
             $CRUD_tasks = new CRUDController('tasks','id');
-            $messages = $CRUD_tasks->one($id_task)['messages'] + 1;
+            $tarea = $CRUD_tasks->one($id_task);
+            $messages = $tarea['messages'] + 1;
             $CRUD_tasks->update($id_task,array(
                 'messages' => $messages
             ));
+
+            //menciones
+            if( str_contains($req->get('message'), 'data-mention') ){
+
+                $CRUD_users = new CRUDController('users','email');
+
+                $split = explode('data-id="',$req->get('message'));
+                unset($split[0]);
+                foreach ($split as $mention) {
+                    $user_mention = explode('">@',$mention)[0];
+                    $email = $user_mention . '@postal3.es';
+                    $user = $CRUD_users->one($email);
+                    
+                    $notification_text = $validation[1]['name'] . 'te ha mencionado en la tarea : '. $tarea['name'] . ' ('. $id_task .')';
+                    HelperController::push_notification( $user['id'], $notification_text, 1);
+                }
+            }
+        //menciones
              
          } catch (\Throwable $th) {
              //throw $th;
@@ -450,7 +468,7 @@ class Tasks extends AbstractController
             //Notificacion
             $CRUD_tasks = new CRUDController('tasks','id');
             $task = $CRUD_tasks->one($id_task);
-            $notification_text = 'Tarea asignada: "'. $task['name'] . '" ('. $id_task .')';
+            $notification_text = 'Tarea asignada: '. $task['name'] . ' ('. $id_task .')';
             HelperController::push_notification( $req->get('id_user'), $notification_text, 0, 1 );
             //Notificacion
         } catch (\Throwable $th) {
