@@ -21,11 +21,14 @@
 
 <script>
 import {Login} from '../servicies/userServicies'
+import { getUserToken, getAllTeamsFromUser} from '../servicies/userServicies'
 export default {
     name: 'Login',
     data(){
       return{
         getUsers: [],
+        userInfo: [],
+        teams:[],
         input:{
           email: "",
           password: ""
@@ -43,7 +46,14 @@ export default {
           .then(data => {
             localStorage.setItem('validation_token', data)
             this.$vToastify.success("Login con éxito");
-            this.$router.push('/user/welcome')
+            const token = localStorage.getItem('validation_token');
+            getUserToken(token).then(data => {
+              this.userInfo = data
+              getAllTeamsFromUser(token, this.userInfo.id).then(data =>{
+                (this.teams = data)
+                this.$router.push('/board/' + this.teams[0].id + '/' + this.teams[0].name)
+              })
+            })
           })
           .catch(error => {
             this.errorMessage = error;

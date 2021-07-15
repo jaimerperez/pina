@@ -7,8 +7,8 @@ services:
         image: nginx:stable-alpine
         container_name: nginx-container
         restart: always
-        #ports:
-        #    - "8081:80"
+        ports:
+            - "8081:80"
         volumes:
             - ./app:/var/www/project
             - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
@@ -16,22 +16,6 @@ services:
             - php74-service
             - mariadb-service
             - node-service
-        labels:
-          traefik.enable: true
-          traefik.http.routers.pinha-http.rule: "Host(`xn--pia-8ma.org`) || Host(`pinha.hydra-net.es`)"
-          traefik.http.routers.pinha-http.entrypoints: web
-          traefik.http.routers.pinha-http.middlewares: pinha-https
-          traefik.http.middlewares.pinha-https.redirectscheme.scheme: https
-          traefik.http.middlewares.pinha-https.redirectscheme.permanent: true
-          traefik.http.routers.pinha-https.entrypoints: websecure
-          traefik.http.routers.pinha-https.rule: "Host(`xn--pia-8ma.org`) || Host(`pinha.hydra-net.es`)"
-          traefik.http.services.pinha-https.loadbalancer.server.port: 80
-          traefik.http.routers.pinha-https.tls: true
-          traefik.http.routers.pinha-https.tls.certresolver: cerbot
-
-        networks:
-            - pinha
-            - traefik
 
     # php
     php74-service:
@@ -42,8 +26,6 @@ services:
         restart: always
         volumes:
             - ./app:/var/www/project
-        networks:
-            - pinha
 
     # mysql
     mariadb-service:
@@ -61,8 +43,6 @@ services:
             MYSQL_USER: user
             MYSQL_ROOT_PASSWORD: root
             MYSQL_PASSWORD: root
-        networks:
-            - pinha
 
     #phpmyadmin
     phpmyadmin:
@@ -71,10 +51,8 @@ services:
         environment:
             PMA_ARBITRARY: 1
             PMA_HOST: mariadb
-        #ports:
-            #- "8080:80"
-        networks:
-            - pinha
+        ports:
+            - "8080:80"
     # node
     node-service:
         build:
@@ -88,11 +66,3 @@ services:
             - php74-service
         stdin_open: true
         tty: true
-        networks:
-            - pinha
-
-networks:
-    pinha:
-    traefik:
-       external:
-          name: traefik_default

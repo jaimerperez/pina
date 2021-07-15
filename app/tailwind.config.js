@@ -9,40 +9,49 @@ module.exports = {
   theme: {
     colors:{
       sideBar:{
-        'primary': '#0D3C44',
+        'primary': '#AADDF9',
       },
       fontColor:{
-        'primary': '#4D4D4D',
+        'primary': '#000000',
+      },
+      buttonColor:{
+        'primary': '#79C423'
       },
       links:{
         'primary': '#3390FF', 
       },
       block:{
         working:{
-          'primary': '#1DA0B5',
-          'secondary': '#DDF2F4',
+          'primary': '#BF95FD',
+          'secondary': '#d8bffd',
           },
           pending:{
-          'primary': '#DE650F',
-          'secondary': '#F7DFC2',
+          'primary': '#FFD000',
+          'secondary': '#ffe77f',
           },
           complete:{
-          'primary': '#199961',
-          'secondary': '#D1EDD4',
+          'primary': '#2DBF28',
+          'secondary': '#96df93',
           },
+      },
+      boardNames:{
+       'marketing': '#F987FA',
+       'programacion': '#FA7107',
+       'sistemas': '#0070B3',
+       'plataformas': '#009649',
       },
       tags:{
         'vidaomuerte': '#000000',
-        'solicitadomanuel': '#93278F',
-        'inminente': '#F15A24',
-        'urgente': '#ED1E79',
-        'normal': '#39B54A',
+        'solicitadomanuel': '#662483',
+        'inminente': '#E5006B',
+        'urgente': '#E51A2F',
+        'normal': '#79C423',
         'paso': '#999999',
         'script': '#4D4D4D',
         'proceso': '#FF931E',
-        'info': '#3FA9F5',
-        'estancado': '#C1272D',
-        'solicitada': '#2E3192',
+        'info': '#66AADD',
+        'estancado': '#EF7F7E',
+        'solicitada': '#005DA1',
       },
       transparent: 'transparent',
       current: 'currentColor',

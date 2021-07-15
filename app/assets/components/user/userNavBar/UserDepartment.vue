@@ -1,14 +1,14 @@
 <template>
-  <div class="h-full w-full flex flex-col justify-around items-center text-4xl text-sideBar-primary font-semibold">
+  <div class="h-full w-full flex flex-col justify-around items-center text-4xl text-fontColor-primary font-semibold">
     <div class="header-content-tittle w-full mt-4">
       <div class="tittle-header ml-20 mb-4 ">
           Equipos
       </div>
-      <div class="spacer bg-sideBar-primary w-11/12 h-0.5 m-auto"></div>
+      <div class="spacer bg-fontColor-primary w-11/12 h-0.5 m-auto"></div>
     </div>
     <div class="department-content w-full h-full flex flex-wrap flex-row justify-center items-center">
       <div class="flex h-2/5 w-2/5 justify-center items-center align-middle" v-for="index in teamsDepartment" :key="index.id" :value="index.id">
-        <img class="w-24 h-24" :src="`/assets/images/departments/${index.id}`">
+        <img class="w-32 h-32" :src="`/assets/images/teams/${index.id}.svg`">
         <router-link :to="{ name: 'welcometeams', params: {departmentName: index.name, departmentID: index.id } }"> <p class="text-center"> {{index.name}}</p> </router-link>
       </div>
     </div>

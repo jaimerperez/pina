@@ -112,6 +112,18 @@ class Tasks extends AbstractController
                     $CRUD_tasks->update($id_task,array(
                         'id_status ' => 4
                     ));
+                    //parar contador
+                    $task = $CRUD_tasks->one($id_task);
+                    $t = [];
+                    if( $task['pause'] == 0 )
+                    {
+                        $diff = time() - strtotime($task['last_play']);
+                        $t['pause'] = 1;
+                        $t['last_play'] = '0000-00-00 00:00:00';
+                        $t['time_working'] = $task['time_working'] + $diff ;
+                        $CRUD_tasks->update($id_task,$t);
+                    }
+                    //parar contador
                 }
 
                 $this->add_id_user_update($id_task,$validation[1]['id']);
@@ -139,6 +151,23 @@ class Tasks extends AbstractController
             $CRUD_tasks->update($id_task,array(
                 'id_status' => $req->get('id_status')
             ));
+            if( $req->get('id_status') == 4 ){
+                //parar contador
+                $task = $CRUD_tasks->one($id_task);
+                $t = [];
+                //parar contador
+                    $task = $CRUD_tasks->one($id_task);
+                    $t = [];
+                    if( $task['pause'] == 0 )
+                    {
+                        $diff = time() - strtotime($task['last_play']);
+                        $t['pause'] = 1;
+                        $t['last_play'] = '0000-00-00 00:00:00';
+                        $t['time_working'] = $task['time_working'] + $diff ;
+                        $CRUD_tasks->update($id_task,$t);
+                    }
+                //parar contador
+            }
         } catch (\Throwable $th) {
             //throw $th;
             return $this->json('ERROR, no se ha podido cambiar el estado','400');
@@ -219,7 +248,7 @@ class Tasks extends AbstractController
             return $this->json($validation[1],'400');
 
         $CRUD = new CRUDController('tasks_files','id');
-        $file_name = '';
+
         try {
             $name = uniqid();
 
@@ -231,12 +260,13 @@ class Tasks extends AbstractController
             ));
 
          } catch (\Throwable $th) {
+             throw $th;
              //return $this->json($th,'400');
              return $this->json('ERROR: No se ha podido guardar el archivo','400');
          }
 
         $this->add_id_user_update($id_task,$validation[1]['id']);
-        return $this->json($file_name);
+        return $this->json('OK');
     }
 
     /**
@@ -279,29 +309,10 @@ class Tasks extends AbstractController
             ));
 
             $CRUD_tasks = new CRUDController('tasks','id');
-            $tarea = $CRUD_tasks->one($id_task);
-            $messages = $tarea['messages'] + 1;
+            $messages = $CRUD_tasks->one($id_task)['messages'] + 1;
             $CRUD_tasks->update($id_task,array(
                 'messages' => $messages
             ));
-
-            //menciones
-            if( str_contains($req->get('message'), 'data-mention') ){
-
-                $CRUD_users = new CRUDController('users','email');
-
-                $split = explode('data-id="',$req->get('message'));
-                unset($split[0]);
-                foreach ($split as $mention) {
-                    $user_mention = explode('">@',$mention)[0];
-                    $email = $user_mention . '@postal3.es';
-                    $user = $CRUD_users->one($email);
-                    
-                    $notification_text = $validation[1]['name'] . 'te ha mencionado en la tarea : '. $tarea['name'] . ' ('. $id_task .')';
-                    HelperController::push_notification( $user['id'], $notification_text, 1);
-                }
-            }
-        //menciones
              
          } catch (\Throwable $th) {
              //throw $th;

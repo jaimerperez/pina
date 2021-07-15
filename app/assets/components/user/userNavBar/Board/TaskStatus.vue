@@ -22,33 +22,31 @@
                             
                         </div>
                         
-                        <div class="w-20 text-black text-center text-fontColor-primary font-semibold"></div>
-                        <div class="w-32 text-black text-center text-fontColor-primary font-semibold">Responsable</div>
-                        <div class="w-32 text-black text-center font-fontColor-primary font-semibold">Archivos</div>
-                        <div class="w-52 text-black text-center font-fontColor-primary font-semibold">Prioridad</div>
-                        <div class="w-52 text-black text-center font-fontColor-primary font-semibold">Autorización</div>
-                        <div class="w-52 text-black text-center font-fontColor-primary font-semibold">Haciéndose</div>
-                        <div class="w-52 text-black text-center font-fontColor-primary font-semibold">Entregado</div>
-                        <div class="w-80 text-black text-center font-fontColor-primary font-semibold cursor-pointer" @click="sort"> 	↨ Plazo</div>
-                        <!-- <div class="w-32 text-black text-center font-fontColor-primary font-semibold">Progreso</div> -->
-                        <div class="w-32 text-black text-center font-fontColor-primary font-semibold">Tiempos</div>
-                        <div class="w-80 text-black text-center font-fontColor-primary font-semibold">Última actualización</div>
-                        <div class="w-32 text-black text-center font-fontColor-primary font-semibold">ID</div>
-                        <div class="w-50  text-black text-center font-fontColor-primary font-semibold">Correo para avisos</div>
-                        <div class="w-32 text-black text-center font-fontColor-primary font-semibold"></div>
+                        <div class="w-20 text-black text-center text-fontColor font-semibold"></div>
+                        <div class="w-32 text-black text-center text-fontColor font-semibold">Responsable</div>
+                        <div class="w-32 text-black text-center font-fontColor font-semibold">Archivos</div>
+                        <div class="w-52 text-black text-center font-fontColor font-semibold">Prioridad</div>
+                        <div class="w-52 text-black text-center font-fontColor font-semibold">Autorización</div>
+                        <div class="w-52 text-black text-center font-fontColor font-semibold">Haciéndose</div>
+                        <div class="w-52 text-black text-center font-fontColor font-semibold">Entregado</div>
+                        <div class="w-80 text-black text-center font-fontColor font-semibold cursor-pointer" @click="sort"> 	↨ Plazo</div>
+                        <div class="w-32 text-black text-center font-fontColor font-semibold">Progreso</div>
+                        <div class="w-32 text-black text-center font-fontColor font-semibold">Tiempos</div>
+                        <div class="w-80 text-black text-center font-fontColor font-semibold">Última actualización</div>
+                        <div class="w-32 text-black text-center font-fontColor font-semibold">ID</div>
+                        <div class="w-50 text-black text-center font-fontColor font-semibold">Correo para avisos</div>
+                        <div class="w-32 text-black text-center font-fontColor font-semibold"></div>
                     
                 </div>
             </div>
             <draggable :list="filterTask" group="task" v-show="active"  
             @end="onEnd" 
-            class="" :id="taskStatus">
-                    
+            class="" :id="taskStatus">  
                     <TaskList
                     v-for="items in filterTask"
                     :taskStatus="status" 
                     :key="items.id"
                     :id="items.id"
-                    class="board"
                     :teamid="boardTeamID"
                     :draggable="true"
                     @change="statuschange(items.id)"
@@ -58,7 +56,8 @@
                     :usuarios="usuarios"
                     :mentionList="mentionList"
                     :numberResponsable="items.users.length"
-                    :color="ht">
+                    :color="color"
+                    :colorSecondary="colorSecondary">
                     </TaskList>
 
             </draggable>  
@@ -116,6 +115,7 @@ export default {
         boardTeamID: String,
         placeholder: String,
         color: String,
+        colorSecondary: String,
         taskList: Array,
         ht: String,
         search: String,
@@ -152,13 +152,14 @@ export default {
             resp: [],
             orden: false,
             manager: '',
+            dateFake: '',
              tarea: {
                 "id": "1",
                 "id_user_update": null,
                 name: '',
                 "store": "0",
-                "time_limit": "0000-00-00 00:00:00",
-                "time_limit_end": "0000-00-00 00:00:00",
+                time_limit: "2021-14-02",
+                time_limit_end: "2021-14-02",
                 "messages": "0",
                 "incident": "0",
                 "email": null,
@@ -256,6 +257,8 @@ export default {
         onUpdate(){
             this.tarea.name = this.content
             this.tarea.users[0].id_user = this.resp.team.id
+            this.tarea.time_limit = this.dateFake
+            this.tarea.time_limit_end = this.dateFake
             this.taskList.push(this.tarea)
             EventBus.$emit('update',this.content, this.taskStatus)
             this.content = ''
@@ -288,8 +291,7 @@ export default {
             .then(data =>{ 
                 (this.resp = data) 
                 this.manager = this.resp.team.id
-            })
-                  console.log('resp: ' + this.manager)  
+            }) 
         },
        
     },
@@ -303,6 +305,13 @@ export default {
             this.active = false
         else
             this.active = false
+
+        let date1 = new Date()
+        let daystart = date1.getDate()
+        
+        let monthstart = String(date1.getMonth()+1)
+        let yearstart = String(date1.getFullYear())
+        this.dateFake = yearstart + '-' + monthstart + '-' + daystart
     },
   computed:{
       filterTask: function(){

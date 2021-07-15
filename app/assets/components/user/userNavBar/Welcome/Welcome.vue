@@ -1,15 +1,18 @@
 <template>
-  <div class="h-full flex flex-col items-center text-4xl">
-    <div class="tittle-header ml-20 mb-4 ">
-          Departamentos
+  <div class="h-full w-full flex flex-col justify-around items-center font-semibold text-4xl">
+      <div class="header-content w-full mt-4">
+        <div class="tittle-header ml-20 mb-4 "> Departamentos</div>
+          
+        <div class="spacer bg-black w-11/12 h-0.5 m-auto"></div>
       </div>
-      <div class="spacer bg-sideBar-primary w-11/12 h-0.5 m-auto"></div>
+      
+
     <div class="department-container h-full flex flex-col justify-around ">
         <div v-for="index in departments" :key="index.id" :value="index.id" class="flex flex-row">
           <div>
-            <img :src="`/assets/images/departments/${index.id}`" class="w-24 h-24 mx-4">
+            <img class="w-60 h-60 mx-4" :src="`/assets/images/departments/${index.id}.svg`" >
           </div>
-            <router-link :to="{ name: 'incidencias', params: {departmentName: index.name, departmentID: index.id } }"> {{index.name}} </router-link>
+            <router-link class="m-auto" :to="{ name: 'incidencias', params: {departmentName: index.name, departmentID: index.id } }" > {{index.name}} </router-link>
         </div>
     </div>
   </div>

@@ -9,9 +9,7 @@
     
     <div class="fixed top-0 bg-white z-30" style="width:2850px">
       <div class="h-16 justify-between items-center bg-opacity-100  mb-10">
-        <div class="flex fixed text-4xl capitalize ml-20 pt-10">
-        {{boardName}}
-        </div>
+        <BoardName :boardName="boardName"/>
         <div class="flex fixed right-0 mr-20 pt-10">
           <div class="cursor-pointer mx-2">
             <router-link :to="{ name: 'StoreFile', params: {boardName:boardName, boardId:boardTeamID }}">
@@ -41,7 +39,7 @@
       <br><br><br>
     </div>
       <!-- SECCIONES DE ESTADOS  -->
-    <div class="text-block-working-primary bg-block-working-secondary mx-12 my-16" style="width:2850px" @mouseover="typeStatus(1)">
+    <div class="text-block-working-primary mx-12 my-16" style="width:2850px" @mouseover="typeStatus(1)">
       <TaskStatus
       id="board-1" 
       v-if="boardTeamID" 
@@ -53,10 +51,10 @@
       :usuarios="users"
       :tagsList="tagsList"
       :mentionList="mentionList"
-      class=" col-3" status="Trabajando" taskStatus="1" :ht="'#1DA0B5'" :color="'bg-block-working-secondary'" :placeholder="'+ Añadir nueva tarea'" 
+      class=" col-3" status="Trabajando" taskStatus="1" :ht="'#000000'" :color="'bg-block-working-primary'" :colorSecondary="'bg-block-working-secondary'" :placeholder="'+ Añadir nueva tarea'" 
       />
     </div>
-    <div class="text-block-pending-primary bg-block-pending-secondary mx-12 my-16" style="width:2850px" @mouseover="typeStatus(3)"> 
+    <div class="text-block-pending-primary  mx-12 my-16" style="width:2850px" @mouseover="typeStatus(3)"> 
       <TaskStatus
       id="board-2"
       v-if="boardTeamID" 
@@ -68,10 +66,10 @@
       :usuarios="users"
       :tagsList="tagsList"
       :mentionList="mentionList"
-      class="col-3" status="Pendientes" taskStatus="3" :ht="'#DE650F'" :color="'bg-block-pending-secondary'" :placeholder="'+ Añadir nueva tarea'"
+      class="col-3" status="Pendientes" taskStatus="3" :ht="'#000000'" :color="'bg-block-pending-primary'" :colorSecondary="'bg-block-pending-secondary'" :placeholder="'+ Añadir nueva tarea'"
       />
     </div>
-    <div class="text-block-complete-primary bg-block-complete-secondary mx-12 my-16" style="width:2850px" @mouseover="typeStatus(4)">
+    <div class="text-block-complete-primary  mx-12 my-16" style="width:2850px" @mouseover="typeStatus(4)">
       <TaskStatus
         id="board-3"
         v-if="boardTeamID" 
@@ -83,7 +81,7 @@
         :usuarios="users"
         :tagsList="tagsList"
         :mentionList="mentionList"
-        class=" col-3" status="Completadas" taskStatus="4" :ht="'#199961'" :color="'bg-block-complete-secondary'" :placeholder="'+ Añadir nueva tarea'" 
+        class=" col-3" status="Completadas" taskStatus="4" :ht="'#000000'" :color="'bg-block-complete-primary'" :colorSecondary="'bg-block-complete-secondary'" :placeholder="'+ Añadir nueva tarea'" 
         />
     </div>
     
@@ -139,6 +137,7 @@ import Draggable from 'vuedraggable'
 import TaskStatus from './Board/TaskStatus.vue'
 import SlidePanel from './Board/subitems/SlidePanel'
 import DatePicker from './Board/subitems/DatePicker'
+import BoardName from './Board/subitems/BoardName.vue'
 import {getAllUsers, getUserToken, createUserInTeam, getAllTaskFromTeam, postTaskToTeam, 
 putChangeTags, deleteTask,putChangeStatusTask, setDate, ChangeSubTags, postSubTask, 
 postTime, postFilesTask, deleteFiles, postAddUserToTask, deleteManager, getUserTeams, createUser,
@@ -157,6 +156,7 @@ export default {
     SlidePanel,
     DatePicker,
     FilterPerson,
+    BoardName,
   },
   props:{
     boardName: String,
@@ -588,6 +588,7 @@ export default {
     EventBus.$on('editname', this.fetchData)
     EventBus.$on('settime', this.setTime)
     EventBus.$on('settimesubtask', this.setTimeSubtask)
+    EventBus.$on('router',this.fetchData)
   },
     watch: {
       '$route': 'fetchData',

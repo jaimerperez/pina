@@ -7,14 +7,32 @@
 
 <script>
 import LoginForm from '../components/LoginForm'
+import { getUserToken, getAllTeamsFromUser} from '../servicies/userServicies'
 export default {
   name: 'Login',
   components: {
     LoginForm
   },
-  created: function() {
+  data(){
+    return{
+      userInfo: [],
+      teams: [],
+    }
+  },
+  created() {
         if(localStorage.getItem('validation_token') !== null)
-            this.$router.push('/user')    
+        {
+          console.log('entra aqui')
+          const token = localStorage.getItem('validation_token');
+          getUserToken(token).then(data => {
+          this.userInfo = data
+          console.log(this.userInfo.id)
+          getAllTeamsFromUser(token, this.userInfo.id).then(data => (this.teams = data));
+
+          this.$router.push('/board/' + this.teams[0].id + '/' + this.teams[0].name)
+         })
+        }
+         
   },
 
 }

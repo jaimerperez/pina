@@ -1,4 +1,6 @@
 {
+    "name": "pina",
+    "version": "1.5.0",
     "devDependencies": {
         "@nuxtjs/vuetify": "^1.11.3",
         "@symfony/stimulus-bridge": "^1.1.0",

@@ -107,12 +107,20 @@ class Teams extends AbstractController
         $CRUD_users_tasks = new CRUDController('users_tasks','id');
         $CRUD_users_subtasks = new CRUDController('users_subtasks','id');
         $CRUD_tasks_files= new CRUDController('tasks_files','id');
+
+        $CRUD_tags= new CRUDController('tags','id');
         
         foreach ($tasks as $t) {
             $status = $CRUD_tasks_status->one($t["id_status"])['name'];
             $t['status'] = $status;
             //tags
-            $tags = $CRUD_tasks_tags->plenty( array('id_task' => $t['id']));
+            $task_tags = $CRUD_tasks_tags->plenty( array('id_task' => $t['id']));
+            $tags = [];
+            foreach ($task_tags as $task_tag) {
+                $tag = $CRUD_tags->one($task_tag["id_tag"]);
+                $tag_type = $tag["id_type"] - 1 ;
+                $tags[$tag_type] = $tag;
+            }
             $t['tags'] = $tags;
             //tags
             //subtask
@@ -136,11 +144,11 @@ class Teams extends AbstractController
             //progress
             $progress = 0;
             foreach ($tags as $tag ) {
-                if( $tag['id_tag'] == 134 )
+                if( $tag['id'] == 134 )
                     $progress += 10;
-                if( $tag['id_tag'] == 136 )
+                if( $tag['id'] == 136 )
                     $progress += 60;
-                if( $tag['id_tag'] == 135 )
+                if( $tag['id'] == 135 )
                     $progress += 30;
             }
             $t['progress'] = $progress;

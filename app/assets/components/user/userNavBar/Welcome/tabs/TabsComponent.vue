@@ -19,11 +19,16 @@
         <div class="px-4 py-5 flex-auto">
           <div class="tab-content tab-space">
             <div v-bind:class="{'hidden': openTab !== 1, 'block': openTab === 1}">
-                      <Organization :id_team="departmentID"/>    
+                <Organization :id_team="departmentID"/>    
             </div>
             <div v-bind:class="{'hidden': openTab !== 2, 'block': openTab === 2}">
               <router-link :to="{ name: 'profileUser', params: {idUser: organization.team.id } }">
-                <img class="h-10 w-10 rounded mx-3 mt-2"  :src="`/assets/images/users/${organization.team.id}`">
+                <div v-if="exist">
+                  <img class="h-10 w-10 rounded mx-3 mt-2" :src="`/assets/images/users/${organization.team.id}`" >
+                </div>
+                <div v-else>
+                  <img class="w-12 h-12 rounded-full " src="/assets/images/users/avatar.svg">
+                </div>
               </router-link>
               <span>{{organization.team.name}}</span>
               <div v-for="items in organization.users" :key="items.id">
@@ -75,6 +80,9 @@ export default {
     toggleTabs: function(tabNumber){
       this.openTab = tabNumber
     },
+    exist(ID){
+
+    },
     addUserToDepartment(){
        const token = localStorage.getItem('validation_token');
         for(const user in this.users) {
@@ -102,7 +110,25 @@ export default {
 
       getAllUsersFromDepartment(token, this.departmentID).then(data => (this.usersDepartments = data));
       
-      getOrganization(token,this.departmentID ).then(data => (this.organization = data));
+      getOrganization(token,this.departmentID ).then(data =>{
+        (this.organization = data);
+        
+        fetch("/assets/images/users/" + this.organization.team.id ) 
+          .then( response => {
+
+              if(response.ok){
+                console.log('entra')
+                this.exist = true
+              }
+              else{
+                this.exist = false
+              }
+          } ).catch(error => {
+            this.exist = false
+          })
+      });
+       
+       
     }
   },
   created(){

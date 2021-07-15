@@ -1,8 +1,8 @@
 <template>
-    <div class="flex flex-row">
+    <div class="flex flex-row text-black" :class="colorSecondary">
         <SlidePanel v-show="opentab" :name="subtask.name" :id="subtask.id" :message="messages" :users="usuarios" :task="false" :opentab="opentab"/>
             <!-- NAME SUBTASK -->
-        <div class="w-80 flex flex-row hover:text-indigo-600 border border-white align-middle ">
+        <div class="w-80 hover:text-indigo-600 border border-white align-middle ">
             <span class="flex w-full justify-between" v-on:click="toggle(subtask.id, subtask.name)">
                 <p class="truncate px-2" :contenteditable="true" v-on:blur="editName(subtask.id)" :title="subtask.name" :id="'name' + subtask.id" ref="input" >{{subtask.name}}</p> 
                 <icon-base viewBox="0 0 1080 1080"  width="25" height="25" icon-name="editar" @click.native="focusName" class="cursor-pointer inline-block"><Editar/></icon-base>
@@ -132,6 +132,7 @@ export default {
     props:{
         subtask: Object,
         color: String,
+        colorSecondary: String,
         items: Object,
         teamid: String
     },

@@ -1,11 +1,11 @@
 <template>
-<div class="flex flex-row">
-    <div v-if="exist" class="profile-image" >
-        <img :src="`/assets/images/users/${userID}`" class="w-10 h-10 opacity-1 rounded-full">
-    </div>
-    <div v-else >
-        <img class="w-10 h-10" :src="require(`../../../../../media/users/avatar-loading.png`)" title="mammals">
-    </div>
+<div class="member-list flex flex-row">
+    <div v-if="exist">
+                  <img class="h-10 w-10 rounded mx-3 mt-2" :src="`/assets/images/users/${userID}`" >
+                </div>
+                <div v-else>
+                  <img class="w-12 h-12 rounded-full " src="/assets/images/users/avatar.svg">
+                </div>
    <span class="text-xl">{{userName}}{{userSurname}}</span>
 </div>
         
@@ -26,12 +26,18 @@ export default {
         
     },
     created(){
-        try {
-            require(`../../../../../media/users/${this.userID}.png`).default
-            this.exist = true
-          } catch (e) {
+       fetch("/assets/images/users/" + this.userID ) 
+          .then( response => {
+
+              if(response.ok){
+                this.exist = true
+              }
+              else{
+                this.exist = false
+              }
+          } ).catch(error => {
             this.exist = false
-          }
+          })
     }
 }
 </script>

@@ -2,7 +2,7 @@
     <div class="flex flex-row mx-4 justify-center">
        <div 
             @click="focusDatepicker"
-            :class="[taskStatus == 1 ? 'bg-block-working-primary' : taskStatus == 3 ? 'bg-block-pending-primary' : 'bg-block-complete-primary', 'rounded-xl p-2 text-white text-center placeholder-white placeholder-opacity-50 cursor-pointer']">
+            :class="[taskStatus == 1 ? 'bg-block-working-secondary' : taskStatus == 3 ? 'bg-block-pending-secondary' : 'bg-block-complete-secondary', ' rounded-xl p-2 text-fontColor text-center placeholder-white placeholder-opacity-50 cursor-pointer']">
            <div v-if="fechaInicioFormateada == fechaFinalFormateada">
                {{fechaFinalFormateada}}
            </div>
@@ -71,7 +71,7 @@ export default {
         },
         format: 'DD-MM-YY',
         dateInput:{
-            inputClass: 'hidden text-white text-center placeholder-white placeholder-opacity-50 cursor-pointer bg-block-working-primary',
+            inputClass: 'hidden text-fontColor text-center placeholder-white placeholder-opacity-50 cursor-pointer bg-block-working-primary',
             refName: 'fecha',
             id: 'fecha'+ this.id_task
         },

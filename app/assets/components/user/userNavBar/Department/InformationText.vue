@@ -1,24 +1,24 @@
 <template>
 <div>
   <div v-if="id == 3">
-      ¿Tienes algun problema con las plataformas ?
-      ¿Quieres solicitar la creacion de una nueva plataforma ?
+      ¿Tienes algún problema con las plataformas ? <br>
+      ¿Quieres solicitar la creación de una nueva plataforma ?
       
     </div>
-  <div v-else-if="id == 5">
-      ¿Tienes problemas con sinergy, una web una aplicacion de la empresa, etc ?
+  <div v-else-if="id == 2">
+      ¿Tienes problemas con sinergy, una web, una aplicación de la empresa, etc ?
       
   </div>
-  <div v-else-if="id == 7">
-      ¿Tienes problemas con tu equipo o no tienes red ?
-      ¿Necesitas crear, modificar o solucionar problemas con cuentas corporativas de correo electronico ?
+  <div v-else-if="id == 1">
+      ¿Tienes problemas con tu equipo o no tienes red ? <br>
+      ¿Necesitas crear, modificar o solucionar problemas con cuentas corporativas de correo electrónico ?
       
   </div>
   <div v-else>
-      ¿Quieres lanzar una campaña de marketing redes sociales, etc ?
+      ¿Quieres lanzar una campaña de marketing, redes sociales, etc ?
   </div>
   <router-link :to="{ name: 'incidents', params: {teamName: teamName, teamID: id, departmentName: departmentName} }">
-      <button class="bg-sideBar-primary text-white rounded m-auto"> Haz click aqui</button>
+      <button class="mt-4 bg-buttonColor-primary text-black p-2 rounded-xl"> &lt;&lt; Haz click aqui</button>
     </router-link>
   </div>
 </template>

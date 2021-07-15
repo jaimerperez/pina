@@ -23,6 +23,25 @@ class APIController extends AbstractController
 {
 
     /**
+        * @Route("/api/notifications/{id_notification}", methods={"DELETE"})
+     */
+    public function delete_notification(String $id_notification,Request $request): Response
+    {
+        $req = $request->request; //'DELETE
+        $parameters = ['token'];
+        
+        $validation = HelperController::validate_req($req,$parameters);
+        if(! $validation[0])
+            return $this->json($validation[1],'400');
+
+        $CRUD_notification = new CRUDController('notifications','id');
+
+        $CRUD_notification->delete(  $id_notification );
+
+        return $this->json('Notificacion eliminada con exito');
+    }
+
+    /**
      * @Route("/assets/images/{type}/{name}", methods={"GET"})
      */
     public function getImg(string $type, string $name ,Request $request)
@@ -175,6 +194,10 @@ class APIController extends AbstractController
         $CRUD_teams = new CRUDController('teams','id');
         $team = $CRUD_teams->one($id_team);
 
+        $id_user = $req->get('id_user');
+        $CRUD_users = new CRUDController('users','id');
+        $user = $CRUD_users->one($id_user);
+
         $mesesN=array(1=>"Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre");
         $ano = date("Y");
 
@@ -188,7 +211,7 @@ class APIController extends AbstractController
         $mes_start_str = $mesesN[$mes_start];
         
         $email = new EmailController();
-        $address = $id_team == 4 ? 'sandra.soutelo@postal3.es' : 'cristian.perez@postal3.es';
+        $address = $user['email'];
         $subject = 'INFORME SEMANAL ' . strtoupper($team['name']);
         $periodo = "$dia_start de $mes_start_str al $dia de $mes_str";
         $body = "<h1>$subject</h1>";

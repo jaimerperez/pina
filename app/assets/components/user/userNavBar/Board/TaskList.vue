@@ -1,6 +1,6 @@
 <template>
 <div v-show="taskList.store == '0'" :id="taskList.id">
-   <div class="task-container flex flex-row text-fontColor-primary hover:bg-gray-200 cursor-pointer" style="width:3000px" >
+   <div class="task-container flex flex-row mx-12 text-fontColor-primary hover:bg-gray-200 cursor-pointer" style="width:3000px" :class="color">
         <SlidePanel v-show="opentab" :name="taskList.name" :mentionList="mentionList" :id="taskList.id" :message="messages" :users="usuarios" :task="true" :opentab="opentab"/>
             <!-- NOMBRE Y COMENTARIOS --> 
                 <div class="w-80 hover:text-indigo-600 border border-white align-middle px-4">
@@ -68,54 +68,28 @@
                  <!-- TAGS -->
                 
                     <!-- PRIORIDAD -->
-                    <div class="w-52 hover:text-indigo-600 border border-white align-middle" >
-                        <div  v-for="items in tagsList.tags" :key="items.id">
-                                <div  v-for="el in taskList.tags" :key="el.id">
-                                    <div  v-if="items.id == el.id_tag">
-                                        <div v-if="items.id_type == 1" v-popover:prioridad.bottom v-on:click="setID=taskList.id">
-                                            <Tag :tagName="items.name"/>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
+                    <div class="prioridad w-52 hover:text-indigo-600 border border-white align-middle" >
+                        <div class="h-full align-middle" v-if="taskList.tags[0].id_type == 1" v-popover:prioridad.bottom v-on:click="setID=taskList.id">
+                            <Tag :tagName="taskList.tags[0].name"/>
+                        </div>
                     </div>
                     <!-- AUTORIZACION -->
                     <div class="w-52 hover:text-indigo-600 border border-white align-middle">
-                        <div v-for="items in tagsList.tags" :key="items.id">
-                            <div v-for="el in taskList.tags" :key="el.id">
-                                <div v-if="items.id == el.id_tag">
-                                    <span v-if="items.id_type=='2'" v-popover:autorizacion.bottom  v-on:click="setID=taskList.id">
-                                        <Tag :tagName="items.name"/>
-                                        
-                                    </span>
-                                </div>
-                            </div>
-                        </div>                
+                        <div class="h-full align-middle" v-if="taskList.tags[1].id_type=='2'" v-popover:autorizacion.bottom  v-on:click="setID=taskList.id">
+                            <Tag :tagName="taskList.tags[1].name"/>
+                        </div>             
                     </div>
                     <!-- HACIENDOSE -->
                     <div class="w-52 hover:text-indigo-600 border border-white align-middle">
-                        <h1 v-for="items in tagsList.tags" :key="items.id">
-                            <div v-for="el in taskList.tags" :key="el.id">
-                                <div v-if="items.id == el.id_tag">
-                                    <div v-if="items.id_type=='3'" v-popover:haciendose.bottom v-on:click="setID=taskList.id">
-                                        <Tag :tagName="items.name"/>
-                                        
-                                    </div>
-                                </div>
-                            </div>
-                        </h1>                        
+                        <div class="h-full" v-if="taskList.tags[2].id_type=='3'" v-popover:haciendose.bottom v-on:click="setID=taskList.id">
+                            <Tag :tagName="taskList.tags[2].name"/>
+                        </div>                     
                     </div>
                     <!-- ENTREGADO -->
                     <div class="w-52 hover:text-indigo-600 border border-white align-middle">
-                        <h1 v-for="items in tagsList.tags" :key="items.id">
-                            <div v-for="el in taskList.tags" :key="el.id">
-                            <div v-if="items.id == el.id_tag">
-                                <div v-if="items.id_type=='4'" v-popover:entregado.bottom v-on:click="setID=taskList.id">
-                                    <Tag :tagName="items.name"/>
-                                </div>
-                            </div>
-                            </div>
-                        </h1>                         
+                        <div class="h-full" v-if="taskList.tags[3].id_type=='4'" v-popover:entregado.bottom v-on:click="setID=taskList.id">
+                            <Tag :tagName="taskList.tags[3].name"/>
+                        </div>                
                     </div>            
                     <!-- PLAZO -->
                     <div  class="w-80 border border-white items-center align-middle">
@@ -125,33 +99,33 @@
                     </div>
 
                     <!-- PROGRESO -->
-                    <!-- <div class="w-32 hover:text-indigo-600 border border-white items-center align-middle">
+                    <div class="w-32 hover:text-indigo-600 border border-white items-center align-middle">
                         
-                        <div v-if="taskList.progress == '0'" class="flex justify-between">
-                            <div class="w-1 bg-block-complete-primary rounded inline-block"></div>0%
+                        <div class="flex justify-between pt-2 pl-2" v-if="taskList.progress == '0'" >
+                            <div class="w-1 bg-white rounded inline-block"></div>0%
                         </div>
-                        <div v-else-if="taskList.progress <= '10'" class="flex justify-between">
-                            <div class="w-1/5 bg-block-complete-primary rounded inline-block"></div>10%
+                        <div v-else-if="taskList.progress <= '10'" class="flex justify-between pt-2 pl-2">
+                            <div class="w-1/5 bg-white rounded inline-block"></div>10%
                         </div>
-                        <div v-else-if="taskList.progress <= '30'" class="flex justify-between">
-                            <div class="w-2/6 bg-block-complete-primary rounded inline-block"></div>30%
+                        <div v-else-if="taskList.progress <= '30'" class="flex justify-between pt-2 pl-2">
+                            <div class="w-2/6 bg-white rounded inline-block"></div>30%
                         </div>
-                        <div v-else-if="taskList.progress <= '40'" class="flex justify-between">
-                            <div class="w-2/5 bg-block-complete-primary rounded inline-block"></div>40%
+                        <div v-else-if="taskList.progress <= '40'" class="flex justify-between pt-2 pl-2">
+                            <div class="w-2/5 bg-white rounded inline-block"></div>40%
                         </div>
-                        <div v-else-if="taskList.progress <= '60'" class="flex justify-between">
-                            <div class="w-3/5 bg-block-complete-primary rounded inline-block"></div>60%
+                        <div v-else-if="taskList.progress <= '60'" class="flex justify-between pt-2 pl-2">
+                            <div class="w-3/5 bg-white rounded inline-block"></div>60%
                         </div>
-                        <div v-else-if="taskList.progress <= '70'" class="flex justify-between">
-                            <div class="w-4/6 bg-block-complete-primary rounded inline-block"></div>70%
+                        <div v-else-if="taskList.progress <= '70'" class="flex justify-between pt-2 pl-2">
+                            <div class="w-4/6 bg-white rounded inline-block"></div>70%
                         </div>
-                        <div v-else-if="taskList.progress <= '90'" class="flex justify-between">
-                            <div class="w-11/12 bg-block-complete-primary rounded inline-block"></div>90%
+                        <div v-else-if="taskList.progress <= '90'" class="flex justify-between pt-2 pl-2">
+                            <div class="w-11/12 bg-white rounded inline-block"></div>90%
                         </div>
-                        <div v-else class="flex">
-                            <div class="w-full bg-block-complete-primary rounded inline-block"></div>100%
+                        <div v-else class="flex pt-2 px-2">
+                            <div class="w-full bg-white rounded inline-block mx-2"></div>100%
                         </div>               
-                    </div> -->
+                    </div>
 
                     <!-- TIEMPOS -->
                     <div class="w-32 hover:text-indigo-600 border border-white align-middle" >
@@ -240,15 +214,15 @@
         </popover>
         
     </div>
-        <div v-if="showed" class="ml-16 mb-5">
-            <SubTask />
+        <div v-if="showed" class="bg-white ml-16 mb-5">
+            <SubTask/>
             <SubtaskList 
-                class=" text-fontColor-primary " 
                 v-for="subtask in taskList.subtasks" 
                 :key="subtask.id"
                 :teamid="teamid"
                 :subtask="subtask"
                 :color="color"
+                :colorSecondary="colorSecondary"
             />
             <input v-show="showed" contenteditable="true"  @change="createSubtask(taskList.id)" placeholder="+ Nueva Subtarea" v-model="nameSubtask" class="border text-fontColor-primary bg-white w-full focus:outline-none focus:ring focus:border-blue-300" :class="color">
             
@@ -270,7 +244,7 @@ import Trash from '../../../icons/Trash'
 import List from '../../../icons/List'
 import Tag from './popover/Tag'
 import Popper from './popover/Popper'
-import {getAllTags, getAllUsers, getUserTeams, postEditName, getMessage, postMessage } from '../../../../servicies/userServicies'
+import { postEditName, getMessage } from '../../../../servicies/userServicies'
 import Play from '../../../icons/Play.vue'
 import Pause from '../../../icons/Pause.vue'
 import DatePicker from './subitems/DatePicker'
@@ -305,6 +279,7 @@ export default {
     props: {
         taskList: Object,
         color: String,
+        colorSecondary: String,
         taskStatus: String,
         draggable: Boolean,
         id: String,
