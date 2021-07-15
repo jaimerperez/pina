@@ -28,6 +28,10 @@
         return fetch("/api/teams/team/" + id_team + "/users?token=" + token) 
           .then(response => response.json())
       }
+      export function getNotifications(token, id_user){
+        return fetch("/api/users/user/" + id_user + "/notifications?token=" + token) 
+          .then(response => response.json())
+      }
     
       //********DEPARTMENTS**************
     export function getAllTeamsFromDepartment(token, departmentID){

@@ -1,5 +1,5 @@
 <template>
-  <div class="sideNavBar-container h-full flex flex-col flex-wrap items-center bg-sideBar-primary md:w-full z-10">
+  <div class="sideNavBar-container h-full flex flex-col flex-wrap items-center bg-sideBar-primary md:w-full">
     <div class="h-screen flex flex-col flex-wrap items-center bg-sideBar-primary md:w-full">
       <div class="flex">
         <router-link to="/user/department"><img class="my-10 w-10 h-10 sm:w-24 sm:h-24" src="/assets/images/build/LOGO_Piña-02.png"></router-link>  
@@ -61,13 +61,22 @@
     </div>
     <popover name="foo" :width="500">
       Notificaciones
-      <div class="flex flex-row justify-around">
-        <div class="hover:text-sideBar-primary cursor-pointer">Todos</div>
-        <div>No leido</div>
-        <div>Me mencionaron</div>
-        <div>Me asignaron</div>
+      <div>
+        <div class="flex flex-row justify-around">
+          <div class="hover:text-sideBar-primary cursor-pointer" @click="openNotifications('all')">Todos</div>
+          <div @click="openNotifications('notread')">No leido</div>
+          <div @click="openNotifications('mentioned')">Me mencionaron</div>
+          <div @click="openNotifications('asigned')">Me asignaron</div>
+        </div>
+        <div class="spacer bg-sideBar-primary w-full h-0.5"></div>
+        <div class="tab-content">
+          <div id="sidebar" v-for="items in content" :key="items">
+            {{items['message']}}
+          </div>
+        </div>
+      
       </div>
-      <div class="spacer bg-sideBar-primary w-full h-0.5"></div>
+      
     </popover>
   </div>
 </template>
@@ -80,7 +89,7 @@ import List from '../icons/List.vue'
 import Mail from '../icons/Mail.vue'
 import Notification from '../icons/Notification.vue'
 import Schedule from '../icons/Schedule.vue'
-import { getUserToken, getUserDepartments, getAllTeamsFromDepartment } from '../../servicies/userServicies'
+import { getUserToken, getUserDepartments, getAllTeamsFromDepartment, getNotifications } from '../../servicies/userServicies'
 import { EventBus } from '../../event-bus'
 import Incidencias from '../icons/Incidencias.vue'
 
@@ -107,7 +116,13 @@ export default {
     departments: [],
     active: false,
     src: '',
-    exist: false
+    exist: false,
+    content: [],
+    all: [],
+    assign: [],
+    mention: [],
+    no_read:[],
+    notifications: {},
     }
   },
   methods:{
@@ -122,7 +137,18 @@ export default {
     },
     profileImg(file){
       this.src = file
-    }
+    },
+    openNotifications(text){
+      this.content = ''
+      if(text == 'all')
+        this.content = this.all    
+      else if(text == 'notread')
+         this.content = this.no_read
+      else if(text == 'asigned')
+         this.content = this.notifications.assign
+      else
+        this.content = this.notifications.mension
+    },
     
   },
   created(){
@@ -150,9 +176,16 @@ export default {
           } ).catch(error => {
             this.exist = false
           })
-
-
-          getUserDepartments(token, this.userInfo.id).then(data => {
+      getNotifications(token,this.userInfo.id)
+      .then(data => {
+        this.notifications = data
+        this.all = data.all
+        this.no_read = data.no_read
+        this.mention = data.mension
+        this.assign = data.assign
+      });
+      
+      getUserDepartments(token, this.userInfo.id).then(data => {
             this.departments = data
             getAllTeamsFromDepartment(token, this.departments[0].id).then(data => (this.teams = data))
             })

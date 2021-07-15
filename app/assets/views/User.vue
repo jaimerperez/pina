@@ -1,7 +1,7 @@
 <template>
     <div>
       <div class="flex w-screen h-screen font-Barlow">
-        <aside class="fixed w-48 top-0 left-0 z-10"> 
+        <aside class="fixed w-48 top-0 left-0 z-50"> 
           <UserSideBar :idRol="idRolName"/> 
         </aside>
         <section class="w-screen ml-40 py-0 px-5">

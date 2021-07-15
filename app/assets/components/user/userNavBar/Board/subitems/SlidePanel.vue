@@ -4,7 +4,6 @@
      <div class="pulse_container">
                   <div class="flexible-header">
                       <div class="pulse-tittle flex my-5 align-middle justify-center justify-evenly">
-                        <div>RESPONDER COMENTARIOS</div>
                           <span>{{name}}</span>
                       </div>
                       <div class="items-views">

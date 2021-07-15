@@ -51,6 +51,7 @@
 </template>
 
 <script>
+import { EventBus } from '../../../../event-bus'
 import { postIncident } from '../../../../servicies/userServicies'
 export default {
 props: {
@@ -87,6 +88,8 @@ methods:{
         formData.append('message', this.message);
         formData.append('token', token);
         postIncident(formData, this.teamID)
+        EventBus.$emit('route')
+        this.$router.push('/board/'+ this.teamID + '/' + this.teamName)
     }
 },
 }

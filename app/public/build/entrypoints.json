@@ -2,9 +2,9 @@
   "entrypoints": {
     "app": {
       "js": [
-        "/build/runtime.738412a3.js",
-        "/build/802.b1ff95b5.js",
-        "/build/app.81d11697.js"
+        "/build/runtime.cc1f2e77.js",
+        "/build/802.dd1b1d56.js",
+        "/build/app.38af272f.js"
       ],
       "css": [
         "/build/802.608c1230.css"
@@ -12,10 +12,10 @@
     },
     "tailwind": {
       "js": [
-        "/build/runtime.738412a3.js"
+        "/build/runtime.cc1f2e77.js"
       ],
       "css": [
-        "/build/tailwind.ba82b90d.css"
+        "/build/tailwind.2622e7c8.css"
       ]
     }
   }

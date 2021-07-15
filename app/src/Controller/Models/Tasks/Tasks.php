@@ -112,6 +112,18 @@ class Tasks extends AbstractController
                     $CRUD_tasks->update($id_task,array(
                         'id_status ' => 4
                     ));
+                    //parar contador
+                    $task = $CRUD_tasks->one($id_task);
+                    $t = [];
+                    if( $task['pause'] == 0 )
+                    {
+                        $diff = time() - strtotime($task['last_play']);
+                        $t['pause'] = 1;
+                        $t['last_play'] = '0000-00-00 00:00:00';
+                        $t['time_working'] = $task['time_working'] + $diff ;
+                        $CRUD_tasks->update($id_task,$t);
+                    }
+                    //parar contador
                 }
 
                 $this->add_id_user_update($id_task,$validation[1]['id']);
@@ -139,6 +151,23 @@ class Tasks extends AbstractController
             $CRUD_tasks->update($id_task,array(
                 'id_status' => $req->get('id_status')
             ));
+            if( $req->get('id_status') == 4 ){
+                //parar contador
+                $task = $CRUD_tasks->one($id_task);
+                $t = [];
+                //parar contador
+                    $task = $CRUD_tasks->one($id_task);
+                    $t = [];
+                    if( $task['pause'] == 0 )
+                    {
+                        $diff = time() - strtotime($task['last_play']);
+                        $t['pause'] = 1;
+                        $t['last_play'] = '0000-00-00 00:00:00';
+                        $t['time_working'] = $task['time_working'] + $diff ;
+                        $CRUD_tasks->update($id_task,$t);
+                    }
+                //parar contador
+            }
         } catch (\Throwable $th) {
             //throw $th;
             return $this->json('ERROR, no se ha podido cambiar el estado','400');
@@ -450,7 +479,7 @@ class Tasks extends AbstractController
             //Notificacion
             $CRUD_tasks = new CRUDController('tasks','id');
             $task = $CRUD_tasks->one($id_task);
-            $notification_text = 'Tarea asignada: "'. $task['name'] . '" ('. $id_task .')';
+            $notification_text = 'Tarea asignada: '. $task['name'] . ' ('. $id_task .')';
             HelperController::push_notification( $req->get('id_user'), $notification_text, 0, 1 );
             //Notificacion
         } catch (\Throwable $th) {

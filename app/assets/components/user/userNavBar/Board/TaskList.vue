@@ -10,7 +10,7 @@
                         <p class="truncate px-2" :contenteditable="true" v-on:blur="editName(taskList.id, taskList.name)" :id="taskList.name" ref="input" :title="taskList.name">{{taskList.name}}</p> 
                         <icon-base v-show="editHidden" viewBox="0 0 1080 1080"  width="25" height="25" icon-name="editar" @click.native="focusName" class="cursor-pointer inline-block"><Editar/></icon-base>
                         
-                        <span class="relative inline-block" v-on:click="opentab=!opentab, getmessages()">
+                        <span class="relative inline-block" v-on:click="closingTabsMessage(), getmessages()">
                             <icon-base :iconColor="color" width="25" height="25" icon-name="message" ><Message/></icon-base>
                             <span v-if="numbermessage != 0" class="absolute top-0 right-0 inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-red-100 transform translate-x-1/2 -translate-y-1/2 bg-red-600 rounded-full">{{numbermessage}}
                             </span>
@@ -19,7 +19,7 @@
                     
                 </div>
                     <!-- SUBELEMTENTOS -->
-                    <div class="w-20 hover:text-indigo-600 border border-white align-middle px-2" v-on:click="showSubtask">
+                    <div class="w-20  hover:text-indigo-600 border border-white align-middle px-2" v-on:click="showSubtask">
                         <span class="flex justify-center pt-2"><icon-base :iconColor="color" width="25" height="25" icon-name="message"><List/></icon-base>
                             <span v-if="numberSubtask != 0" class="inline-flex items-center justify-center px-2 py-1 mr-2 text-xs font-bold leading-none text-red-100 bg-red-600 rounded-full">{{numberSubtask}}</span>
                         </span>
@@ -39,7 +39,7 @@
                                         <img class="w-8 h-8 rounded-full " :title="searchForUsersName(items.id_user)" :src="`/assets/images/users/${items.id_user}`">
                                     </div>
                                 </div>
-                                <div v-if="size > 2" class="mx-2">
+                                <div v-if="numberResponsable > 2" class="mx-2">
                                     ...
                                 </div>
                             </div>    
@@ -57,7 +57,7 @@
                             <div  class="flex flex-col" v-for="items in taskList.files" :key="items.id">
                                 <div v-show="items.name" class="flex" @mouseover="deletebutton = true" @mouseleave="deletebutton = false" >
                                     <a :href="`/assets/files/${items.name}`" download="file">
-                                        <icon-base viewBox="0 0 384 512" width="25" height="25"><File /></icon-base>
+                                        <icon-base viewBox="0 0 384 512" width="25" :icon-name="items.name" height="25"><File /></icon-base>
                                     </a>
                                     <button v-show="deletebutton" class="rounded-full w-5 h-5 bg-white text-black self-center" v-on:click="deleteFile(items.name)">X</button>
                                 </div>
@@ -124,7 +124,7 @@
                         </div>
                     </div>
 
-                    <!-- PROGRESO -->
+                    <!-- PROGRESO 
                     <div class="w-32 hover:text-indigo-600 border border-white items-center align-middle">
                         
                         <div v-if="taskList.progress == '0'" class="flex justify-between">
@@ -151,7 +151,7 @@
                         <div v-else class="flex">
                             <div class="w-full bg-block-complete-primary rounded inline-block"></div>100%
                         </div>               
-                    </div>
+                    </div> -->
 
                     <!-- TIEMPOS -->
                     <div class="w-32 hover:text-indigo-600 border border-white align-middle" >
@@ -170,7 +170,7 @@
                             <router-link :to="{ name: 'profileUser', params: {idUser: taskList.id_user_update } }">
                                 <img class="rounded-full w-8 h-8 m-2"  :src="`/assets/images/users/${taskList.id_user_update}`">
                             </router-link>
-                            <span class="relative inline-block px-2">{{taskList.updated_at}}</span>
+                            <span class="inline-block px-2">{{taskList.updated_at}}</span>
                         </span>
                     </div>
                     <!-- ID -->
@@ -312,7 +312,8 @@ export default {
         progress: Number,
         tagsList: Object,
         usuarios: Array,
-        responsable: Array
+        responsable: Array,
+        numberResponsable: Number,
     },
     data() {
         return{
@@ -364,11 +365,9 @@ export default {
         EventBus.$on('updatemessage', this.fetchData)
         EventBus.$on('deletemessage', this.fetchData)
         EventBus.$on('confeti', this.start)
-        
         this.date = this.taskList.time_limit
         this.numberSubtask = this.taskList.subtasks.length
         this.numbermessage = this.taskList.messages
-        this.size = this.taskList.users.length
         this.ID = this.teamid
         
     } ,
@@ -385,9 +384,7 @@ export default {
   },
     methods:{
         fetchData() {
-            
             this.getmessages()
-               
         },
         getmessages(){
             const token = localStorage.getItem('validation_token');
@@ -500,6 +497,10 @@ export default {
         },
         hide () {
             this.$modal.hide(this.taskList.id);
+        },
+        closingTabsMessage(){
+            this.opentab = false;
+            this.opentab = !this.opentab
         },
         play(ID){
             EventBus.$emit('play', ID)
