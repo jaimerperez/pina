@@ -37,14 +37,14 @@ export default {
             if(!resp.ok){
               throw new Error(resp.statusText);
             }
-            this.$vToastify.success("Contraseña actualizada con éxito");
+           
             this.$router.push('/login')
             return resp.json() 
           }) 
           .catch(error => {
             this.errorMessage = error;
             console.error('There was an error!', error);
-            this.$vToastify.error("Error");
+            
           });
         }
     }

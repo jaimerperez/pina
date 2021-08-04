@@ -4,15 +4,15 @@
   <div class="w-full h-full flex flex-col font-Barlow text-fontColor-primary">
     <div class="flex pb-4">
       <label for="email" class="w-2/6 text-right mx-3 lg:text-3xl pr-4">Email </label>
-      <input v-on:keyup.enter="login" type="email" id="email" name="email" v-model="input.email" class="w-2/6 lg:w-4/12 lg:h-full bg-gray-200 border border-transparent focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:border-transparent rounded-lg" >
+      <input v-on:keyup.enter="login" type="email" id="email" name="email" v-model="input.email" class="w-2/6 lg:w-4/12 lg:h-full bg-gray-200 border border-transparent focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:border-transparent rounded-2xl" >
     </div>
     <div class="flex py-2">
       <label for="password" class=" w-2/6 text-right mx-3 lg:text-3xl pr-4" > Contraseña </label>
-      <input v-on:keyup.enter="login" type="password" id="password" name="password" v-model="input.password" class="w-2/6 lg:w-4/12 lg:h-full bg-gray-200 border border-transparent focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:border-transparent rounded-lg">
+      <input v-on:keyup.enter="login" type="password" id="password" name="password" v-model="input.password" class="w-2/6 lg:w-4/12 lg:h-full bg-gray-200 border border-transparent focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:border-transparent rounded-2xl">
     </div>
-    <div class="flex flex-col py-2 justify-center items-center"><router-link class="text-center italic text-lg font-medium text-sideBar-primary" to='/passwordreset'>¿ Olvidaste la contraseña ?</router-link></div>
+    <div class="relative left-9 md:left-[250px] lg:left-[450px] 2xl:left-[650px] py-2"><router-link class="text-right mx-3 pr-4 italic lg:text-lg text-fontColor-primary" to='/passwordreset'>¿ Olvidaste la contraseña ?</router-link></div>
     <div class="flex  justify-center items-center mt-10">
-      <button type="button" v-on:click="login" class="w-4/12 lg:w-1/12 lg:h-5/6 my-3 inline-flex items-center justify-center bg-sideBar-primary hover:bg-block-working-primary lg:text-xl text-white rounded-lg">Entrar </button>
+      <button type="button" v-on:click="login" class="w-4/12 lg:w-1/12 lg:h-5/6 my-3 inline-flex items-center justify-center bg-buttonColor-primary hover:bg-opacity-50 lg:text-xl text-black rounded-3xl">Entrar </button>
     </div>
   </div>
   
@@ -45,7 +45,7 @@ export default {
         Login(formData)
           .then(data => {
             localStorage.setItem('validation_token', data)
-            this.$vToastify.success("Login con éxito");
+            
             const token = localStorage.getItem('validation_token');
             getUserToken(token).then(data => {
               this.userInfo = data
@@ -58,7 +58,7 @@ export default {
           .catch(error => {
             this.errorMessage = error;
             console.error('There was an error!', error);
-            this.$vToastify.error("Error");
+            
           });
       },
     }

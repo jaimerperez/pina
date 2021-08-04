@@ -1,13 +1,14 @@
 <template>
   <div class="items relative rounded-t bg-white text-black overflow-hidden shadow">
     <button
-      class="item block w-full text-left bg-transparent"
+      class="item w-full text-left bg-transparent flex flex-row mb-4 hover:bg-blue-300"
       :class="{ 'is-selected hover:bg-blue-300': index === selectedIndex }"
       v-for="(item, index) in items"
       :key="index"
       @click="selectItem(index)"
     >
-      {{ item }}
+      <img class="w-8 h-8" :src="`/assets/images/users/${item.id}`" alt="">
+      {{ item.email }}
     </button>
   </div>
 </template>
@@ -71,7 +72,7 @@ export default {
     },
 
     selectItem(index) {
-      const item = this.items[index]
+      const item = this.items[index].email
       console.log(this.items[index])
       if (item) {
         this.command({ id: item })

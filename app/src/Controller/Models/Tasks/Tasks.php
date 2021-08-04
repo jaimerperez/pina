@@ -44,6 +44,79 @@ class Tasks extends AbstractController
         $this->add_id_user_update($id_task,$validation[1]['id']);
         return $this->json('Tarea eliminada con exito');
     }
+
+    /**
+        * @Route("/{id_task}/move", methods={"POST"})
+     */
+    public function update_task_team(String $id_task,Request $request): Response
+    {
+        $req = $request->request; //'POST
+        $parameters = ['id_team','token'];
+        $validation = HelperController::validate_req($req,$parameters);
+        if(! $validation[0])
+            return $this->json($validation[1],'400');
+        $CRUD_tasks = new CRUDController('tasks','id');
+        $CRUD_tasks->update($id_task,array(
+            'id_team' => $req->get('id_team')
+        ));
+        
+        $this->add_id_user_update($id_task,$validation[1]['id']);
+        return $this->json('ok');
+    }
+
+    /**
+        * @Route("/{id_task}/copy", methods={"POST"})
+     */
+    public function update_task_duplicate(String $id_task,Request $request): Response
+    {
+        $req = $request->request; //'POST
+        $parameters = ['token'];
+        $validation = HelperController::validate_req($req,$parameters);
+        if(! $validation[0])
+            return $this->json($validation[1],'400');
+        $CRUD_tasks = new CRUDController('tasks','id');
+
+        $task_copy = $CRUD_tasks->one($id_task);
+        unset($task_copy["id"]);unset($task_copy["updated_at"]);$task_copy["messages"]=0;
+        $id_copy = $CRUD_tasks->add( $task_copy );
+
+        //TAGS
+        $CRUD_tasks_tags = new CRUDController('tasks_tags','id');
+        $task_tags = $CRUD_tasks_tags->plenty( array('id_task' => $id_task));
+        foreach ($task_tags as $tt) {
+            # code...
+            $CRUD_tasks_tags->add( array(
+                'id_task' => $id_copy 
+                ,'id_tag ' => $tt['id_tag']
+            ));
+        }
+        //RESPONSABLES
+        $CRUD_users_tasks = new CRUDController('users_tasks ','id');
+        $users_tasks  = $CRUD_users_tasks->plenty( array('id_task' => $id_task));
+        foreach ($users_tasks as $ut) {
+            # code...
+            $CRUD_users_tasks->add( array(
+                'id_task' => $id_copy 
+                ,'id_user' => $ut['id_user']
+            ));
+        }
+
+        //SUBELEMENTOS
+        $CRUD_subtasks = new CRUDController('subtasks','id');
+        $subtasks = $CRUD_subtasks->plenty( array('id_task' => $id_task));
+        foreach ($subtasks as $subtask) {
+            $subtask_copy =  $subtask;
+            unset($subtask_copy["id"]);unset($subtask_copy["updated_at"]);
+            if( is_null($subtask_copy["id_user_update"]) ){
+                unset($subtask_copy["id_user_update"]);
+            }
+            $subtask_copy["id_task"] = $id_copy;
+            $CRUD_subtasks->add( $subtask_copy );
+        }
+        
+        return $this->json('ok');
+    }
+
     /**
         * @Route("/{id_task}/name", methods={"POST"})
      */
@@ -84,7 +157,7 @@ class Tasks extends AbstractController
         $task_tags = $CRUD_tasks_tags->plenty(array(
             'id_task' => $id_task
         ));
-
+        $this->add_id_user_update($id_task,$validation[1]['id']);
         
         foreach ($task_tags as $tt) {
            $ttag = $CRUD_tags->one($tt['id_tag']);
@@ -124,9 +197,10 @@ class Tasks extends AbstractController
                         $CRUD_tasks->update($id_task,$t);
                     }
                     //parar contador
+                    return $this->json('100%');
+
                 }
 
-                $this->add_id_user_update($id_task,$validation[1]['id']);
                 return $this->json('ok');
            }
         }
@@ -320,6 +394,24 @@ class Tasks extends AbstractController
          }
 
         $this->add_id_user_update($id_task,$validation[1]['id']);
+
+        //NOTIFICACIONES
+        if( str_contains($req->get('message'),'data-mention') ){
+            $mentions_text = explode('data-id="',$req->get('message'));
+            unset($mentions_text[0]);
+
+            $CRUD_users = new CRUDController('users','email');
+            $task = $CRUD_tasks->one($id_task);
+            foreach ($mentions_text as $mt) {
+                $user_email = explode('">@',$mt)[0];
+                $user_2_mention = $CRUD_users->one($user_email.'@postal3.es');
+                
+                $notification_text = 'Te ha mensionado en la tarea: "'. $task['name'] . '"';// ('. $id_task .')';
+                HelperController::push_notification( $user_2_mention['id'],$validation[1]['id'], $notification_text, 1);
+            }
+        }
+        //NOTIFICACIONES
+
         return $this->json('OK');
     }
 
@@ -433,10 +525,10 @@ class Tasks extends AbstractController
 
                     $CRUD_tasks->update($id_task,$t);
                     
-                    return $this->json("pause, tiempo trabajado: $diff");
+                    //return $this->json("pause, tiempo trabajado: $diff");
                 }
             } catch (\Throwable $th) {
-                //throw $th;
+                throw $th;
                 return $this->json('ERROR');
             }
 
@@ -479,11 +571,15 @@ class Tasks extends AbstractController
             //Notificacion
             $CRUD_tasks = new CRUDController('tasks','id');
             $task = $CRUD_tasks->one($id_task);
-            $notification_text = 'Tarea asignada: '. $task['name'] . ' ('. $id_task .')';
-            HelperController::push_notification( $req->get('id_user'), $notification_text, 0, 1 );
+
+            $CRUD_teams = new CRUDController('teams','id');
+            $team = $CRUD_teams->one($task['id_team']);
+
+            $notification_text = '<a href="/board/'. $task['id_team'] . '/' . $team['name'] .'/slidepanel/'. $task['id'] .'">Te asignó una tarea: "'. $task['name'] . '" </a>';// ('. $id_task .')';
+            HelperController::push_notification( $req->get('id_user'),$validation[1]['id'], $notification_text, 0, 1 );
             //Notificacion
         } catch (\Throwable $th) {
-            //throw $th;
+            throw $th;
         }
 
         return $this->json('OK');

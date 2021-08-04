@@ -12,10 +12,14 @@
       <div :class="open ? 'block': 'hidden'" class="sidenavBar-element-container flex-grow sm:flex sm:items-center">
         <div class="text-sm h-full flex flex-col items-start sm:flex-grow justify-between">
           <div class="flex flex-col">
-          
+           <!-- buzon -->
+          <div class="  ml-3 hover:text-indigo-500 cursor-pointer flex flex-row m-2">
+            <img class="w-6 h-6" src="/assets/images/icons/buzon.svg" alt="">
+            <div> <a class="ml-3 mr-3"><router-link to="/mail">Buzon</router-link></a></div>
+          </div>
            <!-- Departamentos -->
           <div class="  ml-3 hover:text-indigo-500 cursor-pointer flex flex-row m-2">
-            <icon-base :width="23" :height="23" viewBox="0 0 1080 1080" icon-name="department"><Depa/></icon-base>
+            <img class="w-6 h-6" src="/assets/images/icons/depart.svg" alt="">
             <div> <a class="ml-3 mr-3"><router-link to="/user/department">Departamentos</router-link></a></div>
           </div>
 
@@ -25,13 +29,21 @@
             <div @mouseover="active = true" @mouseleave="active = false"> 
               <a class="ml-3 mr-3 group cursor-pointer hover:text-block-working-primary" >Mis tableros</a>
               <div v-show="active" v-for="items in teams" :key="items.id">
-                  <router-link :to="{ name: 'teams', params: {boardName: items.name, boardTeamID: items.id }}" class="hover:text-indigo-500">{{items.name}}</router-link>
+                  <div class="-mt-1 mr-4 border-l-2 absolute h-6 border-black"></div>
+                  
+                  <router-link class=" flex hover:text-indigo-500" :to="{ name: 'teams', params: {boardName: items.name, boardTeamID: items.id }}">
+                    <div class="w-5 h-0.5 mr-2 mt-2 bg-black font-bold text-sm text-black"></div>
+                    <div>{{items.name}}</div>
+                    
+                  </router-link>
               </div>
             </div>
           </div>
           
           <!-- Notificaciones -->
-          <div  class="  ml-3 hover:text-indigo-500 cursor-pointer flex flex-row m-2" @click="showNotifications=!showNotifications">
+          <div  class="  ml-3 hover:text-indigo-500 cursor-pointer flex flex-row m-2" 
+            @click="toggle"
+          >
             <icon-base icon-name="notification"><Notification/></icon-base>
             <div>
               <a class=" ml-3 mr-3">Notificaciones</a>
@@ -70,7 +82,10 @@
         </div>
       </div>
     </div>
-    <div class="fixed top-[200px] left-[200px] w-[500px] h-[300px] z-[51px] shadow-2xl border bg-white rounded-lg overflow-auto p-2" v-show="showNotifications">
+    <div
+    class="fixed top-[200px] left-[200px] w-[500px] h-[300px] z-[51px] shadow-2xl border bg-white rounded-lg overflow-auto p-2"
+    v-click-outside="hide"
+    v-show="opened">
       <strong>Notificaciones</strong>
       <div>
         <div class="flex flex-row justify-around">
@@ -83,16 +98,21 @@
         <div class="tab-content">
           <div id="sidebar"
             v-for="items in content" 
-            :key="items"
+            :key="items.id"
             class="h-24 flex flex-row justify-between py-4 px-2"
-            :class="items.readed == 0 ? 'border shadow group bg-sideBar-primary text-white hover:bg-gray-400 hover:text-black hover:bg-opacity-50' : 'border shadow text-black hover:text-white hover:bg-sideBar-primary'" >
-            <span v-html="items['message']"></span>
-            <button v-show="items.readed == 0" class="h-5 w-5 group-hover:border-green-500 group-hover:text-green-500 border rounded-full"  @click="readed(items.id)" v-popover:readed.bottom>
-              ✔
-            </button>
-            <div>
-              {{items.created_at}}
-            </div>
+            :class="items.readed == 0 ? 'border shadow group bg-sideBar-primary text-black hover:bg-opacity-50 hover:text-black' : 'border shadow text-black hover:text-black hover:bg-sideBar-primary hover:bg-opacity-50'"
+            >
+              <div>
+                <img class="w-10 h-10" :src="`/assets/images/users/${items.id_user_create}`" alt="">
+              </div>
+              <div class="flex flex-col">
+                <div v-html="getName(items.id_user_create)"> Hace x días </div>
+                <span v-html="items['message']"></span>
+              </div>
+              <button @click="readed(items.id), read = !read">
+                <img v-if="items.readed == 1" class="w-10 h-10" src="/assets/images/icons/noti.svg" v-popover:readed.bottom alt="">
+                <img v-if="items.readed == 0" class="w-10 h-10" src="/assets/images/icons/notireaded.svg" alt="">
+              </button>
           </div>
           
         </div>
@@ -118,9 +138,10 @@ import List from '../icons/List.vue'
 import Mail from '../icons/Mail.vue'
 import Notification from '../icons/Notification.vue'
 import Depa from '../icons/Depa.vue'
-import { getUserToken, getUserDepartments, getAllTeamsFromDepartment, getNotifications, readNotifications } from '../../servicies/userServicies'
+import { getUserToken, getUserDepartments, getAllTeamsFromDepartment, getNotifications, readNotifications, getUsersInfo, getAllUsers } from '../../servicies/userServicies'
 import { EventBus } from '../../event-bus'
 import Incidencias from '../icons/Incidencias.vue'
+import ClickOutside from 'vue-click-outside'
 Vue.use(Popover)
 export default {
   name: 'UserSideNav',
@@ -146,6 +167,8 @@ export default {
     active: false,
     src: '',
     exist: false,
+    read: false,
+    opened: false,
     content: [],
     all: [],
     assign: [],
@@ -154,7 +177,11 @@ export default {
     notifications: {},
     numbernotifications: '',
     activeTab: 'ALL',
-    showNotifications: false,    }
+    showNotifications: false, 
+    nameNotifications: '',
+    prueba: '',
+    userNotifications: [],
+    }
   },
   methods:{
     show () {
@@ -180,13 +207,12 @@ export default {
               promise.then((response) => {
                 
                 this.fetchData()
-                this.getNotifications()
-                this.openNotifications('all')
+                this.activeTab = 'ALL'
               });
      
     },
     openNotifications(text){
-      this.content = ''
+      this.content = []
       if(text == 'all')
         this.content = this.all    
       else if(text == 'notread')
@@ -202,13 +228,22 @@ export default {
       .then(data => {
         this.notifications = data
         this.all = data.all
-        if(this.content.length === 0)
-          this.content = data.all
         this.no_read = data.no_read
         this.numbernotifications = this.no_read.length
         this.mention = data.mension
         this.assign = data.assign
       })
+    },
+    getName(id){
+      let nombres = ''
+      this.userNotifications.forEach(function(items){
+            if(id == items.id){
+              nombres = items.name
+              
+            }
+              
+        })
+      return nombres
     },
     fetchData(){
       const token = localStorage.getItem('validation_token');
@@ -230,23 +265,46 @@ export default {
               else{
                 this.exist = false
               }
-          } ).catch(error => {
+          }).catch(error => {
             this.exist = false
-          })
-      
-      this.getNotis()
-      getUserDepartments(token, this.userInfo.id).then(data => {
-            this.departments = data
-            getAllTeamsFromDepartment(token, this.departments[0].id).then(data => (this.teams = data))
             })
-      });
+      
+          this.getNotis()
+          this.openNotifications('all')
+          getAllUsers(token).then(data => (this.userNotifications = data))
+            getUserDepartments(token, this.userInfo.id).then(data => {
+              this.departments = data
+              getAllTeamsFromDepartment(token, this.departments[0].id).then(data =>{
+              
+              let arraySorted = data
+               
+               this.teams = arraySorted.sort(function(a,b){
+                 if (a.name > b.name) {
+                    return 1;
+                    }
+                  if (a.name < b.name) {
+                      return -1;
+                    }
+                  // a must be equal to b
+                  return 0;
+               })
+            })
+          })
+        });
     },
+    toggle () {
+      this.opened = true
+    },
+
+    hide () {
+      this.opened = false
+    }
     
   },
   mounted(){
     setInterval(()=> {
      this.getNotis()}, 100000);
-    
+    this.popupItem = this.$el
   },
   created(){
        //GET USER departments
@@ -255,6 +313,9 @@ export default {
         
       EventBus.$on('imgProfile', this.profileImg)
   },
-
+  // do not forget this section
+  directives: {
+    ClickOutside
+  }
 }
 </script>

@@ -6,10 +6,12 @@
       </div>
       <div class="spacer bg-fontColor-primary w-11/12 h-0.5 m-auto"></div>
     </div>
-    <div class="department-content w-full h-full flex flex-wrap flex-row justify-center items-center">
-      <div class="flex h-2/5 w-2/5 justify-center items-center align-middle" v-for="index in teamsDepartment" :key="index.id" :value="index.id">
-        <img class="w-32 h-32" :src="`/assets/images/teams/${index.id}.svg`">
-        <router-link :to="{ name: 'welcometeams', params: {departmentName: index.name, departmentID: index.id } }"> <p class="text-center"> {{index.name}}</p> </router-link>
+    <div class="department-content h-full flex flex-wrap flex-row justify-center items-center">
+      <div class="flex h-2/5 w-2/5 items-center align-middle" v-for="index in teamsDepartment" :key="index.id" :value="index.id"> 
+        <router-link class="flex flex-row items-center align-middle" :to="{ name: 'welcometeams', params: {departmentName: index.name, departmentID: index.id } }">
+          <img class="w-56 h-56" :src="`/assets/images/teams/${index.id}.svg`">
+          <p class="text-center text-4xl"> {{index.name}}</p> 
+        </router-link>
       </div>
     </div>
   </div>
@@ -49,7 +51,21 @@ export default {
               this.userDepartmentInfo = data
             
              getAllTeamsFromDepartment(token, this.userDepartmentInfo[0].id)
-             .then(data => (this.teamsDepartment = data));
+             .then(data => {
+               let arraySorted = data
+               
+               this.teamsDepartment = arraySorted.sort(function(a,b){
+                 if (a.name > b.name) {
+                    return 1;
+                    }
+                  if (a.name < b.name) {
+                      return -1;
+                    }
+                  // a must be equal to b
+                  return 0;
+               })
+               
+             });
         });
       });
       

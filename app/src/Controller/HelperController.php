@@ -47,10 +47,11 @@ class HelperController
         return [true];
 	}
 
-	public static function push_notification(int $id_user, string $message="", int $mension=0, int $assign=0)
+	public static function push_notification(int $id_user, int $id_user_create, string $message="", int $mension=0, int $assign=0)
 	{
 		$notification = array(
             'id_user' => $id_user
+			,'id_user_create' => $id_user_create
 			,'message' => $message
 			,'mension' => $mension
 			,'assign' => $assign
@@ -58,6 +59,20 @@ class HelperController
 		$CRUD_notifications = new CRUDController('notifications','id');
 		try {
 			$CRUD_notifications->add( $notification );
+		} catch (\Throwable $th) {
+			throw $th;
+		}
+	}
+
+	public static function push_event(int $id_user, string $name="")
+	{
+		$event = array(
+            'id_user' => $id_user
+			,'name' => $name
+        );
+		$CRUD_events = new CRUDController('events','id');
+		try {
+			$CRUD_events->add( $event );
 		} catch (\Throwable $th) {
 			throw $th;
 		}

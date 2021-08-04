@@ -1,19 +1,18 @@
 <template>
   <!-- component -->
 <div class="flex flex-col justify-center items-center">
-    <div class="container mx-auto text-center pt-24">
+    <div class="container mx-auto text-center pt-10">
         <div class="items-center justify-center flex" >
             <div class="text-center">
-                <div class="flex flex-col justify-center items-center">
-                    <div class="w-16">
+                <div class="flex flex-row justify-center items-center">
+                    <div>
                         <router-link :to="{ name: 'profileUser', params: {idUser: department.id} }">
-                            <img class="h-10 w-10 rounded mx-3 mt-2"  :src="`/assets/images/users/${department.id}`">
+                            <img class="h-16 w-16 border-2 border-black rounded-full"  :src="`/assets/images/users/${department.id}`">
                         </router-link>
                     </div>
-                    <div class="text-gray-600">
+                    <div class="text-gray-600 text-2xl">
                         <div>
                             <p>{{department.name}}</p>
-                            <p>Encargado/a del departamento</p>
                         </div>
                     </div>
                 </div>
@@ -25,15 +24,14 @@
                         <div class="relative flex justify-center">
                             <div class="-mt-6 border-l-2 absolute h-6 border-gray-400 top-0"></div>
                             <div class="text-center">
-                                <div class="flex flex-col justify-center items-center">
-                                    <div class="w-16">
+                                <div class="flex flex-row justify-center items-center">
+                                    <div>
                                         <router-link :to="{ name: 'profileUser', params: {idUser: team.id} }">
-                                            <img class="h-10 w-10 rounded mx-3 mt-2"  :src="`/assets/images/users/${team.id}`">
+                                            <img class="h-16 w-16 border-2 border-black rounded-full"  :src="`/assets/images/users/${team.id}`">
                                         </router-link>
                                     </div>
-                                    <div class="text-gray-600">
+                                    <div class="text-black-600 text-2xl">
                                         <p>{{team.name}}</p>
-                                        <p>Encargado/a del equipo</p>
                                     </div>
                                 </div>
                                 <ul class="flex flex-row mt-10 justify-center">

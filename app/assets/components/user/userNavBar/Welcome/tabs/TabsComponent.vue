@@ -3,34 +3,31 @@
     <div class="w-full">
       <ul class="flex mb-0 list-none flex-wrap pt-3 pb-4 flex-row">
         <li class="-mb-px mr-2 last:mr-0 flex-auto text-center">
-          <a class="text-xl uppercase px-5 py-3 rounded block leading-normal text-sideBar-primary cursor-pointer group" v-on:click="toggleTabs(1)" v-bind:class="{'text-sideBar-primary': openTab !== 1, 'text-sideBar-primary': openTab === 1}">
+          <a class="text-xl uppercase px-5 py-3 rounded block leading-normal text-fontColor-primary cursor-pointer group" v-on:click="toggleTabs(1)" v-bind:class="{'text-fontColor-primary': openTab !== 1, 'text-fontColor-primary': openTab === 1}">
            <TabComponent :tabName="'Equipos'"/>
-           <div class="spacer bg-sideBar-primary w-11/12 h-0.5 m-auto group-hover:bg-sideBar-primary" :class="{'bg-gray-200': openTab !== 1, 'bg-sideBar-primary': openTab === 1}"></div>
+           <div class="spacer w-11/12 h-0.5 m-auto group-hover:bg-fontColor-primary" :class="{'bg-gray-200': openTab !== 1, 'bg-fontColor-primary': openTab === 1}"></div>
           </a>
         </li>
         <li class="-mb-px mr-2 last:mr-0 flex-auto text-center">
           <a class="text-xl uppercase px-5 py-3 rounded block leading-normal cursor-pointer group" v-on:click="toggleTabs(2)">
             <TabComponent :tabName="'Miembros'"/>
-            <div class="spacer w-11/12 h-0.5 m-auto group-hover:bg-sideBar-primary" :class="{'bg-gray-200': openTab !== 2, 'bg-sideBar-primary': openTab === 2}"></div>
+            <div class="spacer w-11/12 h-0.5 m-auto group-hover:bg-fontColor-primary" :class="{'bg-gray-200': openTab !== 2, 'bg-fontColor-primary': openTab === 2}"></div>
           </a>
         </li>
       </ul>
-      <div class="relative flex flex-col min-w-0 break-words bg-white w-full mb-6 shadow-lg rounded">
+      <div class="relative flex flex-col min-h-screen min-w-0 break-words bg-white w-full mb-6 rounded">
         <div class="px-4 py-5 flex-auto">
           <div class="tab-content tab-space">
             <div v-bind:class="{'hidden': openTab !== 1, 'block': openTab === 1}">
                 <Organization :id_team="departmentID"/>    
             </div>
-            <div v-bind:class="{'hidden': openTab !== 2, 'block': openTab === 2}">
-              <router-link :to="{ name: 'profileUser', params: {idUser: organization.team.id } }">
-                <div v-if="exist">
-                  <img class="h-10 w-10 rounded mx-3 mt-2" :src="`/assets/images/users/${organization.team.id}`" >
-                </div>
-                <div v-else>
-                  <img class="w-12 h-12 rounded-full " src="/assets/images/users/avatar.svg">
-                </div>
-              </router-link>
-              <span>{{organization.team.name}}</span>
+            <div v-bind:class="{'hidden': openTab !== 2, 'block ml-20': openTab === 2}">
+              <div class="flex flex-row items-center mb-4">
+                <router-link :to="{ name: 'profileUser', params: {idUser: organization.team.id } }">
+                  <img class="h-16 w-16 border-2 border-black rounded-full mr-5"  :src="`/assets/images/users/${organization.team.id}`" >
+                </router-link>
+                <span class="text-2xl">{{organization.team.name}}</span>
+              </div>
               <div v-for="items in organization.users" :key="items.id">
                    <MembersList  
                    :userName="items.name" 
@@ -79,9 +76,6 @@ export default {
   methods: {
     toggleTabs: function(tabNumber){
       this.openTab = tabNumber
-    },
-    exist(ID){
-
     },
     addUserToDepartment(){
        const token = localStorage.getItem('validation_token');

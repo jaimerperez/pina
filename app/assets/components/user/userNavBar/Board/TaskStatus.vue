@@ -1,41 +1,50 @@
 <template>
-<div class="board" style="width:3000px">
+<div class="board" style="width:2850px">
+    <div class="relative w-6 right-6 top-6 cursor-pointer" @mouseover="arrowBoard = true" @mouseleave="arrowBoard = false" @click="focusarrow=!focusarrow">
+        <img v-if="arrowBoard==false && (focusarrow == false)" class="w-6 h-6" :src="`/assets/images/icons/${status}.svg`" alt="">
+        <img v-else-if="focusarrow" class="w-6 h-6" :src="`/assets/images/icons/focus.svg`" alt="">
+        <img v-else class="w-6 h-6" :src="`/assets/images/icons/${status}-hover.svg`" alt="">
+        <div v-if="focusarrow" class="w-96 bg-white absolute left-5 top-10 z-30 rounded-xl">
+            <div class=" flex flex-row text-xl text-fontColor-primary my-4 items-center" @click="active = !active">
+                <img class="w-6 h-6" src="/assets/images/icons/workbench.svg" alt="">
+                <div class="pt-1">
+                    Contraer este grupo
+                </div>
+                
+            </div>
+            <div class="flex flex-row text-xl text-fontColor-primary my-4 items-center" @click="check(status)">
+                <img class="w-6 h-6" src="/assets/images/icons/select.svg" alt="">
+                <div class="pt-1">
+                    Seleccionar todos los elementos
+                </div>
+            </div>
+        </div>
+    </div>
     <div class="w-full">
-            <div class="flex bg-white" style="width:3000px">
+            <div class="flex  bg-white" style="width:2850px">
                 <div class="flex flex-row justify-around ">
                         <div class="w-80" >
-                            <h1 class="flex cursor-pointer font-semibold" >
-                                <div @click.prevent="active = !active">
-                                    <icon-base v-show="active" viewBox="0 0 512 512" width="25" height="25" icon-name="expand"><Expand/></icon-base>
-                                    <icon-base v-show="!active" viewBox="0 0 24 24" width="25" height="25" icon-name="collapse"><Collap/></icon-base>
-                                </div>
-                               <span class="text-2xl">{{status}}</span> 
-                                    <span @click="openMenu = !openMenu" class="mx-6">
-                                        ...
-                                    </span>
-                                    <div v-if="openMenu">
-                                        <h1 class="mx-2">Seleccionar todas <input type="checkbox"  class="mx-2" @click="check(status)"></h1>
-                                        <button @click="showStore">Archivar Seleccionadas</button>
-                                        <button @click="showModal">Eliminar Seleccionadas</button>
-                                    </div>
-                            </h1>
-                            
+                            <div class="flex cursor-pointer font-semibold" >
+                                
+                               <span class="text-2xl" @click="active = !active">{{status}}</span> 
+                                   
+                            </div>
+  
                         </div>
-                        
-                        <div class="w-20 text-black text-center text-fontColor font-semibold"></div>
-                        <div class="w-32 text-black text-center text-fontColor font-semibold">Responsable</div>
-                        <div class="w-32 text-black text-center font-fontColor font-semibold">Archivos</div>
-                        <div class="w-52 text-black text-center font-fontColor font-semibold">Prioridad</div>
-                        <div class="w-52 text-black text-center font-fontColor font-semibold">Autorización</div>
-                        <div class="w-52 text-black text-center font-fontColor font-semibold">Haciéndose</div>
-                        <div class="w-52 text-black text-center font-fontColor font-semibold">Entregado</div>
-                        <div class="w-80 text-black text-center font-fontColor font-semibold cursor-pointer" @click="sort"> 	↨ Plazo</div>
-                        <div class="w-32 text-black text-center font-fontColor font-semibold">Progreso</div>
-                        <div class="w-32 text-black text-center font-fontColor font-semibold">Tiempos</div>
-                        <div class="w-80 text-black text-center font-fontColor font-semibold">Última actualización</div>
-                        <div class="w-32 text-black text-center font-fontColor font-semibold">ID</div>
-                        <div class="w-50 text-black text-center font-fontColor font-semibold">Correo para avisos</div>
-                        <div class="w-32 text-black text-center font-fontColor font-semibold"></div>
+                        <div class="w-20 text-black text-center text-fontColor "></div>
+                        <div class="w-36 text-black text-center text-fontColor ">Responsable</div>
+                        <div class="w-32 text-black text-center font-fontColor ">Archivos</div>
+                        <div class="w-52 text-black text-center font-fontColor ">Prioridad</div>
+                        <div class="w-52 text-black text-center font-fontColor ">Autorización</div>
+                        <div class="w-52 text-black text-center font-fontColor ">Haciéndose</div>
+                        <div class="w-52 text-black text-center font-fontColor ">Entregado</div>
+                        <div class="w-80 text-black text-center font-fontColor  cursor-pointer" @click="sort"> 	↨ Plazo</div>
+                        <div class="w-32 text-black text-center font-fontColor ">Progreso</div>
+                        <div class="w-32 text-black text-center font-fontColor ">Tiempos</div>
+                        <div class="w-80 text-black text-center font-fontColor ">Última actualización</div>
+                        <!-- <div class="w-32 text-black text-center font-fontColor ">ID</div> -->
+                        <div class="w-50 text-black text-center font-fontColor ">Correo para avisos</div>
+                        <!-- <div class="w-32 text-black text-center font-fontColor "></div> -->
                     
                 </div>
             </div>
@@ -48,6 +57,7 @@
                     :key="items.id"
                     :id="items.id"
                     :teamid="boardTeamID"
+                    :teamName="boardName"
                     :draggable="true"
                     @change="statuschange(items.id)"
                     :taskList="items"
@@ -85,6 +95,16 @@
                 </div>
             </div>
         </modal>
+        <popover :name="taskStatus" style="left-auto">
+            <div>
+                <div>
+                    Contraer este grupo
+                </div>
+                <div>
+                    Seleccionar todos los elementos
+                </div>
+            </div>
+        </popover>
 </div>
         
         
@@ -113,6 +133,7 @@ export default {
         taskStatus: String,
         id: String,
         boardTeamID: String,
+        boardName: String,
         placeholder: String,
         color: String,
         colorSecondary: String,
@@ -142,15 +163,17 @@ export default {
     },
   data () {
         return {
-            content: "",
+            resp: [],
             active: true,
             show: false,
-            filterRespon: '',
             filtro: false,
             openMenu: false,
-            sortDirection: '',
-            resp: [],
             orden: false,
+            arrowBoard: false,
+            focusarrow: false,
+            sortDirection: '',
+            content: "",
+            filterRespon: '',
             manager: '',
             dateFake: '',
              tarea: {
@@ -317,11 +340,10 @@ export default {
       filterTask: function(){
           return this.taskList.filter((task) => {
             if(this.filtro)
-                for(let items in task.users){
-                    if( parseInt(task.users[items].id_user)  ==  parseInt(this.filterRespon) ){
-                        return task.name.toUpperCase().match(this.search.toUpperCase())
+                for(let i=0; i<task.users.length; i++){
+                    if( parseInt(task.users[i].id_user)  ==  parseInt(this.filterRespon) ){
+                        return true
                     }
-                    return false
                 }
                 else if(this.orden){
                     return this.taskList.sort((p1,p2) => {

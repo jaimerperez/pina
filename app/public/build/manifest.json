@@ -1,13 +1,12 @@
 {
-  "build/app.css": "/build/app.css",
-  "build/app.js": "/build/app.js",
-  "build/tailwind.css": "/build/tailwind.css",
-  "build/runtime.js": "/build/runtime.js",
-  "build/assets_views_Login_vue.js": "/build/assets_views_Login_vue.js",
-  "build/assets_views_User_vue.js": "/build/assets_views_User_vue.js",
-  "build/assets_views_Logout_vue.js": "/build/assets_views_Logout_vue.js",
-  "build/vendors-node_modules_tiptap_extension-image_dist_tiptap-extension-image_esm_js-node_modules_t-392db8.css": "/build/vendors-node_modules_tiptap_extension-image_dist_tiptap-extension-image_esm_js-node_modules_t-392db8.css",
-  "build/vendors-node_modules_tiptap_extension-image_dist_tiptap-extension-image_esm_js-node_modules_t-392db8.js": "/build/vendors-node_modules_tiptap_extension-image_dist_tiptap-extension-image_esm_js-node_modules_t-392db8.js",
+  "build/app.css": "/build/app.65f11ee3.css",
+  "build/app.js": "/build/app.19282bda.js",
+  "build/tailwind.css": "/build/tailwind.8ecd451f.css",
+  "build/runtime.js": "/build/runtime.292153ec.js",
+  "build/546.e900f951.js": "/build/546.e900f951.js",
+  "build/239.ed89e39b.js": "/build/239.ed89e39b.js",
+  "build/720.d550427a.js": "/build/720.d550427a.js",
+  "build/821.ea69b924.js": "/build/821.ea69b924.js",
   "build/images/avatar-loading.png": "/build/images/avatar-loading.6559e259.png",
   "build/images/LOGO_Piña-01.png": "/build/images/LOGO_Piña-01.1c5ff16b.png"
 }

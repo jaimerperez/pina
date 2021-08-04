@@ -60,11 +60,16 @@ class Users extends AbstractController
             return $this->json($smtp_status[1],'400');
         
         try {
-            $CRUD->add( array(
+            $id_new_user = $CRUD->add( array(
                 'email' => $req->get('email')
                 ,'password' => password_hash($pass, PASSWORD_DEFAULT)
                 ,'id_rol' => $req->get('id_rol') ?? 3
             ));
+
+            $default_img = "../public/assets/images/users/null.png";
+            $new_img = '../public/assets/images/users/'.$id_new_user.'.png';
+            copy($default_img, $new_img);
+
         } catch (\Throwable $th) {
             return $this->json('ERROR: No se ha podido crear el usuario','400');
         }

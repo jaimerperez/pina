@@ -1,21 +1,36 @@
 <template>
 <div v-show="taskList.store == '0'" :id="taskList.id">
-   <div class="task-container flex flex-row mx-12 text-fontColor-primary hover:bg-gray-200 cursor-pointer" style="width:3000px" :class="color">
+   <div class="task-container flex flex-row text-fontColor-primary cursor-pointer hover:bg-opacity-50 group" style="width:2610px" :class="color">
         <SlidePanel v-show="opentab" :name="taskList.name" :mentionList="mentionList" :id="taskList.id" :message="messages" :users="usuarios" :task="true" :opentab="opentab"/>
             <!-- NOMBRE Y COMENTARIOS --> 
-                <div class="w-80 hover:text-indigo-600 border border-white align-middle px-4">
-                    <!-- <input type="checkbox"> -->
-                    <span  class="flex justify-between group pt-2"  @mouseover="editHidden = true" @mouseleave="editHidden = false">
-                        <input type="checkbox" v-model="selected" :name="taskList.id" :value="taskList.id" class="mx-2">
-                        <p class="truncate px-2" :contenteditable="true" v-on:blur="editName(taskList.id, taskList.name)" :id="taskList.name" ref="input" :title="taskList.name">{{taskList.name}}</p> 
-                        <icon-base v-show="editHidden" viewBox="0 0 1080 1080"  width="25" height="25" icon-name="editar" @click.native="focusName" class="cursor-pointer inline-block"><Editar/></icon-base>
-                        
-                        <span class="relative inline-block" v-on:click="closingTabsMessage(), getmessages()">
+                <div class="w-80 flex flex-row hover:text-indigo-600 border border-white align-middle pr-4">
+                    <div class="left-indicator-inner h-full w-[14px] hover:w-[54px] relative left-0 bg-sideBar-primary transition mr-2" 
+                     @mouseover="grouphover = true" @mouseleave="grouphover = false"
+                    :class="selected != 0 ? 'w-[54px]' : '' ">
+                        <input type="checkbox" 
+                            v-model="selected"  
+                            :name="taskList.id" 
+                            :value="taskList.id" 
+                            @click="emitSelect"
+                            ref="inputselect"
+                            class="absolute top-[20px] left-[14px] m-auto invisible"
+                            :class="[selected != 0 ? 'visible' : 'invisible', grouphover == true ? 'visible' : '' ]"
+                            >
+                    </div>
+                    <div  class="max-w-full w-full flex justify-between px-2 pt-2"  @mouseover="editHidden = true" @mouseleave="editHidden = false"  @click="focus = true ">  
+                     <div class="max-w-[200px]" :class="focus ? '' : 'truncate'"
+                            :contenteditable="true"
+                            v-on:blur="editName(taskList.id, taskList.name), focus = false" 
+                            :id="taskList.name" ref="input" 
+                            :title="taskList.name">
+                                {{taskList.name}}
+                        </div>                         
+                        <span class="relative inline-block" ref="triger" v-on:click="closingTabsMessage(), getmessages()">
                             <icon-base :iconColor="color" width="25" height="25" icon-name="message" ><Message/></icon-base>
                             <span v-if="numbermessage != 0" class="absolute top-0 right-0 inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-red-100 transform translate-x-1/2 -translate-y-1/2 bg-red-600 rounded-full">{{numbermessage}}
                             </span>
                         </span>
-                    </span>
+                    </div>
                     
                 </div>
                     <!-- SUBELEMTENTOS -->
@@ -26,21 +41,21 @@
                     </div>
                     
                     <!-- RESPONSABLES -->
-                    <div class="w-32 hover:text-indigo-600 border border-white group" @mouseover="addUser = true" @mouseleave="addUser = false">
-                        <div class="flex flex-row flew-nowrap">
+                    <div class="responsable w-36 hover:text-indigo-600 border border-white " @mouseover="addUser = true" @mouseleave="addUser = false">
+                        <div class="w-full flex flex-row flew-nowrap pt-2 pr-2">
                                 <button v-popover.bottom="{name: taskList.id}" :class="[addUser ? 'visible' : 'invisible']" class="rounded-full p-2 focus:outline-none transition duration-200">
                                     <icon-base class="cursor-pointer" width="14" height="14" viewBox="0 0 512 512" icon-name="add"><Add/></icon-base>
                                 </button>
                             <div class="flex flex-row" v-popover.bottom="{name: 'resp' + taskList.id}">
-                                <div v-for="(items,index) in taskList.users" :key="items.id" class="flex flex-row" > 
-                                    <div v-if="index > 1">
+                                <div class="flex flex-row" v-for="(items,index) in taskList.users" :key="items.id"  > 
+                                    <div v-if="index > 2">
                                     </div>
                                     <div v-else>
-                                        <img class="w-8 h-8 rounded-full " :title="searchForUsersName(items.id_user)" :src="`/assets/images/users/${items.id_user}`">
+                                        <img class="w-8 h-8 relative rounded-full" :class="[index == 0 ? 'right-[0px]' : index == 1 ? 'left-[1px]' : '-right-[3px]' ]" :title="searchForUsersName(items.id_user)" :src="`/assets/images/users/${items.id_user}`" >
                                     </div>
                                 </div>
-                                <div v-if="numberResponsable > 2" class="mx-2">
-                                    ...
+                                <div v-if="numberResponsable > 3" class="h-8 w-8 bg-sideBar-primary rounded-full text-center">
+                                    +{{numberResponsable-3}}
                                 </div>
                             </div>    
                         </div>
@@ -54,11 +69,17 @@
                             <button v-show="act" @click="browse()" class="rounded-full p-2 focus:outline-none transition duration-200">
                                 <icon-base class="cursor-pointer" width="25" height="25" viewBox="0 0 512 512" icon-name="add" ><Add/></icon-base>
                             </button>
-                            <div  class="flex flex-col" v-for="items in taskList.files" :key="items.id">
-                                <div v-show="items.name" class="flex" @mouseover="deletebutton = true" @mouseleave="deletebutton = false" >
-                                    <a :href="`/assets/files/${items.name}`" download="file">
-                                        <icon-base viewBox="0 0 384 512" width="25" :icon-name="items.name" height="25"><File /></icon-base>
-                                    </a>
+                            <div  class="flex flex-row" v-for="(items,index) in taskList.files" :key="items.id">
+                                <div v-show="items.name" class="flex flex-row" @mouseover="deletebutton = true" @mouseleave="deletebutton = false" >
+                                    <div v-if="index > 2">
+                                    </div>
+                                    <div v-else class="flex flex-row">
+                                        <a :href="`/assets/files/${items.name}`" download="file">
+                                            <img class="w-10 h-10" v-if="getFileExtension(items.name) == 'pdf'" src="/assets/images/icons/PDF.svg" alt="">
+                                            <img class="w-10 h-10" v-if="getFileExtension(items.name) == 'xls'" src="/assets/images/icons/EXCEL.svg" alt="">
+                                            <img class="w-10 h-10" v-if="getFileExtension(items.name) == 'docx'" src="/assets/images/icons/WORD.svg" alt="">
+                                        </a>
+                                    </div>
                                     <button v-show="deletebutton" class="rounded-full w-5 h-5 bg-white text-black self-center" v-on:click="deleteFile(items.name)">X</button>
                                 </div>
                             </div>
@@ -70,25 +91,25 @@
                     <!-- PRIORIDAD -->
                     <div class="prioridad w-52 hover:text-indigo-600 border border-white align-middle" >
                         <div class="h-full align-middle" v-if="taskList.tags[0].id_type == 1" v-popover:prioridad.bottom v-on:click="setID=taskList.id">
-                            <Tag :tagName="taskList.tags[0].name"/>
+                            <Tag :tagName="taskList.tags[0].name" />
                         </div>
                     </div>
                     <!-- AUTORIZACION -->
                     <div class="w-52 hover:text-indigo-600 border border-white align-middle">
                         <div class="h-full align-middle" v-if="taskList.tags[1].id_type=='2'" v-popover:autorizacion.bottom  v-on:click="setID=taskList.id">
-                            <Tag :tagName="taskList.tags[1].name"/>
+                            <Tag :tagName="taskList.tags[1].name" />
                         </div>             
                     </div>
                     <!-- HACIENDOSE -->
                     <div class="w-52 hover:text-indigo-600 border border-white align-middle">
                         <div class="h-full" v-if="taskList.tags[2].id_type=='3'" v-popover:haciendose.bottom v-on:click="setID=taskList.id">
-                            <Tag :tagName="taskList.tags[2].name"/>
+                            <Tag :tagName="taskList.tags[2].name" />
                         </div>                     
                     </div>
                     <!-- ENTREGADO -->
                     <div class="w-52 hover:text-indigo-600 border border-white align-middle">
                         <div class="h-full" v-if="taskList.tags[3].id_type=='4'" v-popover:entregado.bottom v-on:click="setID=taskList.id">
-                            <Tag :tagName="taskList.tags[3].name"/>
+                            <Tag :tagName="taskList.tags[3].name" />
                         </div>                
                     </div>            
                     <!-- PLAZO -->
@@ -102,28 +123,28 @@
                     <div class="w-32 hover:text-indigo-600 border border-white items-center align-middle">
                         
                         <div class="flex justify-between pt-2 pl-2" v-if="taskList.progress == '0'" >
-                            <div class="w-1 bg-white rounded inline-block"></div>0%
+                            <div class="w-1 bg-white rounded-2xl inline-block"></div>0%
                         </div>
                         <div v-else-if="taskList.progress <= '10'" class="flex justify-between pt-2 pl-2">
-                            <div class="w-1/5 bg-white rounded inline-block"></div>10%
+                            <div class="w-1/5 bg-white rounded-lg inline-block"></div>10%
                         </div>
                         <div v-else-if="taskList.progress <= '30'" class="flex justify-between pt-2 pl-2">
-                            <div class="w-2/6 bg-white rounded inline-block"></div>30%
+                            <div class="w-2/6 bg-white rounded-2xl inline-block"></div>30%
                         </div>
                         <div v-else-if="taskList.progress <= '40'" class="flex justify-between pt-2 pl-2">
-                            <div class="w-2/5 bg-white rounded inline-block"></div>40%
+                            <div class="w-2/5 bg-white rounded-2xl inline-block"></div>40%
                         </div>
                         <div v-else-if="taskList.progress <= '60'" class="flex justify-between pt-2 pl-2">
-                            <div class="w-3/5 bg-white rounded inline-block"></div>60%
+                            <div class="w-3/5 bg-white rounded-2xl inline-block"></div>60%
                         </div>
                         <div v-else-if="taskList.progress <= '70'" class="flex justify-between pt-2 pl-2">
-                            <div class="w-4/6 bg-white rounded inline-block"></div>70%
+                            <div class="w-4/6 bg-white rounded-2xl inline-block"></div>70%
                         </div>
                         <div v-else-if="taskList.progress <= '90'" class="flex justify-between pt-2 pl-2">
-                            <div class="w-11/12 bg-white rounded inline-block"></div>90%
+                            <div class="w-11/12 bg-white rounded-2xl inline-block"></div>90%
                         </div>
                         <div v-else class="flex pt-2 px-2">
-                            <div class="w-full bg-white rounded inline-block mx-2"></div>100%
+                            <div class="w-full bg-white rounded-2xl inline-block"></div>100%
                         </div>               
                     </div>
 
@@ -157,9 +178,9 @@
                         {{taskList.email}}             
                     </div>
                     <!-- BORRAR TAREA -->
-                    <div class="w-32 flex justify-center items-center hover:text-indigo-600 border border-white align-middle" @click="show">
+                    <!-- <div class="w-32 flex justify-center items-center hover:text-indigo-600 border border-white align-middle" @click="show">
                         <icon-base viewBox="0 0 512 512" width="25" height="25" icon-name="trash" ><Trash/></icon-base>
-                    </div>
+                    </div> -->
                 
         
         <!-- POPOVERS Y MODALES   -->
@@ -172,16 +193,8 @@
 
         <Popper v-if="taskList.id == setID" :name="'entregado'" :taskListId="setID" @click="reset"/>
         
-        <modal :name="taskList.id">
-            <div>
-                Desea Eliminar la tarea
-                <div class="flex flex-row justify-evenly mt-10">
-                    <button @click="deleteTask" class="bg-green-500 text-white w-10">SI</button>
-                    <button @click="hide" class="bg-red-500 text-white w-10">NO</button>
-                </div>
-            </div>
-        </modal>
-
+        
+        
         <popover :name="taskList.id" :width="450">
             <div v-for="user in responsable" :key="user.id">
                <div v-if="!searchForManager(user.id_user)">
@@ -193,12 +206,12 @@
             </div>
         </popover>
         
-        <popover :name="'resp' + taskList.id" :width="450">
-            <div v-for="user in responsable" :key="user.id">
-               <div v-if="searchForManager(user.id_user)" class="flex flex-row">
-                        <img class="rounded-full w-8 h-8" :title="searchForUsersName(user.id_user)" :src="`/assets/images/users/${user.id_user}`">
-                        <span>{{searchForUsersName(user.id_user)}}</span>
-                        <button class="rounded-full w-5 h-5 bg-white text-black self-center" v-on:click="deleteManager(user.id_user, taskList.id)">X</button>
+        <popover :name="'resp' + taskList.id" :width="250">
+            <div v-for="user in responsable" :key="user.id" class="w-full h-full flex justify-center bg-sideBar-primary">
+               <div v-if="searchForManager(user.id_user)" class="flex flex-row bg-white rounded-3xl m-2 items-center">
+                    <img class="rounded-full w-8 h-8 mx-1.5" :title="searchForUsersName(user.id_user)" :src="`/assets/images/users/${user.id_user}`">
+                    <span>{{searchForUsersName(user.id_user)}}</span>
+                    <button class="w-5 h-5 mx-1.5 bg-white rounded-full text-black self-center" v-on:click="deleteManager(user.id_user, taskList.id)">X</button>
                </div>
             </div>
         </popover>
@@ -222,6 +235,7 @@
                 :teamid="teamid"
                 :subtask="subtask"
                 :color="color"
+                :numberResponsable="subtask.users.length"
                 :colorSecondary="colorSecondary"
             />
             <input v-show="showed" contenteditable="true"  @change="createSubtask(taskList.id)" placeholder="+ Nueva Subtarea" v-model="nameSubtask" class="border text-fontColor-primary bg-white w-full focus:outline-none focus:ring focus:border-blue-300" :class="color">
@@ -296,11 +310,13 @@ export default {
             date: new Date().toISOString().substr(0, 10),
             messages: [],
             setID: '',
-            modal: false,   
+            modal: false,
+            focus: false,
             numberSubtask: '',
             numbermessage: '',
             tiempo: null,
             act: false,
+            grouphover: false,
             deletebutton: false,
             file: null,
             parar: null,
@@ -316,6 +332,7 @@ export default {
             size: 0,
             horas: 0,
             minutos: 0,
+            selecionar: false,
             
         }
     },
@@ -329,10 +346,13 @@ export default {
             this.time()
             clearInterval(parar)
         }
-        
+       this.id_task_show = window.location.pathname.split("slidepanel/")[1]
+       
+       
             
     },
      mounted(){
+        EventBus.$on('triggerslide', this.triggerSlide)
         EventBus.$on('checkbox', this.select)
         EventBus.$on('deleteselected', this.deleteSelectedTask)
         EventBus.$on('storeselected', this.storeSelectedTask)
@@ -341,11 +361,13 @@ export default {
         EventBus.$on('updatemessage', this.fetchData)
         EventBus.$on('deletemessage', this.fetchData)
         EventBus.$on('confeti', this.start)
+        EventBus.$on('closeselected', this.closeSelected)
         this.date = this.taskList.time_limit
         this.numberSubtask = this.taskList.subtasks.length
         this.numbermessage = this.taskList.messages
         this.ID = this.teamid
-        
+        if(this.taskList.id == this.id_task_show)
+            this.triggerSlide()
     } ,
     watch: {
     '$route': 'fetchData',
@@ -361,7 +383,6 @@ export default {
     methods:{
         fetchData() {
             this.getmessages()
-
         },
         getmessages(){
             const token = localStorage.getItem('validation_token');
@@ -369,6 +390,9 @@ export default {
             getMessage(token, this.taskList.id)
             .then(data =>{ (this.messages = data) });
             }    
+        },
+        triggerSlide(){
+            this.$refs.triger.click()
         },
         closeSlide(){
             this.opentab = false
@@ -416,20 +440,25 @@ export default {
             
             EventBus.$emit('settime', totaltime, this.taskList.id)
         },
-        select(status) {
-
-			let value = document.getElementsByName(this.taskList.id)
+        getFileExtension(filename) {
             
-            for(let i of value){
-                
+            return filename.slice((filename.lastIndexOf(".") - 1 >>> 0) + 2);
+        },
+        emitSelect(){
+            EventBus.$emit('selectcheck', this.taskList.id)
+            
+        },
+        select(status) {
                  if(status == this.taskStatus)
                  {
                      
-                     i.checked = !i.checked
+                this.$refs.inputselect.click()
                  }
-                    
-            }
 		},
+        closeSelected(arrID){
+            if(arrID.includes(this.taskList.id))
+                this.selected = [];
+        },
         focusName(){
             this.$refs.input.focus()
         },
@@ -481,7 +510,6 @@ export default {
         },
         play(ID){
             EventBus.$emit('play', ID)
-            this.fetchData()
         },
         deleteFile(filename){
             EventBus.$emit('deleteFile', filename)
@@ -529,7 +557,7 @@ export default {
             var minute = Math.floor((milisegundos / (1000 * 60)) % 60);
             minute = (minute < 10)? '0' + minute : minute;
             
-            var hour = Math.floor(milisegundos / (1000 * 60 * 60)) % 24;
+            var hour = Math.trunc(milisegundos / (1000 * 60 * 60));
             hour = (hour < 10)? '0' + hour : hour;
                 this.tiempo =  hour + ':' + minute + ':' + segundos
             }
@@ -542,7 +570,7 @@ export default {
             var minute = Math.floor((milisegundos / (1000 * 60)) % 60);
             minute = (minute < 10)? '0' + minute : minute;
             
-            var hour = Math.floor(milisegundos / (1000 * 60 * 60)) % 24;
+            var hour = Math.trunc(milisegundos / (1000 * 60 * 60));
             hour = (hour < 10)? '0' + hour : hour;
             return hour + ':' + minute + ':' + segundos;
         },

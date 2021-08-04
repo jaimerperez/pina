@@ -229,15 +229,32 @@ class CRUDController
      * $offset (posicion )
      * $order (columna de la tabla por el que se ordena)
      * $type (tipo de orden: 'ASC' o 'DESC')
+     * $date_start (fecha minima para filtrar) :  [Y-M-D ,T H-M-S]
      * Devuelve un array con todas las filas coincidentes
      */
-    function plenty($array, int $limit = 0, $offset =0, $order = null, $type = "DESC")
+    function plenty($array, int $limit = 0, $offset =0, $order = null, $type = "DESC", $date_start = null)
 	{
         if ($this->useSoftDeletes === true)
             $this->builder->where($this->deletedField. '='. 0);
 
         foreach ($array as $key => $value) {
-            $this->builder->andwhere($key. '="'. $value . '"');
+            if( gettype($value) == "array" ){
+                $query = "";
+                foreach ($value as $k => $v) {
+                    if($k >= 1)
+                        $query .= " OR ";
+                    $query .= $key. '="'. $v . '"';
+                }
+                $this->builder->andwhere($query);
+            }else{
+                $this->builder->andwhere($key. '="'. $value . '"');
+            }
+        }
+
+        if( $date_start != null ) {
+            $date =  new \DateTime('');
+            $date->sub(new \DateInterval('P'.$date_start));
+            $this->builder->andwhere('updated_at >="'. $date->format('Y-m-d H:i:s') . '"');
         }
 
         $this->builder->select('*')->from($this->table);

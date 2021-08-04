@@ -2,12 +2,12 @@
     <div class="flex flex-row mx-4 justify-center">
        <div 
             @click="focusDatepicker"
-            :class="[taskStatus == 1 ? 'bg-block-working-secondary' : taskStatus == 3 ? 'bg-block-pending-secondary' : 'bg-block-complete-secondary', ' rounded-xl p-2 text-fontColor text-center placeholder-white placeholder-opacity-50 cursor-pointer']">
+            :class="[taskStatus == 1 ? 'bg-block-working-secondary' : taskStatus == 3 ? 'bg-block-pending-secondary' : 'bg-block-complete-secondary', ' rounded-3xl p-2 text-fontColor text-center placeholder-white placeholder-opacity-50 cursor-pointer']">
            <div v-if="fechaInicioFormateada == fechaFinalFormateada">
                {{fechaFinalFormateada}}
            </div>
            <div v-else>
-               {{fechaInicioFormateada}} - {{fechaFinalFormateada}}
+               {{fechaInicioFormateada}} &nbsp; {{fechaFinalFormateada}}
            </div>
        </div>
        
@@ -75,8 +75,8 @@ export default {
             refName: 'fecha',
             id: 'fecha'+ this.id_task
         },
-        monthNames: ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio",
-            "Julio", "Agost", "Sep", "Oct", "Nov", "Dec"
+        monthNames: ["ene.", "feb.", "mar.", "abr.", "may.", "jun.",
+            "jul.", "ago.", "sep.", "oct.", "nov.", "dec."
         ],
 
     }   
@@ -131,13 +131,13 @@ export default {
         let fechaInicio = new Date(this.date)
         let mesformateadoInicio = fechaInicio.getMonth()
         let diaformateadoInicio = fechaInicio.getDate()
-       return diaformateadoInicio + '-' + this.monthNames[mesformateadoInicio]
+       return diaformateadoInicio + ' ' + this.monthNames[mesformateadoInicio]
       },
       fechaFinalFormateada(){
         let fechafinal = new Date(this.dateend)
         let mesformateadoFinal = fechafinal.getMonth()
         let diaformateadoFinal = fechafinal.getDate()
-        return diaformateadoFinal + '-' + this.monthNames[mesformateadoFinal]
+        return diaformateadoFinal + ' ' + this.monthNames[mesformateadoFinal]
       }
   },
    watch: {

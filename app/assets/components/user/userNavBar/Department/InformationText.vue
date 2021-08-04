@@ -17,7 +17,7 @@
   <div v-else>
       ¿Quieres lanzar una campaña de marketing, redes sociales, etc ?
   </div>
-  <router-link :to="{ name: 'incidents', params: {teamName: teamName, teamID: id, departmentName: departmentName} }">
+  <router-link :to="{ name: 'incidents', params: {teamID: id, teamName: teamName } }">
       <button class="mt-4 bg-buttonColor-primary text-black p-2 rounded-xl"> &lt;&lt; Haz click aqui</button>
     </router-link>
   </div>

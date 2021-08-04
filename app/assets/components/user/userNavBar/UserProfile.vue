@@ -11,7 +11,7 @@
             <AvatarInpute v-model="avatar" :default-src="src" :id="userInfo.id"/>
           </div>         
         </div>
-        <div v-if="idUser && (idUser != userInfo.id)" class="user-name flex flex-row justify-center items-center text-3xl font-semibold text-sideBar-primary">
+        <div v-if="idUser && (idUser != userInfo.id)" class="user-name flex flex-row justify-center items-center text-4xl font-semibold text-fontColor-primary mt-4">
               <div v-for="user in allusers" :key="user.id">
                 <div v-if="idUser == user.id">
                   {{user.name}}&nbsp;
@@ -19,44 +19,59 @@
                 </div>
               </div>
         </div>
-        <div v-else class="user-name flex flex-row justify-center items-center text-3xl font-semibold text-sideBar-primary">
+        <div v-else class="user-name flex flex-row justify-center items-center text-4xl font-semibold mt-4 text-fontColor-primary">
               <Editable  :id="'name'" :content="userInfo.name"/>&nbsp;
               <Editable  :id="'surname'" :content="userInfo.surname"/>
         </div>
       </div>
       </section>
-  <div class="separation-between-sections spacer bg-sideBar-primary align middle w-10/12 h-px m-auto"></div>
+  <div class="separation-between-sections spacer bg-fontColor-primary align middle w-10/12 h-px m-auto"></div>
         <InformationProfile v-if="idUser && (idUser != userInfo.id)" :id="idUser"/>
         <section v-else class="user-profile-middle-container block pt-4">
           <div class="user-inner-container w-10/12 flex flex-col items-center text-lg justify-center">
-             <h1 class="text-sideBar-primary font-semibold pb-4">INFORMACION GENERAL</h1>
-            <div class="user-information-container w-6/12 h-full flex flex-col justify-around font-semibold text-sideBar-primary text-left">
-              <div class="flex flex-row p-2">
-                Horario Normal:&nbsp; <Editable class="w-80 text-fontColor-primary font-normal border-dotted border-2 hover:border-black" :id="'schedule'" :content="userInfo.schedule"/><icon-base viewBox="0 0 1080 1080"  icon-name="editar"><Editar/></icon-base>
+             <div class="w-full text-fontColor-primary font-bold pb-4 pl-64">INFORMACIÓN GENERAL</div>
+            <div class="user-information-container w-6/12 h-full flex flex-col justify-around text-fontColor-primary text-left">
+              <div class="flex flex-row p-2 items-center">
+                <img class="h-5 w-5" src="/assets/images/icons/horario.svg" alt="">
+                Horario Normal:&nbsp; <Editable class="w-80 text-fontColor-primary font-normal hover:border-dotted hover:border-2 hover:border-black" :id="'schedule'" :content="userInfo.schedule"/><icon-base viewBox="0 0 1080 1080"  icon-name="editar"><Editar/></icon-base>
               </div>
-              <div class="flex flex-row p-2">
-                Guardia:&nbsp; <Editable class="text-fontColor-primary w-80 font-normal border-dotted border-2 hover:border-black" :id="'duty'" :content="userInfo.duty"/><icon-base viewBox="0 0 1080 1080"  icon-name="editar"><Editar/></icon-base>
+              <div class="flex flex-row p-2 items-center">
+                <img class="h-5 w-5" src="/assets/images/icons/horario.svg" alt="">
+                Guardia:&nbsp; 
+                <div class="w-[1rem] h-[1rem] rounded-full border-2 cursor-pointer" :class="[userInfo.duty == 1 ? 'bg-buttonColor-primary' : '']" @click="activeDuty"></div>No &nbsp;&nbsp;
+                <div class="w-[1rem] h-[1rem] rounded-full border-2 cursor-pointer" :class="[userInfo.duty == 0 ? 'bg-buttonColor-primary' : '']" @click="activeDuty"></div>Si
               </div>
-              <div class="flex flex-row p-2">
-              Horario Guardia:&nbsp; <Editable  class="text-fontColor-primary w-80 font-normal border-dotted border-2 hover:border-black" :id="'duty_schedule'" :content="userInfo.duty_schedule"/><icon-base viewBox="0 0 1080 1080"  icon-name="editar"><Editar/></icon-base>
+              <div class="flex flex-row p-2 items-center">
+                <img class="h-5 w-5" src="/assets/images/icons/horario.svg" alt="">
+              Horario Guardia:&nbsp; <Editable  class="text-fontColor-primary w-80 font-normal hover:border-dotted hover:border-2 hover:border-black" :id="'duty_schedule'" :content="userInfo.duty_schedule"/><icon-base viewBox="0 0 1080 1080"  icon-name="editar"><Editar/></icon-base>
               </div>
-              <div class="flex flex-row p-2">
+              <div class="flex flex-row p-2 items-center">
+                <img class="h-5 w-5" src="/assets/images/icons/buzon.svg" alt="">
                 Correo electrónico:&nbsp; <div :id="'email'" :content="userInfo.email"/>{{userInfo.email}}<div/>
               </div>
-              <div class="flex flex-row p-2">
-                Teléfono:&nbsp;  <Editable class="text-fontColor-primary w-80 font-normal border-dotted border-2 hover:border-black" :id="'phone'" :content="userInfo.phone"/><icon-base  viewBox="0 0 1080 1080"  icon-name="editar" class="cursor-pointer"><Editar/></icon-base>
+              <div class="flex flex-row p-2 items-center">
+                <img class="h-5 w-5" src="/assets/images/icons/perfilphone.svg" alt="">
+                Teléfono:&nbsp;  <Editable class="text-fontColor-primary w-80 font-normal hover:border-dotted hover:border-2 hover:border-black" :id="'phone'" :content="userInfo.phone"/><icon-base  viewBox="0 0 1080 1080"  icon-name="editar" class="cursor-pointer"><Editar/></icon-base>
               </div>
-              <div class="flex flex-row p-2">
+              <div class="flex flex-row p-2 items-center">
+                <img class="h-5 w-5" src="/assets/images/icons/perfilcarpeta.svg" alt="">
                 <h1> Departamentos:&nbsp; </h1>
                 <div v-for="items in departments" :key="items.id"> <span class="text-fontColor-primary font-normal">{{items.name}};&nbsp;</span> </div>
                
               </div> 
-              <div class="flex flex-row p-2">
+              <div class="flex flex-row p-2 items-center">
                 <h1> Teams:&nbsp; </h1>
                   <div v-for="items in teams" :key="items.id"><span class="text-fontColor-primary font-normal">&nbsp;{{items.name}};</span></div>
               </div>   
-              <div class="flex flex-row p-2">
-                Cumpleaños:&nbsp; <Editable class="text-fontColor-primary w-80 font-normal border-dotted border-2 hover:border-black" :id="'birthday'" :content="userInfo.birthday"/><icon-base  viewBox="0 0 1080 1080" icon-name="editar"><Editar/></icon-base>
+              <div class="flex flex-row p-2 items-center">
+                <img class="h-5 w-5" src="/assets/images/icons/cumple.svg" alt="">
+                Cumpleaños:&nbsp; <datepicker :selected="changeBirthday()" placeholder="Selecciona Fecha de Cumpleaños" v-model="birthday"></datepicker><icon-base  viewBox="0 0 1080 1080" icon-name="editar"><Editar/></icon-base>
+              </div>
+               <div class="flex flex-row p-2 items-center">
+                 <img class="h-5 w-5" src="/assets/images/icons/situacionlaboral.svg" alt="">
+                Situacion laboral:&nbsp;
+                <div class="w-[1rem] h-[1rem] rounded-full border-2 cursor-pointer" :class="[userInfo.situation == 1 ? 'bg-buttonColor-primary' : '']" @click="active"></div> En la oficina &nbsp;
+                <div class="w-[1rem] h-[1rem] rounded-full border-2 cursor-pointer" :class="[userInfo.situation == 0 ? 'bg-buttonColor-primary' : '']" @click="active"></div>Trabajando desde casa
               </div>
               <div class="p-2">
                 <button v-on:click="passwordChange = !passwordChange">Gestionar contraseña</button>
@@ -65,11 +80,11 @@
                       <input class="border m-1" type="password" placeholder="Current password" @change="checkpassword" v-model="currentPassword">
                       <input class="border m-1" type="password" placeholder="New password" v-model="newPassword">
                       <input class="border m-1" type="password" placeholder="Repeat new password" @change="repeatedPasswordReceived" v-model="newRepeatedPassword">
-                      <button class="bg-sideBar-primary text-white border rounded-full py-1 px-2" @click="changePassword">Cambiar contraseña</button>
+                      <button class="bg-buttonColor-primary text-black border rounded-full py-1 px-2" @click="changePassword">Cambiar contraseña</button>
                     </div>
               </div>
               <div class="p-2">
-                <input type="checkbox" >Quiero recibir notificaciones por correo
+                <input type="checkbox" class="text-sm"> &nbsp;Quiero recibir notificaciones por correo
               </div>
           </div>
         </div>
@@ -79,6 +94,7 @@
 </template>
 
 <script>
+import Datepicker from 'vuejs-datepicker';
 import IconBase from '../../icons/IconBase.vue'
 import Editar from '../../icons/Editar.vue'
 import Editable from './Profile/Editable.vue'
@@ -94,6 +110,7 @@ export default {
     Editable,
       InformationProfile,
       AvatarInpute,
+      Datepicker,
   },
   props:{
     idUser: String,
@@ -115,7 +132,8 @@ export default {
       componentKey: 0,
       random: '',
       avatar: null,
-      src: ''
+      src: '',
+      birthday: '',
     }
   },
   created() {
@@ -144,7 +162,8 @@ export default {
           } ).catch(error => {
             this.exist = false
           })
-       
+        this.birthday = this.userInfo.birthday
+        console.log(this.birthday)
         getUserDepartments(token, this.userInfo.id).then(data => (this.departments = data));
         getAllTeamsFromUser(token, this.userInfo.id).then(data => (this.teams = data));
       });
@@ -164,6 +183,48 @@ export default {
             }
 
     },
+    active(){
+      let situation
+      if(this.userInfo.situation == 1){
+        situation = 0
+      }
+      else
+        situation = 1
+
+        const token = localStorage.getItem('validation_token');
+        const formData = new FormData()
+        formData.append('situation', situation );
+        formData.append('token', token);
+        
+         let promise = new Promise((resolve, reject) => {
+                resolve(changeProfile(formData, this.userInfo.id));
+              });
+              promise.then((response) => {
+                
+                this.fetchData()
+              });
+    },
+    activeDuty(){
+      let duty
+      if(this.userInfo.duty == 1){
+        duty = 0
+      }
+      else
+        duty = 1
+
+        const token = localStorage.getItem('validation_token');
+        const formData = new FormData()
+        formData.append('duty', duty );
+        formData.append('token', token);
+        
+         let promise = new Promise((resolve, reject) => {
+                resolve(changeProfile(formData, this.userInfo.id));
+              });
+              promise.then((response) => {
+                
+                this.fetchData()
+              });
+    },
     update(event){
       
         this.selectedFile = event.target.files[0]
@@ -182,6 +243,19 @@ export default {
       },
       onFileSelected(event){
         this.selectedFile = event.target.files[0]
+      },
+      changeBirthday(){
+        console.log('entraaa')
+      const formData = new FormData()
+        let newdate = new Date(this.birthday)
+        let daystart = newdate.getDate()
+        let monthstart = newdate.getMonth()+1
+        let yearstart = newdate.getFullYear()
+        let datefinal = yearstart + '-' + monthstart + '-' + daystart + ' ' + '08:00:00'
+        formData.append('birthday', datefinal);
+        formData.append('token', localStorage.getItem('validation_token'));
+       changeProfile(formData, this.userInfo.id)
+      
       },
       repeatedPasswordReceived () {
         if (this.newPassword === this.newRepeatedPassword) {

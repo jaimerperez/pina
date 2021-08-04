@@ -1,9 +1,9 @@
 <template>
   <div>
       <div class="h-full flex flex-col justify-around items-center">
-        <div class="flex flex-row w-full justify-evenly items-center">
+        <div class="flex flex-row w-full justify-center items-center">
               <img class="w-40 h-40" :src="`/assets/images/teams/${departmentID}.svg`">
-              <div class="text-5xl text-sideBar-primary uppercase italic">Equipo de {{departmentName}}</div>
+              <div class="text-5xl text-fontColor-primary uppercase italic">Departamento de {{departmentName}}</div>
         </div>
       </div>
     <div>

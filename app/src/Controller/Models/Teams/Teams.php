@@ -95,6 +95,9 @@ class Teams extends AbstractController
         if(! $validation[0])
             return $this->json($validation[1],'400');
 
+        $event_text = 'ver tablero ' . $id_team;
+        HelperController::push_event( $validation[1]['id'], $event_text);
+
         $CRUD = new CRUDController('tasks','id_team');
 
         $tasks = $CRUD->plenty( array('id_team' => $id_team, 'store' => 0));

@@ -35,10 +35,10 @@ module.exports = {
           },
       },
       boardNames:{
-       'marketing': '#F987FA',
-       'programacion': '#FA7107',
-       'sistemas': '#0070B3',
-       'plataformas': '#009649',
+       'Marketing': '#F987FA',
+       'Programación': '#FA7107',
+       'Sistemas': '#0070B3',
+       'Plataformas': '#009649',
       },
       tags:{
         'vidaomuerte': '#000000',
@@ -77,11 +77,19 @@ module.exports = {
   variants: {
     extend: {
       visibility: ['hover', 'focus'],
+      backgroundColor: ['checked'],
+      borderColor: ['checked'],
     },
   },
   plugins: [
     plugin(function({ addUtilities}) {
     const buttons = {
+      'data-popover': {
+        '1':{
+        backgroundColor: 'red',
+        left: 'auto',
+        }
+      },
       '.message-section': {
         'h1': {
           lineHeight: '1.1',
@@ -99,12 +107,103 @@ module.exports = {
           listStyleType: 'unset',
           padding: '0 1rem'
         },
+        'li':{
+          listStyleType: 'decimal',
+          padding: '0 1rem'
+        },
           'ol': {
             padding: '0 1rem'
           }, 
         'a':{
           color: 'blue',
         },
+        'table': {
+          borderCollapse: 'collapse',
+          tableLayout: 'fixed',
+          width: '100%',
+          margin: '0',
+          overflow: 'hidden',
+      
+          'td': {
+            minWidth: '1em',
+            border: '2px solid #ced4da',
+            padding: '3px 5px',
+            verticalAlign: 'top',
+            boxSizing: 'border-box',
+            position: 'relative',
+      
+            '> *': {
+              marginBottom: '0',
+            }
+          },
+          'th': {
+            minWidth: '1em',
+            border: '2px solid #ced4da',
+            padding: '3px 5px',
+            verticalAlign: 'top',
+            boxSizing: 'border-box',
+            position: 'relative',
+      
+            '> *': {
+              marginBottom: '0',
+            }
+          },
+      
+          'th': {
+            fontWeight: 'bold',
+            textAlign: 'left',
+            backgroundColor: '#f1f3f5',
+          },
+      
+          '.selectedCell:after': {
+            zIndex: '2',
+            position: 'absolute',
+            content: '',
+            left: '0; right: 0; top: 0; bottom: 0',
+            background: 'rgba(200, 200, 255, 0.4)',
+            pointerEvents: 'none',
+          },
+      
+          '.column-resize-handle': {
+            position: 'absolute',
+            right: '-2px',
+            top: '0',
+            bottom: '-2px',
+            width: '4px',
+            backgroundColor: '#adf',
+            pointerEvents: 'none',
+          }
+        },
+      
+      '.tableWrapper': {
+        padding: '1rem 0',
+        overflowX: 'auto',
+      },
+      
+      '.resize-cursor': {
+        cursor: 'ew-resize',
+        cursor: 'col-resize',
+      },
+      'ul[data-type="taskList"]': {
+        listStyle: 'none',
+        padding: '0',
+      
+        'li': {
+          display: 'flex',
+          alignItems: 'center',
+      
+          '> label': {
+            flex: '0 0 auto',
+            marginRight: '0.5rem',
+          }
+        }
+      }
+      },
+      '.mention': {
+        color: '#A975FF',
+        backgroundColor: 'rgba(#A975FF, 0.1)',
+        borderRadius: '0.3rem',
+        padding: '0.1rem 0.3rem',
       },
       '.ProseMirror': {
         minHeight: '150px',
@@ -113,12 +212,97 @@ module.exports = {
         maxHeight: '400px',
         borderStyle: 'solid',
         borderWidth: '2px',
+        padding: '4px',
         '> * + *': {
           marginTop: '0.75em'
         },
+        'ul[data-type="taskList"]': {
+          listStyle: 'none',
+          padding: '0',
+        
+          'li': {
+            display: 'flex',
+            alignItems: 'center',
+        
+            '> label': {
+              flex: '0 0 auto',
+              marginRight: '0.5rem',
+            }
+          }
+        },
+        'table': {
+          borderCollapse: 'collapse',
+          tableLayout: 'fixed',
+          width: '100%',
+          margin: '0',
+          overflow: 'hidden',
       
+          'td': {
+            minWidth: '1em',
+            border: '2px solid #ced4da',
+            padding: '3px 5px',
+            verticalAlign: 'top',
+            boxSizing: 'border-box',
+            position: 'relative',
+      
+            '> *': {
+              marginBottom: '0',
+            }
+          },
+          'th': {
+            minWidth: '1em',
+            border: '2px solid #ced4da',
+            padding: '3px 5px',
+            verticalAlign: 'top',
+            boxSizing: 'border-box',
+            position: 'relative',
+      
+            '> *': {
+              marginBottom: '0',
+            }
+          },
+      
+          'th': {
+            fontWeight: 'bold',
+            textAlign: 'left',
+            backgroundColor: '#f1f3f5',
+          },
+      
+          '.selectedCell:after': {
+            zIndex: '2',
+            position: 'absolute',
+            content: '',
+            left: '0; right: 0; top: 0; bottom: 0',
+            background: 'rgba(200, 200, 255, 0.4)',
+            pointerEvents: 'none',
+          },
+      
+          '.column-resize-handle': {
+            position: 'absolute',
+            right: '-2px',
+            top: '0',
+            bottom: '-2px',
+            width: '4px',
+            backgroundColor: '#adf',
+            pointerEvents: 'none',
+          }
+        },
+      
+      '.tableWrapper': {
+        padding: '1rem 0',
+        overflowX: 'auto',
+      },
+      
+      '.resize-cursor': {
+        cursor: 'ew-resize',
+        cursor: 'col-resize',
+      },
         'ul': {
           listStyleType: 'unset',
+          padding: '0 1rem'
+        },
+        'li':{
+          listStyleType: 'decimal',
           padding: '0 1rem'
         },
           'ol': {

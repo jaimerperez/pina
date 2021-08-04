@@ -32,7 +32,10 @@
         return fetch("/api/users/user/" + id_user + "/notifications?token=" + token) 
           .then(response => response.json())
       }
-
+      export function getMails(token){
+        return fetch("/api/incidents?token=" + token) 
+          .then(response => response.json())
+      }
     
       //********DEPARTMENTS**************
     export function getAllTeamsFromDepartment(token, departmentID){
@@ -47,6 +50,10 @@
        return fetch("/api/departments?token=" + token) 
         .then(response => response.json())
     }
+    export function getViewers(token, id_team){
+      return fetch("/api/events/"+ id_team + "/last_views?token=" + token) 
+       .then(response => response.json())
+   }
     
      //********TEAMS**********
 
@@ -244,6 +251,31 @@ export function setDate(formData, id_task){
      return resp.json()
    })  
  }
+ export function changeBoardTask(formData, id_task){
+  return fetch("/api/tasks/" + id_task + "/move",{
+    method: "POST",
+    body: formData 
+    })
+   .then(resp =>  { 
+     if(!resp.ok){
+       throw new Error(resp.statusText);
+     }
+     return resp.json()
+   })  
+ }
+ export function duplicateTask( formData, id_task){
+  return fetch("/api/tasks/" + id_task + "/copy",{
+    method: "POST",
+    body: formData 
+    })
+   .then(resp =>  { 
+     if(!resp.ok){
+       throw new Error(resp.statusText);
+     }
+     return resp.json()
+   })  
+ }
+
         ///PUT //task
  export function putChangeTags(formData, id_task){
   return fetch("/api/tasks/" + id_task + "/tags" ,{

@@ -7,18 +7,13 @@
                                             <div class="-mt-6 border-l-2 absolute h-6 border-gray-400 top-0">
                                             </div>
                                             <div class="text-center">
-                                                <div class="flex flex-col justify-center items-center">
-                                                    <div class="w-16">
+                                                <div class="flex flex-row justify-center items-center">
+                                                    <div>
                                                         <router-link :to="{ name: 'profileUser', params: {idUser: id} }">
-                                                            <div v-if="exist">
-                                                                <img class="h-10 w-10 rounded mx-3 mt-2" :src="`/assets/images/users/${id}`" >
-                                                            </div>
-                                                            <div v-else>
-                                                                <img class="w-12 h-12 rounded-full " src="/assets/images/users/avatar.svg">
-                                                            </div>
+                                                            <img class="h-16 w-16 border-2 border-black rounded-full" :src="`/assets/images/users/${id}`" >
                                                         </router-link>
                                                     </div>
-                                                    <div class="text-gray-600">
+                                                    <div class="text-gray-600 text-2xl">
                                                         <p>{{usersName}}</p>
                                                     </div>
                                                 </div>
@@ -38,20 +33,6 @@ export default {
             exist: false
         }
     },
-    created(){
-       fetch("/assets/images/users/" + this.id ) 
-          .then( response => {
-
-              if(response.ok){
-                this.exist = true
-              }
-              else{
-                this.exist = false
-              }
-          } ).catch(error => {
-            this.exist = false
-          })
-    } 
 }
 </script>
 

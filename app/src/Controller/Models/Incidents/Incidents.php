@@ -18,6 +18,82 @@ class Incidents extends AbstractController
 {
 
     /**
+        * @Route("", methods={"GET"})
+     */
+    public function get_buzon(Request $request): Response
+    {
+        $req = $request->query; //GET
+        $validation = HelperController::validate_req($req,['token']);
+        if(! $validation[0])
+            return $this->json($validation[1],'400');
+
+        $CRUD_users_teams = new CRUDController('users_teams','id');
+        $user_teams = $CRUD_users_teams->plenty(array(
+            'id_user' => $validation[1]['id']
+        ));
+
+        //TEAMS
+        $CRUD_teams = new CRUDController('teams','id');
+        $id_teams = [];
+        $teams = [];
+        foreach ($user_teams as $user_team) {
+            $id_team = $user_team['id_team'];
+            array_push($id_teams,$id_team);
+            $teams[$id_team] = $CRUD_teams->one($id_team);
+        }
+        //INCIDENCIAS
+        $CRUD_tasks = new CRUDController('tasks','id_team');
+        $incidents = $CRUD_tasks->plenty( array(
+            'incident' => 1
+            ,'id_team' => $id_teams
+        ));
+        $id_incidents = [];
+        $incidents_formated = [];
+        foreach ($incidents as $incident) {
+            $id_incident = $incident['id'];
+            array_push($id_incidents,$id_incident);
+            $incident['team'] = $teams[$incident['id_team']];
+            $incidents_formated[$id_incident] = $incident;
+        }
+        //Mensajes
+        $CRUD_tasks_messages = new CRUDController('tasks_messages','id_team');
+        $CRUD_users = new CRUDController('users','id');
+        $messages = $CRUD_tasks_messages->plenty( array(
+            'id_task' => $id_incidents
+        ),50,0,'id');
+        foreach ($messages as $key => $value) {
+            $messages[$key]['task'] = $incidents_formated[ $messages[$key]['id_task'] ];
+            $messages[$key]['user'] = $CRUD_users->one($messages[$key]['id_user']);
+        }
+
+        return $this->json($messages); //BUZÓN
+    }
+
+    /**
+        * @Route("/{id_team}", methods={"GET"})
+     */
+    public function get_Incident(String $id_team,Request $request): Response
+    {
+        $req = $request->query; //GET
+        $validation = HelperController::validate_req($req,['token']);
+        if(! $validation[0])
+            return $this->json($validation[1],'400');
+
+        $CRUD = new CRUDController('tasks','id');
+        $incidents = [];
+        try {
+            $incidents = $CRUD->plenty( array(
+                'incident' => 1
+                ,'id_team' => $id_team
+            ));
+        } catch (\Throwable $th) {
+            //throw $th;
+            return $this->json('ERROR',400);
+        }
+        return $this->json($incidents); //BUZÓN
+    }
+
+    /**
         * @Route("/{id_team}", methods={"POST"})
      */
     public function add_Incident(String $id_team,Request $request): Response

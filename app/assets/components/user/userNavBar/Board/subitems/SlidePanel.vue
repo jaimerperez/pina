@@ -3,19 +3,19 @@
     <div class="slidein max-w-screen-sm p-2 fixed z-50 top-0 h-screen bg-white transition-all duration-200 ease-in-out shadow-2xl" :class="[open ? 'right-0' : '-right-full']">
      <div class="pulse_container">
                   <div class="flexible-header">
-                      <div class="pulse-tittle flex my-5 align-middle justify-center justify-evenly">
+                      <div class="pulse-tittle flex my-5 align-middle justify-center">
                           <span>{{name}}</span>
                       </div>
                       <div class="items-views">
                           <div class="items-view-bar-component">
                               <div class="items-view-list flex flex-row justify-around">
-                                    <div class="items-view-list-items cursor-pointer mx-5 mb-1" v-on:click="toggleTabs(1)" v-bind:class="{'text-sideBar-primary font-thin': openTab !== 1, 'text-sideBar-primary font-bold ': openTab === 1}">
+                                    <div class="items-view-list-items cursor-pointer mx-5 mb-1" v-on:click="toggleTabs(1)" v-bind:class="{'text-fontColor-primary font-thin': openTab !== 1, 'text-fontColor-primary font-bold ': openTab === 1}">
                                         <span>Actualizaciones</span>
                                     </div>
                               </div>
                           </div>
                       </div>
-                       <div class="spacer bg-sideBar-primary w-11/12 h-0.5 m-auto"></div>
+                       <div class="spacer bg-fontColor-primary w-11/12 h-0.5 m-auto"></div>
                   </div>
       </div>
       <div class="pulse_content">
@@ -27,7 +27,7 @@
                   <tiptap v-model="textContent" :mentionList="mentionList"/>
                 </div>
                 <div class="flex justify-end">
-                  <button type = "submit" value = "submit" class="h-2/6 border rounded-xl py-2 px-4 bg-sideBar-primary text-white mb-5 text-base self-end " @click="submitMessage(textContent, id)">ENVIAR </button>
+                  <button type = "submit" value = "submit" class="h-2/6 border rounded-xl py-2 px-4 bg-buttonColor-primary text-black mb-5 text-base self-end " @click="submitMessage(textContent, id)">ACTUALIZAR </button>
                 </div>
               </div>
             </div>
@@ -192,7 +192,10 @@ export default {
     },
     
     closeSlidePanel(){
+      if(this.task)
       EventBus.$emit('closeslidepanel')
+      else
+      EventBus.$emit('closeslidepanelsubtask')
     },
    
    

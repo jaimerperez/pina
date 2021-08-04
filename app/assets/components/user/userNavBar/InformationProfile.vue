@@ -4,7 +4,7 @@
             <div v-if="user.id == id">
                 <section class="user-profile-middle-container block pt-4">
                         <div class="user-inner-container w-10/12 flex flex-col items-center text-lg justify-center">
-                            <h1 class="text-sideBar-primary font-semibold pb-4">INFORMACION GENERAL</h1>
+                            <h1 class="text-fontColor-primary font-semibold pb-4">INFORMACION GENERAL</h1>
                             <div class="user-information-container w-6/12 h-full flex flex-col justify-around font-semibold text-sideBar-primary text-left">
                             <div class="flex flex-row p-2">
                                 Horario Normal:&nbsp; {{user.schedule}}
