@@ -1,5 +1,6 @@
 #Monday 
 ## Proyecto de Gestión de tareas
+ ![Mockup perfil usuario](https://github.com/jaimerperez/pina/blob/c3ee88cd8e05f28750fb650e6bb9f0f1cd5a7773/app/assets/media/Screenshot%202024-03-06%20170304.png)
 Proyecto realizado en Vuejs y Symfony PHP:
  * Añadir o eliminar tareas.
  * Añadir o eliminar subtareas
@@ -15,7 +16,9 @@ Proyecto realizado en Vuejs y Symfony PHP:
  * Añadir usuarios/eliminar usuarios en uno o varios departamentos
  * Notificaciones
  * Buzón de mensajes
-<span>![</span><span>Aquí la descripción de la imagen por si no carga</span><span>]</span><span>(</span><span>app/assets/media/Screenshot 2024-03-06 170304.png</span><span>)</span>
+
+ ![Mockup buzón]( https://github.com/jaimerperez/pina/blob/1af57016b2a488e6ec2d62c119e0e0779c6783cf/app/assets/media/Screenshot%202024-03-06%20170318.png)
+ 
 
 
 # API ENDPOINTS:
