@@ -1,3 +1,23 @@
+#Monday 
+## Proyecto de Gestión de tareas
+Proyecto realizado en Vuejs y Symfony PHP:
+ *Añadir o eliminar tareas.
+ *Añadir o eliminar subtareas
+ *Gestión los horarios de las tareas a realizar 
+ *Añadir comentarios a las tareas
+ *Estado de conexión/horarios de los empleados
+ *Solicitud de tareas
+ *Posibilidad de establecer el estado de las tareas(pendiente/completada/trabjando)
+ *Tareas archivadas
+ *Organización por departamentos
+ *Crontab con tareas semanales que se crean cada dia/semana/mes
+ *Pdf con resumen de las tareas realizas por departamentos y empleados
+ *Añadir usuarios/eliminar usuarios en uno o varios departamentos
+ *Notificaciones
+ *Buzón de mensajes
+
+
+
 # API ENDPOINTS:
 **Auth:**
 * /api/auth/login  ✅ Devuelve un token para autentificarse **POST: email,password**
