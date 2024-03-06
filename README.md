@@ -15,7 +15,7 @@ Proyecto realizado en Vuejs y Symfony PHP:
  * Añadir usuarios/eliminar usuarios en uno o varios departamentos
  * Notificaciones
  * Buzón de mensajes
-
+<span>![</span><span>Aquí la descripción de la imagen por si no carga</span><span>]</span><span>(</span><span>app/assets/media/Screenshot 2024-03-06 170304.png</span><span>)</span>
 
 
 # API ENDPOINTS:
